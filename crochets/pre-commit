@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Refuse tout enregistrement Git qui contiendrait une donnée ou une mention propre à l'installation.
+# Installation : ln -sf ../../crochets/pre-commit .git/hooks/pre-commit
+exec "$(git rev-parse --show-toplevel)/bin/berger" verifier-depot

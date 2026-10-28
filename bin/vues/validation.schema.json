@@ -1,0 +1,124 @@
+{
+ "$id": "validation.schema.json",
+ "x-version": 1,
+ "description": "Données de la vue d'objet « Écriture en attente » (berger vue validation <n>) : la demande d'écriture du courtier, son aperçu COMPLET (jamais les arguments bruts), sa décision une fois prise, et le lien vers la demande de fusion qu'elle fusionnerait.",
+ "type": "object",
+ "properties": {
+  "n": {
+   "x-libelle": "N°",
+   "x-rendu": "nombre",
+   "type": [
+    "integer",
+    "null"
+   ]
+  },
+  "agent": {
+   "x-libelle": "Demandée par",
+   "x-rendu": "agent",
+   "$ref": "communs.schema.json#/$defs/Agent"
+  },
+  "outil": {
+   "x-libelle": "Outil",
+   "x-rendu": "texte",
+   "type": "string"
+  },
+  "verbe": {
+   "x-libelle": "Verbe",
+   "x-rendu": "texte",
+   "type": "string"
+  },
+  "apercu": {
+   "x-libelle": "Aperçu complet",
+   "x-rendu": "texte",
+   "type": "string"
+  },
+  "demande": {
+   "x-libelle": "Demandée le",
+   "x-rendu": "quand",
+   "type": "string"
+  },
+  "valideur": {
+   "x-libelle": "Décide",
+   "x-rendu": "agent",
+   "anyOf": [
+    {
+     "$ref": "communs.schema.json#/$defs/Agent"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "fusion": {
+   "x-libelle": "Sujet fusionné",
+   "x-rendu": "texte",
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "en_attente": {
+   "x-libelle": "En attente",
+   "x-rendu": "oui-non",
+   "type": "boolean"
+  },
+  "etat": {
+   "x-libelle": "État",
+   "x-rendu": "texte",
+   "type": "string"
+  },
+  "decide": {
+   "x-libelle": "Décidée le",
+   "x-rendu": "quand",
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "par": {
+   "x-libelle": "Décidée par",
+   "x-rendu": "texte",
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "resultat": {
+   "x-libelle": "Résultat",
+   "x-rendu": "texte",
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "lien": {
+   "x-libelle": "Détail",
+   "x-rendu": "lien",
+   "anyOf": [
+    {
+     "$ref": "communs.schema.json#/$defs/Lien"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  }
+ },
+ "required": [
+  "n",
+  "agent",
+  "outil",
+  "verbe",
+  "apercu",
+  "demande",
+  "valideur",
+  "fusion",
+  "en_attente",
+  "etat",
+  "decide",
+  "par",
+  "resultat",
+  "lien"
+ ],
+ "additionalProperties": false
+}

@@ -1,0 +1,11 @@
+[Unit]
+Description=Berger — interface web (lecture seule, 127.0.0.1 seulement)
+
+[Service]
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=%h/berger/bin/berger interface servir
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

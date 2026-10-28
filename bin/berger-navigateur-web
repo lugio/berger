@@ -1,0 +1,23 @@
+#!/bin/sh
+# Enveloppe de lancement du navigateur d'un serveur MCP déclaré `web` (voie B de Rétro, fusion 2/3, 18/10/2026 ;
+# docs/plans/2026-10-18-retro-web-spec.md §1 point 3). REA n'a pas d'option proxy : REA_BROWSER_EXECUTABLE pointe ici.
+# Lancé DANS l'enveloppe (réseau coupé) : le vrai Chromium (BERGER_NAVIGATEUR, posé par Berger) reçoit les options de
+# l'appelant, SANS ses options proxy, puis le proxy de l'enveloppe (socat 127.0.0.1:3128 → proxy du courtier), en dernier.
+# <-loopback> : la boucle locale passe aussi par le proxy (refusée et journalisée : IP directe) au lieu d'être contournée.
+[ -n "$BERGER_NAVIGATEUR" ] || { echo "berger-navigateur-web : BERGER_NAVIGATEUR absent (posé par berger mcp-enveloppe)" >&2; exit 2; }
+for a; do
+  shift
+  case $a in
+    --ignore-certificate-errors|--ignore-certificate-errors=*|--ignore-certificate-errors-spki-list|--ignore-certificate-errors-spki-list=*|--allow-insecure-localhost|--allow-insecure-localhost=*|--proxy-server=*|--proxy-pac-url=*|--proxy-bypass-list=*|--no-proxy-server|--proxy-auto-detect|--winhttp-proxy-resolver) ;;
+    *) set -- "$@" "$a" ;;
+  esac
+done
+# Le chemin est posé par Berger ; le fichier public, en lecture seule dans l'enveloppe,
+# change à chaque accès. Aucune clé privée n'est montée avec lui.
+if [ -n "$BERGER_WEB_EMPREINTE" ] && [ -e "$BERGER_WEB_EMPREINTE" ]; then
+  IFS= read -r empreinte < "$BERGER_WEB_EMPREINTE"
+  [ "${#empreinte}" -eq 44 ] && [ "${empreinte#${empreinte%?}}" = = ] || exit 2
+  case ${empreinte%?} in *[!A-Za-z0-9+/]*) exit 2 ;; esac
+  set -- "$@" "--ignore-certificate-errors-spki-list=$empreinte"
+fi
+exec "$BERGER_NAVIGATEUR" "$@" --proxy-server=http://127.0.0.1:3128 "--proxy-bypass-list=<-loopback>" --disable-dev-shm-usage

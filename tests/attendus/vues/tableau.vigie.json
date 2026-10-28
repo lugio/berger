@@ -1,0 +1,20 @@
+[
+"\u001b[7m\u001b[1m 🛡  VIGIE  ·  tableau                                              \u001b[2mclaude\u001b[0m \u001b[33m\u001b[1mattend une réponse\u001b[0m  10:00 \u001b[0m",
+"",
+"\u001b[34m\u001b[1m▶ EN COURS\u001b[0m             \u001b[2m│\u001b[0m \u001b[33m\u001b[1m! ATTEND PROPRIO\u001b[0m       \u001b[2m│\u001b[0m \u001b[36m\u001b[1m○ À FAIRE\u001b[0m              \u001b[2m│\u001b[0m \u001b[32m\u001b[1m✓ FAIT\u001b[0m                ",
+"\u001b[34m\u001b[2m──────────────────────\u001b[0m \u001b[2m│\u001b[0m \u001b[33m\u001b[2m──────────────────────\u001b[0m \u001b[2m│\u001b[0m \u001b[36m\u001b[2m──────────────────────\u001b[0m \u001b[2m│\u001b[0m \u001b[32m\u001b[2m──────────────────────\u001b[0m",
+"\u001b[1mInventaire des\u001b[0m         \u001b[2m│\u001b[0m \u001b[33m! \u001b[0mil manque l'accès en \u001b[2m│\u001b[0m ○ Relire les alertes   \u001b[2m│\u001b[0m \u001b[32m✓ \u001b[0m\u001b[2mRanger le journal\u001b[0m   ",
+"\u001b[1msauvegardes\u001b[0m            \u001b[2m│\u001b[0m   lecture au serveur   \u001b[2m│\u001b[0m   \u001b[2m12/10\u001b[0m                \u001b[2m│\u001b[0m   \u001b[2m12/10\u001b[0m               ",
+"\u001b[34m━━━━━\u001b[0m\u001b[2m━━━━━━━━━━━\u001b[0m 1/3   \u001b[2m│\u001b[0m   de sauvegarde        \u001b[2m│\u001b[0m                        \u001b[2m│\u001b[0m \u001b[32m✓ \u001b[0m\u001b[2mInventaire des\u001b[0m      ",
+"\u001b[2m✓ \u001b[2mLister les tâches\u001b[0m    \u001b[2m│\u001b[0m \u001b[33m✎ \u001b[0mécriture n° 1 :      \u001b[2m│\u001b[0m                        \u001b[2m│\u001b[0m   \u001b[2mpostes  12/10\u001b[0m       ",
+"\u001b[34m\u001b[1m▸ \u001b[0m\u001b[1mVérifier les\u001b[0m         \u001b[2m│\u001b[0m   recréer l'espace de  \u001b[2m│\u001b[0m                        \u001b[2m│\u001b[0m                       ",
+"  \u001b[1mrétentions\u001b[0m           \u001b[2m│\u001b[0m   vigie — berger       \u001b[2m│\u001b[0m                        \u001b[2m│\u001b[0m                       ",
+"○ Rapport              \u001b[2m│\u001b[0m   valider 1            \u001b[2m│\u001b[0m                        \u001b[2m│\u001b[0m                       ",
+"                       \u001b[2m│\u001b[0m \u001b[33m✎ \u001b[0mécriture n° 3 :      \u001b[2m│\u001b[0m                        \u001b[2m│\u001b[0m                       ",
+"\u001b[33m\u001b[1m! Bloqué : \u001b[0m\u001b[33mil manque\u001b[0m   \u001b[2m│\u001b[0m   fusionner menu —     \u001b[2m│\u001b[0m                        \u001b[2m│\u001b[0m                       ",
+"  \u001b[33ml'accès en\u001b[0m           \u001b[2m│\u001b[0m   berger valider 3     \u001b[2m│\u001b[0m                        \u001b[2m│\u001b[0m                       ",
+"  \u001b[33mlecture au\u001b[0m           \u001b[2m│\u001b[0m \u001b[33m? \u001b[0mvalider ou refuser : \u001b[2m│\u001b[0m                        \u001b[2m│\u001b[0m                       ",
+"  \u001b[33mserveur de\u001b[0m           \u001b[2m│\u001b[0m   retention            \u001b[2m│\u001b[0m                        \u001b[2m│\u001b[0m                       ",
+"  \u001b[33msauvegarde\u001b[0m           \u001b[2m│\u001b[0m \u001b[33m♥ \u001b[0mdisque presque plein \u001b[2m│\u001b[0m                        \u001b[2m│\u001b[0m                       ",
+"                       \u001b[2m│\u001b[0m   sur le serveur 1     \u001b[2m│\u001b[0m                        \u001b[2m│\u001b[0m                       "
+]

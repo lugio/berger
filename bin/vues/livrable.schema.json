@@ -1,0 +1,128 @@
+{
+ "$id": "livrable.schema.json",
+ "x-version": 1,
+ "description": "Données de la vue d'objet « Livrable » (berger vue livrable <id>), la seule ouverture de Livrables et de Documents : un .md donne son texte (200 Ko au plus) ; un autre genre n'en donne pas (texte null) : l'interface l'ouvre par `berger livrable <id> --brut <genre>`.",
+ "type": "object",
+ "properties": {
+  "id": {
+   "x-libelle": "Identifiant",
+   "x-rendu": "cache",
+   "type": "string"
+  },
+  "titre": {
+   "x-libelle": "Titre",
+   "x-rendu": "texte",
+   "type": "string"
+  },
+  "auteur": {
+   "x-libelle": "Auteur",
+   "x-rendu": "agent",
+   "anyOf": [
+    {
+     "$ref": "communs.schema.json#/$defs/Agent"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "origine": {
+   "x-libelle": "Origine",
+   "x-rendu": "texte",
+   "type": "string",
+   "enum": [
+    "commun",
+    "projet",
+    "travail",
+    "a_lire",
+    "branche"
+   ]
+  },
+  "projet": {
+   "x-libelle": "Projet",
+   "x-rendu": "texte",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "branche": {
+   "x-libelle": "Branche",
+   "x-rendu": "texte",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "chemin": {
+   "x-libelle": "Chemin",
+   "x-rendu": "texte",
+   "type": "string"
+  },
+  "genre": {
+   "x-libelle": "Genre",
+   "x-rendu": "texte",
+   "type": "string",
+   "enum": [
+    "md",
+    "html",
+    "pdf",
+    "png",
+    "jpeg",
+    "gif",
+    "webp",
+    "autre"
+   ]
+  },
+  "taille": {
+   "x-libelle": "Taille (octets)",
+   "x-rendu": "nombre",
+   "type": "integer"
+  },
+  "date": {
+   "x-libelle": "Date",
+   "x-rendu": "quand",
+   "type": "string"
+  },
+  "texte": {
+   "x-libelle": "Texte",
+   "x-rendu": "markdown",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "tronque": {
+   "x-libelle": "Coupé",
+   "x-rendu": "oui-non",
+   "type": "boolean"
+  }
+ },
+ "required": [
+  "id",
+  "titre",
+  "auteur",
+  "origine",
+  "projet",
+  "branche",
+  "chemin",
+  "genre",
+  "taille",
+  "date",
+  "texte",
+  "tronque"
+ ],
+ "additionalProperties": false
+}

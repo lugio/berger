@@ -1,0 +1,185 @@
+{
+ "$id": "tokens.schema.json",
+ "x-version": 1,
+ "description": "Données de la vue « Tokens » : quota de chaque moteur (fenêtres, pourcentage, remise) et consommation des 7 derniers jours par agent et par moteur, lues dans les journaux locaux des moteurs. Seuils : quota ≥ 95 % rouge, ≥ 80 % jaune ; contexte ≥ 800 k rouge, ≥ 500 k jaune.",
+ "type": "object",
+ "properties": {
+  "quotas": {
+   "x-libelle": "Quota des abonnements",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "moteur": {
+      "x-libelle": "Moteur",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "mesure": {
+      "x-libelle": "Mesuré",
+      "x-rendu": "oui-non",
+      "type": "boolean"
+     },
+     "age_min": {
+      "x-libelle": "Relevé il y a (min)",
+      "x-rendu": "nombre",
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "fenetres": {
+      "x-libelle": "Fenêtres",
+      "x-rendu": "liste",
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "nom": {
+         "x-libelle": "Fenêtre",
+         "x-rendu": "texte",
+         "type": "string"
+        },
+        "pourcent": {
+         "x-libelle": "Utilisé (%)",
+         "x-rendu": "nombre",
+         "type": "number"
+        },
+        "ton": {
+         "x-libelle": "Niveau",
+         "x-rendu": "ton",
+         "enum": [
+          "rouge",
+          "jaune",
+          "vert"
+         ]
+        },
+        "remise": {
+         "x-libelle": "Remise à zéro",
+         "x-rendu": "quand",
+         "type": [
+          "string",
+          "null"
+         ]
+        }
+       },
+       "required": [
+        "nom",
+        "pourcent",
+        "ton",
+        "remise"
+       ],
+       "additionalProperties": false
+      }
+     }
+    },
+    "required": [
+     "moteur",
+     "mesure",
+     "age_min",
+     "fenetres"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "par_agent": {
+   "x-libelle": "Par agent",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "agent": {
+      "x-libelle": "Agent",
+      "x-rendu": "agent",
+      "$ref": "communs.schema.json#/$defs/Agent"
+     },
+     "moteur": {
+      "x-libelle": "Moteur",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "auj_lus": {
+      "x-libelle": "Lus aujourd'hui",
+      "x-rendu": "nombre",
+      "type": "integer"
+     },
+     "auj_ecrits": {
+      "x-libelle": "Écrits aujourd'hui",
+      "x-rendu": "nombre",
+      "type": "integer"
+     },
+     "sept_j_lus": {
+      "x-libelle": "Lus sur 7 jours",
+      "x-rendu": "nombre",
+      "type": "integer"
+     },
+     "sept_j_ecrits": {
+      "x-libelle": "Écrits sur 7 jours",
+      "x-rendu": "nombre",
+      "type": "integer"
+     },
+     "contexte": {
+      "x-libelle": "Contexte relu",
+      "x-rendu": "nombre",
+      "type": "integer"
+     },
+     "ton_contexte": {
+      "x-libelle": "Niveau du contexte",
+      "x-rendu": "ton",
+      "enum": [
+       "rouge",
+       "jaune",
+       null
+      ]
+     },
+     "derniere": {
+      "x-libelle": "Dernière réponse",
+      "x-rendu": "quand",
+      "type": "string"
+     },
+     "il_y_a_min": {
+      "x-libelle": "Il y a (min)",
+      "x-rendu": "nombre",
+      "type": "integer"
+     },
+     "modele": {
+      "x-libelle": "Modèle",
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "required": [
+     "agent",
+     "moteur",
+     "auj_lus",
+     "auj_ecrits",
+     "sept_j_lus",
+     "sept_j_ecrits",
+     "contexte",
+     "ton_contexte",
+     "derniere",
+     "il_y_a_min",
+     "modele"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "sources": {
+   "x-libelle": "Journaux lus",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "x-rendu": "texte",
+    "type": "string"
+   }
+  }
+ },
+ "required": [
+  "quotas",
+  "par_agent",
+  "sources"
+ ],
+ "additionalProperties": false
+}

@@ -1,0 +1,13 @@
+# Plugin Herdr LOCAL de Berger (lié par `berger regenerer` : herdr plugin link <BERGER>/herdr-plugin).
+# Doc Herdr « Plugins » : un [[startup]] s'exécute une fois quand le serveur a restauré sa session et que son API est prête.
+# Doc Herdr « Session state and restore » : après un redémarrage du serveur, la disposition revient, PAS les processus.
+# D'où ce crochet : `berger reprendre` relance, dans les panes restaurés, les panneaux et les agents (conversation reprise).
+id = "berger.reprise"
+name = "Berger"
+version = "0.2.0"
+min_herdr_version = "0.9.0"
+description = "Relance les panneaux et les agents Berger quand Herdr restaure sa session"
+platforms = ["linux"]
+
+[[startup]]
+command = ["python3", "../bin/berger", "reprendre", "--fond"]   # détaché : Herdr ne l'attend pas

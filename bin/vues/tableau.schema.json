@@ -1,0 +1,165 @@
+{
+ "$id": "tableau.schema.json",
+ "x-version": 2,
+ "description": "Données du Tableau de l'agent : travail en cours, ce qui attend le propriétaire, à faire, fait et historique. Les dates de la liste sont celles écrites dans TODO.md (jj/mm).",
+ "type": "object",
+ "properties": {
+  "agent": {
+   "x-libelle": "Agent",
+   "x-rendu": "agent",
+   "$ref": "communs.schema.json#/$defs/Agent"
+  },
+  "statuts": {
+   "x-libelle": "Statut",
+   "x-rendu": "statuts",
+   "type": "array",
+   "items": {
+    "$ref": "communs.schema.json#/$defs/Statut"
+   }
+  },
+  "en_cours": {
+   "x-libelle": "En cours",
+   "x-rendu": "checklist",
+   "anyOf": [
+    {
+     "$ref": "communs.schema.json#/$defs/Checklist"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "attend": {
+   "x-libelle": "Attend le propriétaire",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "genre": {
+      "x-libelle": "Genre",
+      "x-rendu": "texte",
+      "enum": [
+       "validation",
+       "terminal",
+       "bloque",
+       "go",
+       "question",
+       "a_lire",
+       "a_decider",
+       "fusion",
+       "proposition",
+       "signalement"
+      ]
+     },
+     "n": {
+      "x-libelle": "N°",
+      "x-rendu": "nombre",
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "texte": {
+      "x-libelle": "Quoi",
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "required": [
+     "genre",
+     "n",
+     "texte"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "a_faire": {
+   "x-libelle": "À faire",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "libelle": {
+      "x-libelle": "Tâche",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "date": {
+      "x-libelle": "Ajouté le",
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "required": [
+     "libelle",
+     "date"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "fait": {
+   "x-libelle": "Fait",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "libelle": {
+      "x-libelle": "Tâche",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "date": {
+      "x-libelle": "Fait le",
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "required": [
+     "libelle",
+     "date"
+    ],
+    "additionalProperties": false
+   },
+   "maxItems": 5
+  },
+  "historique": {
+   "x-libelle": "Travaux terminés",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "titre": {
+      "x-libelle": "Travail",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "date": {
+      "x-libelle": "Terminé le",
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "required": [
+     "titre",
+     "date"
+    ],
+    "additionalProperties": false
+   },
+   "maxItems": 4
+  }
+ },
+ "required": [
+  "agent",
+  "statuts",
+  "en_cours",
+  "attend",
+  "a_faire",
+  "fait",
+  "historique"
+ ],
+ "additionalProperties": false
+}

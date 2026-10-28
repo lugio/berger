@@ -1,0 +1,55 @@
+# Réglages de berger-prod, posés SUR le serveur du projet (ex. /etc/berger-prod.toml, root, 600).
+# Spec : docs/plans/2026-10-15-verbe-prod-spec.md. Aucun secret ici : ni mot de passe, ni clé privée.
+# Exemple : une appli web (image docker construite sur place) avec une base PostgreSQL et des migrations SQL suivies
+# dans une table. Les <…> sont à remplacer ; tout le reste est facultatif (la valeur par défaut est donnée en commentaire).
+
+depot = "<dossier de l'appli>"          # copie git dont « origin » porte les étiquettes vX.Y.Z (ex. /opt/webapps/appli)
+# git_utilisateur = "appli"             # compte qui possède la copie, si ce n'est pas root (git tourne sous lui)
+compose = "<dossier de l'appli>/docker-compose.prod.yml"   # fichier compose de la production
+service_base = "postgres"               # service compose de la base (POSTGRES_USER et POSTGRES_DB posés dans son environnement)
+sauvegardes = "/var/backups/berger-prod"     # sauvegardes chiffrées (700), comptes-rendus/ et berger-prod.log
+gpg_destinataire = "sauvegardes-prod"   # clé publique gpg qui chiffre ; ["a", "b"] pour plusieurs destinataires
+gpg_home = "/var/lib/berger-prod/gnupg" # trousseau gpg du script (700) : la clé PUBLIQUE seule, jamais la privée
+sante_url = "<adresse de santé>"        # répond un JSON qui contient la version servie (ex. http://<hôte>:<port>/api/health)
+sante_champ = "version"                 # champ du JSON (défaut : version) ; « v1.2.3 » ou « 1.2.3 » acceptés
+sante_delai = 180                       # secondes pour que la nouvelle version soit servie (défaut 120)
+# sante_intervalle = 5
+# principale = "main"                   # branche dont l'étiquette doit faire partie ; la copie y revient après chaque passage
+
+# Migrations SQL : les fichiers <migrations_dossier>/*.sql de la version demandée, absents de la table de suivi, sont joués
+# un par un, dans l'ordre des noms, par « psql -v ON_ERROR_STOP=1 --single-transaction -f - » DANS le conteneur de la base,
+# et inscrits dans la table par la même transaction (tout ou rien). L'image de l'appli n'a pas besoin de psql.
+# Un fichier qui ouvre lui-même sa transaction (une ligne « BEGIN; ») est joué sans --single-transaction, puis inscrit.
+# Une table de suivi vide alors que des fichiers existent = refus (la base n'a jamais été inscrite : tout serait rejoué).
+# Un nom de fichier retenu hors de lettres, chiffres, « . _ - » (une apostrophe, un espace) = refus.
+migrations_dossier = "backend/src/migrations"   # relatif à « depot » ; vide ou absent = pas de migration
+migrations_table = "schema_migrations"  # défaut
+migrations_colonne = "name"             # colonne qui reçoit le nom du fichier (défaut)
+migrations_colonne_par = "applied_by"   # facultatif : colonne qui reçoit « berger-prod vX.Y.Z » (absent = pas de colonne)
+migrations_motif = '^[0-9]{3}-.*\.sql$' # quels fichiers comptent (défaut : tout *.sql) ; ici les NNN-*.sql, pas les brouillons
+# psql = "docker compose -f <compose> exec -T <service_base> sh -c 'exec psql -X -q -v ON_ERROR_STOP=1 -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\" \"$@\"' psql"
+
+# Commandes du projet. « avant » : contrôles joués avant tout changement (essai compris) ; un échec = refus, rien ne change.
+# « apres » : ménage après un succès ; un échec est signalé, la version reste en place. Jamais « docker system prune ».
+# avant = ["<commande de contrôle du projet, ex. sa matrice>"]
+apres = ["docker image prune -f", "docker builder prune -f"]
+# disque_seuil = 92                     # refus si le disque (appli, sauvegardes, /var/lib/docker) est occupé à 92 % ou plus
+
+# « controles_sante » : après la version servie (sante_url), d'autres contrôles qui COMPTENT pour le retour arrière ;
+# chacun est rejoué toutes les sante_intervalle secondes jusqu'à réussir, dans sante_delai ; sinon échec et retour arrière.
+# Exemple : un service annexe sans image à lui, qui réutilise celle d'un autre (ex. un robot sur l'image du backend).
+# « up -d » ne le recrée pas forcément quand seule l'image a changé : on le force, puis on contrôle qu'il tourne sur
+# l'image qui vient d'être construite (même identifiant) et que sa santé docker est au vert.
+# demarrer = "docker compose -f <compose> up -d && docker compose -f <compose> up -d --force-recreate --no-deps <service-annexe>"
+# controles_sante = [
+#   "test \"$(docker inspect -f '{{.Image}}' <conteneur-annexe>)\" = \"$(docker image inspect -f '{{.Id}}' <image>:latest)\"",
+#   "test \"$(docker inspect -f '{{.State.Health.Status}}' <conteneur-annexe>)\" = healthy",
+# ]
+
+# Autres commandes (lancées dans « depot »). Valeurs par défaut :
+# docker = "docker"
+# construire = "docker compose -f <compose> build"
+# demarrer = "docker compose -f <compose> up -d"
+# sauvegarder = "docker compose -f <compose> exec -T <service_base> sh -c 'pg_dump -Fc -U \"$POSTGRES_USER\" \"$POSTGRES_DB\"'"
+# relire = "docker compose -f <compose> exec -T <service_base> pg_restore --list"
+# restaurer = "docker compose -f <compose> exec -T <service_base> sh -c 'pg_restore --clean --if-exists -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\"'"

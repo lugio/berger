@@ -1,0 +1,1505 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Courtier de Berger — le SEUL programme qui lit les secrets. Les agents ne les voient jamais.
+
+Principe : un agent dépose une demande dans SA boîte aux lettres, `agents/<agent>/courrier/demandes/<id>.json`
+({"outil": …, "verbe": …, "args": […]}) ; le courtier, hors bac à sable, vérifie que CET agent a droit à cet outil
+(`outils = …` dans son agent.conf), exécute le verbe, et répond dans `courrier/reponses/<id>.json`.
+L'identité de l'agent = le dossier : un agent ne peut écrire que dans le sien (mur système, vérifié).
+Pas de réseau dans les bacs à sable : sous Codex, ouvrir une porte réseau ouvre TOUT (mesuré), d'où les fichiers.
+
+Règles :
+- Les outils sont déclarés dans config.toml ([outils.<nom>], type = module de courtier/outils/) ; un outil n'a que
+  les verbes de son module ; aucun ne renvoie un secret.
+- Chaque secret ne peut partir que vers les hôtes de son outil.
+- Une réponse qui contient une valeur secrète du coffre, ou une forme connue de clé, est bloquée.
+- Les verbes qui ÉCRIVENT dans un système extérieur ne s'exécutent jamais directement : la demande est mise en
+  attente (courtier/validations/), le propriétaire est notifié, et c'est sa décision (`berger valider|refuser <n°>`)
+  qui déclenche l'écriture ; le résultat est noté dans le journal de l'agent.
+- Journal de CHAQUE appel, sans valeur secrète : courtier/appels.log.
+- Au plus 30 appels par minute et par agent.
+- Serveurs MCP des agents strict ([mcp.<nom>], `mcp =`) : relayés par bin/berger-mcp, lancés ENFERMÉS, filtrés comme les
+  réponses, journalisés ici (courtier/_mcp.py).
+- Accès web d'un agent (outil « web ») : un domaine, validé par le propriétaire, pour une durée bornée, par un proxy à liste
+  blanche lancé ici (courtier/_web.py) ; chaque requête journalisée.
+"""
+import datetime, importlib.util, json, os, re, subprocess, sys, time, tomllib
+from pathlib import Path
+
+import importlib.util
+_spec_transport = importlib.util.spec_from_file_location('berger_transport', Path(__file__).resolve().parent / 'outils/_transport.py')
+_transport = importlib.util.module_from_spec(_spec_transport); _spec_transport.loader.exec_module(_transport)
+
+BERGER = Path(os.environ.get("BERGER_DIR") or Path(__file__).resolve().parent.parent)
+AGENTS = BERGER / "agents"
+CONFIG = tomllib.loads((BERGER / "config.toml").read_text())
+COFFRE = Path(os.path.expanduser(CONFIG.get("coffre", "~/.config/berger/coffre.json")))
+JOURNAL = BERGER / "courtier/appels.log"
+if CONFIG.get("fuseau"): os.environ["TZ"] = CONFIG["fuseau"]; time.tzset()
+
+
+def secret(chemin):
+    """Lit UNE valeur du coffre au moment de l'appel (rien n'est gardé en mémoire entre deux appels)."""
+    d = json.load(open(COFFRE))
+    for k in chemin.split("."): d = d[k]
+    return d
+
+
+# Chaque secret ne peut partir QUE vers les hôtes déclarés par son outil (liste des hôtes permis par secret) :
+# même une erreur dans un verbe ne pourrait pas envoyer la clé ailleurs.
+HOTES_AUTORISES = {}
+
+
+def verifier_hote(cle, url):
+    hote = re.match(r"https://([^/:]+)", url)
+    if not hote or hote.group(1) not in HOTES_AUTORISES.get(cle, set()):
+        raise PermissionError(f"le secret {cle} n'a pas le droit de partir vers {hote.group(1) if hote else url[:40]}")
+
+
+ECRITURES = {}        # {outil: {verbe: (apercu, executer)}} — verbes qui écrivent, toujours soumis à validation
+OBJETS = {}
+
+
+_spec = importlib.util.spec_from_file_location("outil__contexte", Path(__file__).resolve().parent / "outils/_contexte.py")   # à côté du courtier : BERGER_DIR peut ne porter que les données
+_contexte = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(_contexte)
+_spec = importlib.util.spec_from_file_location("outil__alignement", Path(__file__).resolve().parent / "outils/_alignement.py")
+_alignement = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(_alignement)
+
+
+def contexte(outil, agent):
+    """Donne à l'outil le contexte de l'agent qui demande (ex. pour déposer un fichier de SON dossier) — pour CET appel
+    seulement : `o.contexte` est propre au fil qui le pose (courtier/outils/_contexte.py ; 12/10/2026 : posé sur l'objet
+    partagé, il était réécrit par un autre agent pendant un appel long)."""
+    o = OBJETS.get(outil)
+    if o is not None and hasattr(o, "contexte"):
+        conf = {l.split("=", 1)[0].strip(): l.split("=", 1)[1].split("#")[0].strip()
+                for l in (AGENTS / agent / "agent.conf").read_text().splitlines() if "=" in l and not l.lstrip().startswith("#")}
+        o.contexte = {"agent": agent, "dossier": str(AGENTS / agent),
+                      "travail": os.path.expanduser(conf["dossier"]) if conf.get("dossier") else str(AGENTS / agent)}
+
+
+EQUIPES = CONFIG.get("equipes", {})
+
+
+def masques_courtier():
+    """Ce qu'un code d'agent ne doit JAMAIS lire, même lancé par le courtier : coffre, clés, profils des moteurs,
+    dossiers des agents, validations, configuration (mêmes règles que le mur des agents)."""
+    h = Path.home(); m = [str(h / x) for x in CONFIG.get("masques", []) + CONFIG.get("masques_si_presents", [])]
+    m += [str(h / CONFIG.get("masque_fichier", ".claude/.credentials.json")), str(BERGER / ".codex"), str(AGENTS),
+          str(BERGER / "courtier/validations"), str(BERGER / "courtier/panneaux"), str(BERGER / "config.toml")]
+    COFFRE.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    m.append(str(COFFRE.parent))
+    return m
+
+
+def outils_equipes():
+    """Pour chaque projet d'équipe : « <projet>-dev » (les développeurs, dans LEUR copie) et « <projet>-chef » (le chef
+    de projet : demandes de fusion ; fusion validée par le coordinateur ou le propriétaire)."""
+    t = {}
+    for p, e in EQUIPES.items():
+        dem = str(BERGER / "equipes" / p / "demandes")
+        # les 4 portes (verify, tests, gate, pret ; chacune commande ou <porte>_outil), les mêmes chez le développeur et le chef
+        portes = {k: e[k] for x in ("verify", "tests", "gate", "pret") for k in (x, f"{x}_outil") if e.get(k)}
+        commun = {"principale": e.get("principale", "main"), "demandes": dem, "reseau": e.get("reseau", False), "delai": e.get("delai", 900),
+                  **portes, **({"motif_tests": e["motif_tests"]} if e.get("motif_tests") else {}),
+                  "regle_go": e.get("regle_go", True), **({"go_mots": e["go_mots"]} if e.get("go_mots") else {})}   # spec 2026-10-15-regle-go
+        t[f"{p}-dev"] = {"type": "equipe_dev", **commun, "chef_projet": e.get("chef_projet", ""), "finition": e.get("finition", "developpeur"),
+                         "lecture": e.get("lecture", {}), "actions": e.get("actions", {})}
+        t[f"{p}-chef"] = {"type": "equipe_chef", **commun, "depot": e["depot"], "travail": str(BERGER / "equipes" / p / "portes"),
+                          "projet": p, "copie_chef": e.get("copie_chef", ""), "installation": str(BERGER),   # SA copie de travail
+                          "chef_projet": e.get("chef_projet", ""), "prefixe": e.get("prefixe", "equipe/"),   # SA branche de finition
+                          "installer_outil": e.get("installer_outil", ""),            # ce projet EST l'installation
+                          "valide_par": None if e.get("fusion_par") == "proprietaire" else e.get("coordinateur")}   # fusion_par = proprietaire : lui seul
+    return t
+
+
+def outil_projets():
+    """Outil « projet » (bibliothèque, lot 4) : projets d'équipe — ouvrir/fermer validés, partager, liste. Créé d'office dès
+    qu'il y a une équipe ; ouvert à tout agent, chaque verbe vérifie lui-même qui demande (chef, coordinateur, membre)."""
+    if not EQUIPES: return {}
+    b = CONFIG.get("bibliotheque") or {}
+    racine = Path(os.path.expanduser(b["racine"])) if b.get("racine") else BERGER / "bibliotheque"
+    return {"projet": {"type": "projets", "berger": str(BERGER), "racine": str(racine), "equipes": EQUIPES,
+                       "proprietaire": CONFIG.get("proprietaire", "le propriétaire")}}
+
+
+def charger_outils():
+    """Instancie les outils déclarés dans config.toml : {nom: {verbe: fonction}} (+ ECRITURES)."""
+    outils = {}
+    doubles = sorted(set(CONFIG.get("outils", {})) & (set(outils_equipes()) | set(outil_projets()) | {"web"}))
+    if doubles:                                   # un [outils.X] serait ÉCRASÉ en silence par l'outil créé pour une équipe
+        raise SystemExit(f"nom d'outil en double : {', '.join(doubles)} — réservé aux équipes (<projet>-dev, <projet>-chef, projet) ou à l'accès web (web) : renomme [outils.…]")
+    for nom, reglages in {**CONFIG.get("outils", {}), **outils_equipes(), **outil_projets()}.items():
+        if reglages["type"] in ("copie", "equipe_dev", "equipe_chef", "commandes"): reglages = {**reglages, "masques": masques_courtier()}
+        if reglages["type"] == "pages_publiques": reglages = {**reglages, "nom": nom}   # archive et remise rangées sous SON nom
+        chemin = BERGER / "courtier/outils" / f"{reglages['type']}.py"
+        spec = importlib.util.spec_from_file_location(f"outil_{reglages['type']}", chemin)
+        mod = importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+        o = mod.Outil(reglages, secret, verifier_hote)
+        for cle, hotes in o.hotes().items(): HOTES_AUTORISES.setdefault(cle, set()).update(hotes)
+        outils[nom] = o.verbes
+        ECRITURES[nom] = getattr(o, "ecritures", {}); OBJETS[nom] = o
+    # <porte>_outil d'une équipe (verify_outil, tests_outil, gate_outil, pret_outil) : la porte est le verbe de LECTURE d'un
+    # autre outil (ex. des contrôles lancés sur une autre machine), appelé par le courtier avec la branche poussée — jamais un
+    # verbe d'écriture. Branché chez le développeur ET chez le chef de projet (qui rejoue les portes).
+    for nom, o in OBJETS.items():
+        for porte, cible in getattr(o, "portes_outil", {}).items():
+            outil, _, verbe = cible.partition(" ")
+            if verbe not in outils.get(outil, {}): raise SystemExit(f"{nom} : {porte}_outil « {cible} » n'est pas un verbe de lecture d'un outil déclaré")
+            o.portes_par[porte] = outils[outil][verbe]
+    # installer_outil d'une équipe (spec 2026-10-13-moins-validations) : le projet EST l'installation ; sa fusion validée lance
+    # l'action d'installation déclarée — un verbe d'ÉCRITURE d'un outil déclaré (la même commande que l'action manuelle), et
+    # seulement si ses fusions sont validées par le propriétaire seul (un agent ne valide pas un changement de ses murs).
+    for nom, o in OBJETS.items():
+        cible = getattr(o, "installer_outil", "")
+        if not cible: continue
+        outil, _, verbe = cible.partition(" ")
+        if verbe not in ECRITURES.get(outil, {}): raise SystemExit(f"{nom} : installer_outil « {cible} » n'est pas une action (écriture) d'un outil déclaré")
+        if getattr(o, "valide_par", None) is not None or EQUIPES.get(getattr(o, "projet", ""), {}).get("fusion_par") != "proprietaire":
+            raise SystemExit(f"{nom} : installer_outil exige fusion_par = \"proprietaire\" dans [equipes.{getattr(o, 'projet', '?')}]")
+        o.installer_par = ECRITURES[outil][verbe][1]
+    # consigne d'un outil (spec 2026-10-14-besoin-berger (b)) : un verbe de LECTURE déclaré de CET outil, jamais une écriture
+    for nom, r in CONFIG.get("outils", {}).items():
+        v = r.get("consigne")
+        if v and (v in ECRITURES.get(nom, {}) or v not in outils.get(nom, {})):
+            raise SystemExit(f"{nom} : consigne « {v} » n'est pas un verbe de lecture de l'outil")
+    if "annonces" in outils: raise SystemExit("nom d'outil réservé : annonces (annonce d'un changement d'outil) — renomme [outils.annonces]")
+    # alignement après une mise en production (spec 2026-10-16-alignement, point 1) : ce que le projet déclare, contrôlé ici
+    lectures = {o: set(v) - set(ECRITURES.get(o, {})) for o, v in outils.items()}
+    actions = {o: set(v) for o, v in ECRITURES.items()}
+    refus = [x for p, e in EQUIPES.items() if any(k in e for k in _alignement.CLES)
+             for x in _alignement.controler(p, e, lectures, actions, zones_wiki())]
+    if refus: raise SystemExit("alignement refusé :\n" + "\n".join(refus))
+    return outils
+
+
+def zones_wiki():
+    """Les zones de l'outil wiki de lecture : `zones` de sa section [outils.<nom>], sinon `zones` du reglages.json de son
+    dossier (les scripts du wiki) ; None si l'outil ou ses zones sont introuvables."""
+    r = CONFIG.get("outils", {}).get(_alignement.outils_wiki(CONFIG)["lecture"])
+    if not isinstance(r, dict): return None
+    z = r.get("zones")
+    if z is None and r.get("dossier"):
+        try: z = json.loads((Path(os.path.expanduser(r["dossier"])) / "reglages.json").read_text()).get("zones")
+        except (OSError, ValueError, AttributeError): z = None
+    return [str(x) for x in z] if isinstance(z, list) and z else None
+
+
+OUTILS = charger_outils()
+
+
+def reglage(agent, cle):
+    """Une valeur de l'agent.conf d'un agent ("" si absente)."""
+    try: lignes = (AGENTS / agent / "agent.conf").read_text().splitlines()
+    except OSError: return ""
+    return next((l.split("=", 1)[1].split("#")[0].strip() for l in lignes if "=" in l and l.split("=")[0].strip() == cle), "")
+
+
+class SitesPermis:
+    """Écriture de l'outil « equipe » soumise à validation (12/10/2026) : `domaine <projet> ajouter|retirer <nom>` — un site
+    permis au mur des agents du projet (Claude). Contrôles et exécution : `berger equipe domaine` (une seule source pour le
+    motif) ; le courtier ne fait que choisir QUI valide."""
+    contexte = _contexte.ContexteDeLAppel({})                        # posé par le courtier pour CET appel
+
+    def _berger(self, args, *plus):
+        if len(args) != 3: raise ValueError("equipe domaine <projet> ajouter|retirer <domaine>")
+        r = _transport.executer(str(BERGER / "bin/berger"), ['equipe', 'domaine', *args, '--par', self.contexte.get('agent', ''), *plus],
+                           capture_output=True, text=True, timeout=300)
+        if r.returncode: raise RuntimeError((r.stderr or r.stdout).strip()[-300:])
+        return r.stdout.strip()
+
+    def apercu(self, args):
+        """domaine <projet> ajouter|retirer <nom> : un site permis au projet (validé par le superviseur)"""
+        return self._berger(args, "--essai")
+
+    def executer(self, args): return self._berger(args)
+
+    def valideur(self, verbe, args):
+        """Le superviseur (`superviseur = oui`) — jamais un agent dont le mur changerait (coordinateur ou développeur du
+        projet) : un agent ne valide pas une modification de ses propres murs. Sinon (ou s'il demande lui-même) : le propriétaire."""
+        p = args[0] if args else ""
+        membres = {EQUIPES.get(p, {}).get("coordinateur")} | {x.name for x in AGENTS.iterdir() if reglage(x.name, "projet") == p and reglage(x.name, "sujet")}
+        return next((x.name for x in sorted(AGENTS.iterdir()) if (x / "agent.conf").is_file() and x.name not in membres
+                     and reglage(x.name, "superviseur").lower() in ("oui", "yes", "true", "1")), None)
+
+
+class Go(SitesPermis):
+    """Écriture `go <projet> <sujet> <cas> <spec>` de l'outil « equipe » (spec 2026-10-15-regle-go, point b) : le go du
+    propriétaire sur une spec NOMMÉE, inscrit avec son empreinte (equipes/<projet>/go/<sujet>.json). Contrôles et
+    inscription : `berger equipe go` ; une spec qui contient un secret est refusée. Valideur : le propriétaire SEUL."""
+    def _berger(self, args, *plus):
+        if len(args) != 4: raise ValueError("equipe go <projet> <sujet> <cas 1..5, séparés par des virgules> <chemin de la spec dans le dépôt>")
+        r = _transport.executer(str(BERGER / "bin/berger"), ["equipe", "go", *args, "--par", self.contexte.get("agent", ""), *plus],
+                           capture_output=True, text=True, timeout=300)
+        if r.returncode: raise RuntimeError((r.stderr or r.stdout).strip()[-300:])
+        if contient_secret(r.stdout): raise RuntimeError("la spec contient une forme de clé ou une valeur du coffre : refusée")
+        return r.stdout.strip()
+
+    def apercu(self, args):
+        """go <projet> <sujet> <cas> <spec> : le go du propriétaire sur une spec nommée (validé par lui seul)"""
+        return self._berger(args, "--essai")
+
+    def valideur(self, verbe, args): return None
+
+
+class EquipeEcritures:
+    """Les écritures de l'outil « equipe » : domaine (validé par le superviseur), go (par le propriétaire seul)."""
+    def __init__(self): self.objets = {"domaine": SitesPermis(), "go": Go()}
+    @property
+    def contexte(self): return self.objets["go"].contexte
+    @contexte.setter
+    def contexte(self, valeur):                                     # posé pour CE fil sur chaque écriture (ContexteDeLAppel)
+        for o in self.objets.values(): o.contexte = valeur
+    def valideur(self, verbe, args): return self.objets[verbe].valideur(verbe, args)
+
+
+if EQUIPES:
+    OBJETS["equipe"] = EquipeEcritures()
+    ECRITURES["equipe"] = {v: (o.apercu, o.executer) for v, o in OBJETS["equipe"].objets.items()}
+
+
+# ───────────────────────── boucle ─────────────────────────
+
+def droits_declares(agent):
+    for l in (AGENTS / agent / "agent.conf").read_text().splitlines():
+        if l.split("=")[0].strip() == "outils":
+            return {o.strip() for o in l.split("=", 1)[1].split("#")[0].split(",") if o.strip()}
+    return set()
+
+
+def droits(agent):
+    """Droits de l'agent : ceux de `outils =` (agent.conf) + ceux de ses rôles d'équipe, calculés à chaque appel."""
+    return droits_declares(agent) | droits_equipe(agent)
+
+
+# ───────────────────────── hiérarchie d'équipe : coordinateur → chef de projet → développeurs ─────────────────────────
+# Spec : docs/plans/2026-10-13-hierarchie-equipe-spec.md. Tout vient de [equipes.<projet>] (coordinateur, chef_projet) et de
+# l'agent.conf des développeurs (projet, sujet) : aucun droit à écrire à la main, et un développeur ouvert avant la bascule
+# est géré par son chef dès le redémarrage du courtier.
+
+def developpeurs(projet):
+    """Les développeurs ouverts du projet : agents dont l'agent.conf porte `projet = <projet>` et un `sujet`."""
+    return {x.name for x in AGENTS.iterdir() if (x / "agent.conf").is_file() and reglage(x.name, "projet") == projet and reglage(x.name, "sujet")}
+
+
+def roles_equipe(agent):
+    """{projet: {"chef", "coordinateur", "developpeur"}} — [equipes.<projet>] fait foi, seul : `equipe:<projet>` écrit dans un
+    agent.conf ne donne aucun rôle (`berger equipe liste` signale celui d'un agent qui n'est pas le coordinateur déclaré)."""
+    out = {}
+    for p, e in EQUIPES.items():
+        r = {"chef"} if e.get("chef_projet") == agent else set()
+        if e.get("coordinateur") == agent: r.add("coordinateur")
+        if reglage(agent, "projet") == p and reglage(agent, "sujet"): r.add("developpeur")
+        if r: out[p] = r
+    return out
+
+
+def droits_equipe(agent):
+    """Le chef : son outil <projet>-chef, écrire et missions vers SES développeurs, écrire au coordinateur (escalade). Le
+    coordinateur : écrire et missions vers le chef. Le développeur : écrire à son chef (rendre compte). Rien vers un autre projet.
+    Le gardien (chef de l'équipe à installer_outil) : écrire au chef de CHAQUE équipe, jamais lui confier de mission — une équipe
+    sans coordinateur garde ainsi un canal vers son chef (spec 2026-10-16-courtier-textes, 2)."""
+    d = {f"ecrire:{e['chef_projet']}" for e in EQUIPES.values() if e.get("chef_projet")} if agent == gardien() else set()
+    for p, r in roles_equipe(agent).items():
+        chef, coord = EQUIPES[p].get("chef_projet"), EQUIPES[p].get("coordinateur")
+        if "chef" in r:
+            devs = developpeurs(p)
+            d |= {f"{p}-chef"} | {f"ecrire:{x}" for x in devs} | {f"mission:{x}" for x in devs} | ({f"ecrire:{coord}"} if coord else set())
+        if "coordinateur" in r and chef: d |= {f"ecrire:{chef}", f"mission:{chef}"}
+        if "developpeur" in r and chef: d.add(f"ecrire:{chef}")
+    return {x for x in d if ":" not in x or x.split(":", 1)[1] != agent}           # jamais vers soi (coordinateur = chef)
+
+
+def lecture_seule(agent):
+    """`lecture_seule = oui` dans agent.conf (ex. un agent de mission) : le courtier refuse TOUTE écriture, même soumise à
+    validation, et tout ce qui fait agir un autre agent (mission, équipe, délégation, décision de validation)."""
+    for l in (AGENTS / agent / "agent.conf").read_text().splitlines():
+        if l.split("=")[0].strip() == "lecture_seule":
+            return l.split("=", 1)[1].split("#")[0].strip().lower() in ("oui", "yes", "true", "1")
+    return False
+
+
+_COFFRE_LU = (None, set())
+_SESSIONS_RETENUES = set()
+
+
+def valeurs_du_coffre():
+    """Les valeurs SECRÈTES du coffre (clé au nom parlant, 8 caractères et plus) : aucune ne doit sortir.
+    Les autres valeurs (adresses, identifiants publics, URL) ne sont pas filtrées, sinon une réponse
+    citant un simple nom de domaine serait bloquée.
+    Relu seulement quand le coffre change (date, taille, inode) : relu à CHAQUE appel, le filtre d'une réponse MCP de
+    3 Mo (des dizaines de milliers de chaînes) tenait le courtier à 99 % pendant des minutes (vécu le 18/10, REA)."""
+    global _COFFRE_LU
+    try: st = os.stat(COFFRE); empreinte = (st.st_mtime_ns, st.st_size, st.st_ino)
+    except OSError: empreinte = None
+    if empreinte is not None and _COFFRE_LU[0] == empreinte: return _COFFRE_LU[1]
+    out = set(); parlant = re.compile(r"(?i)pass|pwd|mdp|motdepasse|secret|token|jeton|key|cle|clé|credential|auth|cookie|private|seed|pin")
+    def parcourir(x, cle=""):
+        if isinstance(x, dict): [parcourir(v, k) for k, v in x.items()]
+        elif isinstance(x, list): [parcourir(v, cle) for v in x]
+        elif isinstance(x, (str, int)) and len(str(x)) >= 8 and parlant.search(cle) \
+                and not re.fullmatch(r"[a-z_ -]+|[A-Z_]+|https?://\S+|[~/][\w./-]*", str(x)): out.add(str(x))   # mots, chemins, URL : pas des secrets
+    try:
+        with open(COFFRE) as flux: contenu = json.load(flux)
+        parcourir(contenu)
+        for cle, entree in contenu.items():
+            if not cle.startswith("web-session:") or not isinstance(entree, dict): continue
+            etat = entree.get("etat", {})
+            if not isinstance(etat, dict): continue
+            for cookie in etat.get("cookies", []):
+                if not isinstance(cookie, dict): continue
+                if isinstance(cookie.get("value"), str) and len(cookie["value"]) >= 8: _SESSIONS_RETENUES.add(cookie["value"])
+            for origine in etat.get("origins", []):
+                if not isinstance(origine, dict): continue
+                for item in origine.get("localStorage", []):
+                    if not isinstance(item, dict): continue
+                    if isinstance(item.get("value"), str) and len(item["value"]) >= 8: _SESSIONS_RETENUES.add(item["value"])
+        out.update(_SESSIONS_RETENUES)
+    except (OSError, ValueError) as e:            # coffre absent/illisible : on ne plante pas (une décision serait perdue) ;
+        print(f"coffre illisible ({type(e).__name__}) : seuls les motifs de clés sont filtrés", file=sys.stderr)   # les motifs restent
+        return out | _SESSIONS_RETENUES                                               # illisible : jamais gardé, relu au prochain appel
+    _COFFRE_LU = (empreinte, out)
+    return out
+
+
+# Formes connues de clés, pour attraper une clé qui ne serait PAS dans le coffre (détection même sans valeur connue du coffre).
+MOTIFS_CLES = re.compile(r"sk-[A-Za-z0-9_-]{16,}|sk-ant-[A-Za-z0-9_-]{16,}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}"
+                         r"|xox[abpr]-[A-Za-z0-9-]{10,}|AKIA[0-9A-Z]{16}|(?i:bearer)\s+[A-Za-z0-9._~+/=-]{20,}|eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.")
+
+
+def contient_secret(texte):
+    return any(v in texte for v in valeurs_du_coffre()) or bool(MOTIFS_CLES.search(texte))
+
+
+if "projet" in OBJETS: OBJETS["projet"].filtre_fuite = contient_secret   # partager : même filtre que les réponses
+
+
+def journal(agent, outil, verbe, args, ok, detail):
+    ligne = f"{agent} {outil} {verbe} {' '.join(args)} {detail}"
+    if contient_secret(ligne): args, detail = ["[masqué]"], "[masqué : la ligne contenait un secret]"   # jamais de clé au journal
+    with open(JOURNAL, "a") as f:
+        f.write(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}\t{agent}\t{outil}\t{verbe}\t{' '.join(args)[:60]}\t"
+                f"{'accepté' if ok else 'REFUSÉ'}\t{detail}\n")
+
+
+# ───────────────────────── délégation entre agents par le courtier ─────────────────────────
+# Un agent pose UNE question à un autre (droit « deleguer:<autre> » dans son agent.conf). L'autre répond dans une
+# conversation NEUVE, avec SES droits à lui, et seule la réponse revient. Pas de chaîne : un agent en train de
+# répondre à une délégation ne peut pas déléguer à son tour.
+import threading
+EN_DELEGATION = set()
+
+
+def echange(de, a, genre, texte):
+    """Trace un échange pour le panneau Échanges (écrit par berger, hors bac à sable) — jamais un texte qui contient un secret."""
+    if contient_secret(str(texte)): texte = "(texte masqué : il contenait un secret)"
+    _transport.executer(str(BERGER / "bin/berger"), ['echange', de, a, genre, '--stdin'], input=str(texte), text=True, capture_output=True)
+
+
+def deleguer(demandeur, cible, question, repondre):
+    EN_DELEGATION.add(cible)
+    echange(demandeur, cible, "question", question)
+    try:
+        mur = reglage(cible, "mur") or "strict"
+        acces = ("Tes accès directs autorisés restent disponibles (outils locaux, réseau ou SSH selon tes règles). "
+                 if mur == "ouvert" else "Tes accès restent limités à ton bac à sable et à tes outils autorisés du courtier. ")
+        consigne = (f"Question de ta collègue/ton collègue « {demandeur} » (délégation Berger). Réponds-lui en quelques phrases, "
+                    f"en citant tes sources. Utilise tes propres accès autorisés : ton mur est {mur}. {acces}"
+                    f"Un refus de garde-fou se signale, sans contournement. "
+                    f"Ne modifie aucun fichier sauf ton journal, n'envoie rien. Termine ta réponse par une "
+                    f"ligne « ENGAGEMENTS: » suivie, une par ligne commençant par « - », de chaque action que tu promets de faire "
+                    f"plus tard (elles seront ajoutées à ton TODO.md) ; si tu ne promets rien : « ENGAGEMENTS: aucun ».\n\n{question}")
+        r = _transport.executer(str(BERGER / "bin/berger"), ['demander', cible, '--stdin'], input=consigne, capture_output=True, text=True, timeout=420)
+        if r.returncode == 0 and r.stdout.strip():
+            repondre({"ok": True, "donnees": {"de": cible, "reponse": r.stdout.strip()}}, "réponse reçue")
+            echange(cible, demandeur, "réponse", r.stdout.strip())
+            suivre_delegation(demandeur, cible, question, r.stdout.strip())
+        else: repondre({"ok": False, "erreur": f"{cible} n'a pas pu répondre"}, "échec")
+    except subprocess.TimeoutExpired:
+        repondre({"ok": False, "erreur": f"{cible} n'a pas répondu à temps (7 min)"}, "délai dépassé")
+    finally:
+        EN_DELEGATION.discard(cible)
+
+
+# Suivi d'une délégation (spec : docs/plans/2026-10-12-suivi-delegations-spec.md) : les actions promises dans le bloc
+# « ENGAGEMENTS: » de la réponse vont au TODO.md de la cible, et un résumé va à sa conversation principale (message de
+# service). Ici : lecture du bloc et filtre des secrets (le courtier seul lit le coffre) ; l'écriture est faite par berger.
+ENGAGEMENTS_MAX, ENGAGEMENT_LONGUEUR = 5, 300
+LIGNE_ENGAGEMENTS = re.compile(r"\s*\**\s*ENGAGEMENTS\s*:\s*\**\s*(.*)", re.I)
+
+
+def engagements(reponse):
+    """(réponse sans le bloc, actions du DERNIER bloc « ENGAGEMENTS: », aplaties, dans l'ordre) ; pas de bloc : (réponse, [])."""
+    lignes = reponse.splitlines()
+    i = next((k for k in range(len(lignes) - 1, -1, -1) if LIGNE_ENGAGEMENTS.fullmatch(lignes[k])), None)
+    if i is None: return reponse, []
+    actions = []
+    for l in lignes[i + 1:]:
+        if not l.strip(): continue
+        if not l.lstrip().startswith("-"):
+            if actions and l[:1].isspace(): actions[-1] += " " + l.strip(); continue   # suite d'une action sur la ligne d'après
+            break
+        actions.append(l.lstrip()[1:])
+    actions = [re.sub(r"^\[[ xX]?\]\s*", "", " ".join(a.split())) for a in actions]
+    return "\n".join(lignes[:i]).strip(), [a for a in actions if a and a.lower().rstrip(".") != "aucun"]
+
+
+def suivre_delegation(demandeur, cible, question, reponse):
+    """Inscrit les engagements au TODO de la cible et lui dépose le résumé (berger delegation-suivi). Jamais d'exception :
+    la réponse est déjà rendue au demandeur ; un échec est tracé au journal du courtier."""
+    try:
+        corps, actions = engagements(reponse)
+        secrets = [a for a in actions if contient_secret(a)]; actions = [a for a in actions if a not in secrets]
+        retenues = [a if len(a) <= ENGAGEMENT_LONGUEUR else a[:ENGAGEMENT_LONGUEUR - 1] + "…" for a in actions[:ENGAGEMENTS_MAX]]
+        masque = "(masquée : elle contenait un secret)"
+        d = {"question": masque if contient_secret(question) else question, "reponse": masque if contient_secret(corps) else corps,
+             "engagements": retenues, "en_trop": len(actions) - len(retenues), "secrets": len(secrets)}
+        r = _transport.executer(str(BERGER / "bin/berger"), ['delegation-suivi', demandeur, cible], input=json.dumps(d, ensure_ascii=False),
+                           capture_output=True, text=True, timeout=120)
+        journal(demandeur, "deleguer", cible, [], r.returncode == 0,
+                f"suivi : {len(retenues)} engagement(s) inscrit(s), " + (r.stdout.strip()[:60] if r.returncode == 0 else "ÉCHEC du suivi"))
+    except Exception as e:
+        journal(demandeur, "deleguer", cible, [], False, f"suivi en échec : {type(e).__name__}")
+
+
+# ───────────────────────── message à sens unique entre agents (droit « ecrire:<cible> ») ─────────────────────────
+# L'émetteur laisse un message, sans attendre de réponse. Débit par paire émetteur → cible (fenêtres glissantes), gardé
+# dans un fichier : un redémarrage du courtier ne le remet pas à zéro. Spec : docs/plans/2026-10-12-ecrire-agent-spec.md.
+DEBIT_ECRIRE = BERGER / "courtier/ecrire-debit.json"
+ECRIRE_PAR_HEURE, ECRIRE_PAR_JOUR = 5, 20
+VERROU_ECRIRE = threading.Lock()
+
+
+def debit_ecrire(de, a):
+    """Réserve une place pour un message de → a ; False si 5 dans l'heure ou 20 en 24 h ont déjà été acceptés."""
+    with VERROU_ECRIRE:
+        try: d = json.loads(DEBIT_ECRIRE.read_text())
+        except (OSError, ValueError): d = {}
+        t = time.time(); d = {k: [x for x in v if t - x < 86400] for k, v in d.items() if isinstance(v, list)}
+        deja = d.get(f"{de}>{a}", [])
+        if len(deja) >= ECRIRE_PAR_JOUR or len([x for x in deja if t - x < 3600]) >= ECRIRE_PAR_HEURE: return False
+        d[f"{de}>{a}"] = deja + [t]
+        tmp = DEBIT_ECRIRE.with_suffix(".tmp"); tmp.write_text(json.dumps({k: v for k, v in d.items() if v})); tmp.replace(DEBIT_ECRIRE)
+        return True
+
+
+def ecrire(de, a, texte, repondre):
+    """Trace dans Échanges, puis dépôt dans la file de la cible et remise si elle est vivante (berger, hors bac à sable)."""
+    echange(de, a, "message", texte)
+    try:
+        r = _transport.executer(str(BERGER / "bin/berger"), ['message-deposer', de, a, texte], capture_output=True, text=True, timeout=120)
+        if r.returncode: return repondre({"ok": False, "erreur": f"message non déposé : {(r.stderr or r.stdout).strip()[-200:]}"}, "dépôt en échec")
+        repondre({"ok": True, "donnees": r.stdout.strip()}, r.stdout.strip()[:60])
+    except subprocess.TimeoutExpired:
+        repondre({"ok": False, "erreur": "dépôt du message trop long (2 min)"}, "délai dépassé")
+
+
+# ───────────────────────── besoin Berger : un canal vers le gardien, ouvert à tout agent (sans droit déclaré) ─────────────────────────
+# Un besoin de Berger (outil, droit, bibliothèque commune, défaut) va au gardien — le chef de projet de l'équipe qui EST
+# l'installation (installer_outil) —, jamais à un autre agent ; l'émetteur ne choisit pas le destinataire. Pour un projet, la chaîne
+# d'équipe d'abord (développeur → chef → coordinateur). Rangé par berger (courtier/besoins/), montré dans « À toi de décider ».
+# Spec : docs/plans/2026-10-14-besoin-berger-spec.md (a).
+BESOINS = BERGER / "courtier/besoins"
+DEBIT_BESOIN = BERGER / "courtier/besoin-debit.json"
+GENRES_BESOIN = ("outil", "droit", "bibliotheque", "defaut")
+BESOIN_MAX, BESOIN_PAR_HEURE, BESOIN_PAR_JOUR, BESOIN_OUVERTS = 1500, 3, 10, 5
+VERROU_BESOIN = threading.Lock()
+
+
+def gardien():
+    """Le gardien de Berger : le chef de projet de l'équipe dont la fusion EST l'installation (`installer_outil`) ; None sinon."""
+    return next((e.get("chef_projet") for e in EQUIPES.values() if e.get("installer_outil") and e.get("chef_projet")), None)
+
+
+def besoins_ouverts():
+    out = []
+    for f in sorted(BESOINS.glob("*.json")) if BESOINS.is_dir() else []:
+        if f.stem.isdigit():
+            try: out.append(json.loads(f.read_text()))
+            except (OSError, ValueError): pass
+    return out
+
+
+def chaine_besoin(agent, g):
+    """Le coordinateur par qui l'agent doit passer (développeur ou chef d'un projet dont le coordinateur n'est pas le gardien) ; None sinon."""
+    for p, r in roles_equipe(agent).items():
+        coord = EQUIPES[p].get("coordinateur")
+        if coord and coord != g and coord != agent and r & {"developpeur", "chef"}: return coord
+    return None
+
+
+def debit_besoin(de):
+    """Réserve une place pour un besoin de `de` ; False si 3 dans l'heure ou 10 en 24 h ont déjà été acceptés."""
+    with VERROU_BESOIN:
+        try: d = json.loads(DEBIT_BESOIN.read_text())
+        except (OSError, ValueError): d = {}
+        t = time.time(); d = {k: [x for x in v if t - x < 86400] for k, v in d.items() if isinstance(v, list)}
+        deja = d.get(de, [])
+        if len(deja) >= BESOIN_PAR_JOUR or len([x for x in deja if t - x < 3600]) >= BESOIN_PAR_HEURE: return False
+        d[de] = deja + [t]
+        tmp = DEBIT_BESOIN.with_suffix(".tmp"); tmp.write_text(json.dumps({k: v for k, v in d.items() if v})); tmp.replace(DEBIT_BESOIN)
+        return True
+
+
+def besoin(agent, verbe, args, repondre):
+    """besoin <outil|droit|bibliotheque|defaut> "<texte>" (tout agent) | liste | clore <n> fait|refuse|transmis "<suite>" (le gardien)."""
+    if not (CONFIG.get("besoins") or {}).get("actif", True):
+        return repondre({"ok": False, "erreur": "le besoin Berger est désactivé ([besoins] actif = false)"}, "désactivé")
+    g = gardien()
+    if agent in EN_DELEGATION: return repondre({"ok": False, "erreur": "pas de besoin pendant une délégation"}, "en délégation")
+    if not g: return repondre({"ok": False, "erreur": "aucun gardien déclaré (chef de projet de l'équipe à installer_outil) : écris à ton propriétaire"}, "pas de gardien")
+    if verbe in ("liste", "clore"):
+        if agent != g: return repondre({"ok": False, "erreur": f"seul le gardien ({g}) liste et clôt les besoins"}, "pas le gardien")
+        if verbe == "liste":
+            return repondre({"ok": True, "donnees": [f"n° {d['n']} ({d['de']}) [{d['genre']}] {d['texte']}" for d in besoins_ouverts()]}, "liste")
+        if len(args) < 2 or not args[0].isdigit() or args[1] not in ("fait", "refuse", "transmis"):
+            return repondre({"ok": False, "erreur": 'besoin clore <n°> fait|refuse|transmis "<suite donnée>"'}, "arguments")
+        suite = " ".join(args[2:]).strip()
+        if contient_secret(suite):
+            args[:] = [args[0], args[1], "[masqué]"]                      # comme l'envoi : le journal garde n° et état, jamais la suite
+            return repondre({"ok": False, "erreur": "suite refusée : elle contient un secret"}, "secret : <masqué>")
+        r = _transport.executer(str(BERGER / "bin/berger"), ["besoin", "clore", args[0], args[1], suite, "--par", agent], capture_output=True, text=True, timeout=120)
+        if r.returncode: return repondre({"ok": False, "erreur": (r.stderr or r.stdout).strip()[-300:]}, "clore : refusé")
+        return repondre({"ok": True, "donnees": r.stdout.strip()}, f"n° {args[0]} clos")
+    if agent == g: return repondre({"ok": False, "erreur": "le gardien n'envoie pas de besoin à lui-même : écris une note dans a-lire/"}, "gardien")
+    coord = chaine_besoin(agent, g)
+    if coord: return repondre({"ok": False, "erreur": f"un besoin de ton projet passe par ton coordinateur {coord} : "
+                                                      f"berger-outil ecrire <ton chef ou {coord}> --fichier .transport/requete.json (JSON : \"<texte>\") ; c'est lui qui l'envoie"}, f"passe par {coord}")
+    if verbe not in GENRES_BESOIN:
+        return repondre({"ok": False, "erreur": f'besoin <{"|".join(GENRES_BESOIN)}> --fichier .transport/requete.json (JSON : "<texte>")'}, "genre inconnu")
+    texte = " ".join(args).strip()
+    if not texte: return repondre({"ok": False, "erreur": f'besoin vide : berger-outil besoin {verbe} --fichier .transport/requete.json (JSON : "<texte>")'}, "vide")
+    if len(texte) > BESOIN_MAX: return repondre({"ok": False, "erreur": f"besoin trop long ({len(texte)} caractères, {BESOIN_MAX} au plus)"}, "trop long")
+    if contient_secret(texte):
+        args[:] = ["[masqué]"]                                            # le journal ne garde rien du texte
+        return repondre({"ok": False, "erreur": "besoin refusé : il contient un secret (valeur du coffre ou forme de clé)"}, "secret : <masqué>")
+    miens = [d for d in besoins_ouverts() if d.get("de") == agent]
+    deja = next((d for d in miens if d.get("texte") == texte), None)
+    if deja: return repondre({"ok": False, "erreur": f"déjà ouvert : n° {deja['n']}"}, "doublon")
+    if len(miens) >= BESOIN_OUVERTS:
+        return repondre({"ok": False, "erreur": f"{BESOIN_OUVERTS} besoins ouverts au plus : attends que {g} en close un"}, "trop d'ouverts")
+    if not debit_besoin(agent):
+        return repondre({"ok": False, "erreur": f"trop de besoins ({BESOIN_PAR_HEURE} par heure, {BESOIN_PAR_JOUR} par 24 h au plus)"}, "trop de besoins")
+    try:
+        r = _transport.executer(str(BERGER / "bin/berger"), ["besoin-ranger", agent, verbe, texte], capture_output=True, text=True, timeout=120)
+        if r.returncode: return repondre({"ok": False, "erreur": f"besoin non rangé : {(r.stderr or r.stdout).strip()[-200:]}"}, "rangement en échec")
+        repondre({"ok": True, "donnees": r.stdout.strip()}, r.stdout.strip()[:60])
+    except subprocess.TimeoutExpired:
+        repondre({"ok": False, "erreur": "rangement du besoin trop long (2 min)"}, "délai dépassé")
+
+
+def equipe_commande(agent, verbe, args, repondre):
+    """berger equipe ouvrir|fermer|liste, HORS bac à sable (copie git, pile, agent jetable)."""
+    if verbe == "ouvrir":
+        if len(args) < 3: return repondre({"ok": False, "erreur": "equipe ouvrir <projet> <sujet> \"<mission>\" [claude|codex] [modèle]"}, "arguments")
+        cmd = ["equipe", "ouvrir", args[0], args[1], args[2], "--par", agent] + (["--moteur", args[3]] if len(args) > 3 and args[3] else []) \
+              + (["--modele", args[4]] if len(args) > 4 and args[4] else [])
+    elif verbe == "fermer": cmd = ["equipe", "fermer", args[0], (args + [""])[1], "--par", agent]
+    else: cmd = ["equipe", "liste", args[0]]
+    try:
+        r = _transport.executer(str(BERGER / "bin/berger"), [*cmd], capture_output=True, text=True, timeout=900)
+        if r.returncode: return repondre({"ok": False, "erreur": (r.stderr or r.stdout).strip()[-400:]}, f"equipe {verbe} : refusé")
+        repondre({"ok": True, "donnees": json.loads(r.stdout) if verbe == "liste" else r.stdout.strip()[-800:]}, f"equipe {verbe}")
+    except Exception as e:
+        repondre({"ok": False, "erreur": str(e)[:200]}, f"equipe {verbe} : erreur")
+
+
+def missionner(agent, verbe, cible, reste, repondre):
+    """Mission d'un agent à un autre (droit « mission:<cible> ») : berger mission / suivi / fin-mission, HORS bac à sable.
+    confier : reste = [texte, moteur (facultatif), modèle (facultatif)] — vérifiés par berger (moteurs et modèles permis)."""
+    choix = (["--moteur", reste[1]] if len(reste) > 1 and reste[1] else []) + (["--modele", reste[2]] if len(reste) > 2 and reste[2] else [])
+    cmd = {"confier": ["mission", cible, (reste or [""])[0], "--par", agent, *choix], "suivi": ["suivi", cible],
+           "rapport": ["rapport-mission", cible],
+           "terminer": ["fin-mission", cible, "--par", agent]}[verbe]
+    try:
+        r = _transport.executer(str(BERGER / "bin/berger"), [*cmd], capture_output=True, text=True, timeout=300)
+        if r.returncode: return repondre({"ok": False, "erreur": (r.stderr or r.stdout).strip()[-300:]}, f"{verbe} : refusé")
+        donnees = json.loads(r.stdout) if verbe in ("suivi", "rapport") else r.stdout.strip()
+        repondre({"ok": True, "donnees": donnees}, f"{verbe} {cible}")
+    except Exception as e:
+        repondre({"ok": False, "erreur": str(e)[:200]}, f"{verbe} : erreur")
+
+
+# ───────────────────────── écritures validées par le propriétaire ─────────────────────────
+VALIDATIONS = BERGER / "courtier/validations"
+
+
+def demander_validation(agent, outil, verbe, args):
+    """Range la demande d'écriture ; RIEN n'est écrit tant que le propriétaire n'a pas décidé."""
+    apercu, _ = ECRITURES[outil][verbe]
+    contexte(outil, agent); texte = apercu(args)                                          # lève une erreur si les arguments sont invalides
+    VALIDATIONS.mkdir(parents=True, exist_ok=True)
+    n = 1 + max([int(x.stem) for x in VALIDATIONS.glob("*.json") if x.stem.isdigit()] +
+                [int(x.stem.split(".")[0]) for x in VALIDATIONS.glob("*.fait.json") if x.stem.split(".")[0].isdigit()] + [0])
+    o = OBJETS.get(outil)
+    valideur = o.valideur(verbe, args) if hasattr(o, "valideur") else getattr(o, "valide_par", None)   # l'outil peut décider par demande
+    if valideur == agent: valideur = None                       # jamais juge de sa propre demande : le propriétaire décide
+    tmp = VALIDATIONS / f".{n}.json.tmp"                                  # écrit puis renommé : jamais lu à moitié écrit
+    with os.fdopen(os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600), "w") as flux:
+        os.fchmod(flux.fileno(), 0o600)
+        flux.write(json.dumps({"n": n, "agent": agent, "outil": outil, "verbe": verbe, "args": args,
+                               "apercu": texte, "valideur": valideur,
+                               "demande": datetime.datetime.now().isoformat(timespec="minutes")},
+                              ensure_ascii=False, indent=1))
+    tmp.replace(VALIDATIONS / f"{n}.json")
+    echange(agent, valideur or CONFIG.get("proprietaire", "le propriétaire"), "validation demandée", f"n° {n} : {texte}")
+    notifier_proprietaire(f"Berger · validation n° {n}", f"{agent} demande une validation ; consulter le n° {n} — berger valider {n} | berger refuser {n}"
+                          + (f" (ou {valideur})" if valideur else ""))
+    if valideur:                                                # prévenir l'agent qui décide, s'il tourne
+        _transport.lancer(str(BERGER / "bin/berger"), ['parler', valideur, '--stdin', '--sans-echange'], input=f'Validation n° {n} à décider ({agent}). Relis, puis : berger-outil validation accepter --fichier .transport/requete.json ou berger-outil validation refuser --fichier .transport/requete.json (tableau JSON du numéro {n} sous forme de chaîne)',
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return n, texte
+
+
+def notifier_proprietaire(titre, texte, urgent=False):
+    _transport.executer(str(BERGER / "bin/berger"), ['notifier', '--stdin', *(['--urgent'] if urgent else [])],
+                   input=json.dumps([titre, texte]), text=True, capture_output=True)
+
+
+def journal_agent(agent, texte):
+    if not (AGENTS / agent / "agent.conf").is_file(): return              # « berger » (annonce d'outil) n'a pas de journal : rien créé
+    d = AGENTS / agent / "memory"; d.mkdir(exist_ok=True)
+    with open(d / f"{datetime.date.today().isoformat()}.md", "a") as f:
+        f.write(f"- {datetime.datetime.now():%H:%M} — {texte}\n")
+
+
+# Exécution À PART (spec : docs/plans/2026-10-14-validation-a-part-spec.md). Vécu le 14/10 : la fusion n° 94 rejouait les
+# portes (16 min) DANS la boucle principale — plus aucun appel servi, panneaux arrêtés, redémarrage de l'installation n° 93
+# en attente. Les décisions sont exécutées par UN fil dédié (l'exécuteur) : une à la fois, dans l'ordre où elles ont été
+# prises ; la boucle continue de servir les agents. Ce qui est écrit (marque .execution, .fait.json, journaux) ne change pas.
+FILE = {"reference": None, "depuis": None}       # HEAD de l'installation au démarrage ; depuis quand la file est tenue
+FILE_TENUE_MAX = float(os.environ.get("BERGER_FILE_TENUE", "1200"))   # 20 min : au-delà, la file repart (journal + notification)
+FILE_ETAT = BERGER / "courtier/file-tenue.json"                  # lu par bin/berger decider : dire pourquoi la décision attend
+
+
+def tete_installation():
+    """HEAD du dépôt de l'installation (None si ce n'est pas un dépôt git, ou git illisible) — même lecture que `berger installer`."""
+    try: r = subprocess.run(["git", "-C", str(BERGER), "rev-parse", "HEAD"], capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.TimeoutExpired): return None
+    return r.stdout.strip() if r.returncode == 0 and r.stdout.strip() else None
+
+
+def heure_tete(tete):
+    """Heure (epoch) à laquelle HEAD est devenu `tete` — dernière entrée du reflog ; None si illisible ou autre commit."""
+    try: r = subprocess.run(["git", "-C", str(BERGER), "reflog", "-1", "--date=unix", "--format=%H %gd", "HEAD"],
+                            capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.TimeoutExpired): return None
+    m = re.fullmatch(r"([0-9a-f]{40}) \S*@\{(\d+)\}", r.stdout.strip())
+    return float(m.group(2)) if m and m.group(1) == tete else None
+
+
+def file_tenue():
+    """True tant qu'une installation a posé du nouveau code (HEAD ≠ celui du démarrage) : son redémarrage contrôlé est en
+    route ; aucune décision n'est prise avant lui (elle tournerait avec l'ancien code chargé, et le redémarrage attendrait
+    sa marque .execution). HEAD revenu (retour arrière) : la file repart. Au-delà de FILE_TENUE_MAX depuis l'INSTALLATION
+    (heure du changement de HEAD, pas la première décision vue — 16/10) : écrit au journal du courtier, notifié une seule
+    fois, et la file repart (le HEAD actuel devient la référence). L'état est écrit dans FILE_ETAT (lu par bin/berger decider)."""
+    ref = FILE["reference"]
+    if ref is None: return False
+    actuel = tete_installation()
+    if actuel is None or actuel == ref:
+        if FILE["depuis"] is not None: FILE_ETAT.unlink(missing_ok=True)
+        FILE["depuis"] = None; return False
+    if FILE["depuis"] is None:
+        FILE["depuis"] = min(heure_tete(actuel) or time.time(), time.time())
+        journal("berger", "courtier", "file", [], True, f"installation {ref[:10]} → {actuel[:10]} : file des validations tenue jusqu'au redémarrage")
+        tmp = FILE_ETAT.with_suffix(".tmp")
+        tmp.write_text(json.dumps({"depuis": FILE["depuis"], "reference": ref, "installation": actuel})); tmp.replace(FILE_ETAT)
+    if time.time() - FILE["depuis"] < FILE_TENUE_MAX: return True
+    texte = (f"installation {ref[:10]} → {actuel[:10]} : aucun redémarrage du courtier en {int(FILE_TENUE_MAX // 60)} min ; la file des "
+             "validations repart avec le code chargé — vérifie courtier/installations.log et redémarre le courtier (berger courtier redemarrer)")
+    journal("berger", "courtier", "file", [], False, texte)
+    notifier_proprietaire("Berger · courtier non redémarré après une installation", texte, urgent=True)
+    FILE.update(reference=actuel, depuis=None); FILE_ETAT.unlink(missing_ok=True)
+    return False
+
+
+# Redémarrage qui aboutit (spec 2026-10-16-courtier-textes, 3) : `berger courtier redemarrer` pose la marque FERMETURE (bornée
+# dans le temps, rafraîchie tant qu'il attend). Tant qu'elle vaut, le courtier n'ENTAME plus aucune demande ni décision, sauf
+# ses lectures instantanées : la demande va dans courrier/attente/ (le client attend toujours) et repart dans demandes/ dès
+# que la marque tombe. Générique, sans liste de verbes longs à tenir (une porte, un contrôle ssh, une délégation de 7 min…).
+# Vécu le 16/10 : les portes des développeurs se relayaient, l'attente « plus aucune demande en cours » n'a jamais fini.
+FERMETURE = BERGER / "courtier/fermeture"
+
+
+def fermeture_active():
+    try: return time.time() < float(json.loads(FERMETURE.read_text()).get("jusqu", 0))
+    except (OSError, ValueError, TypeError, AttributeError): return False
+
+
+def instantanee(f):
+    """Une lecture que le courtier sert lui-même tout de suite : aide d'un outil, validation liste, mission suivi, demandes du chef."""
+    try: d = json.loads(f.read_text()); outil, verbe = str(d.get("outil", "")), str(d.get("verbe", ""))
+    except (OSError, ValueError, AttributeError): return False
+    return verbe == "aide" or (outil, verbe) in (("validation", "liste"), ("mission", "suivi")) \
+        or (verbe == "demandes" and outil.endswith("-chef") and outil in OUTILS)
+
+
+def decisions_en_ordre():
+    """Les décisions dans l'ordre où elles ont été prises (date du fichier, puis numéro) — jamais l'ordre du texte
+    (`sorted` mettait 10.decision avant 9.decision)."""
+    def cle(dec):
+        try: t = dec.stat().st_mtime_ns
+        except OSError: t = 0
+        return (t, int(dec.stem) if dec.stem.isdigit() else float("inf"), dec.stem)
+    return sorted(VALIDATIONS.glob("*.decision"), key=cle) if VALIDATIONS.is_dir() else []
+
+
+def executeur():
+    """Le fil qui exécute les décisions, seul. Une exception non rattrapée le tue : la boucle principale le voit et arrête
+    le courtier (systemd le relance ; la marque .execution laissée donne « état inconnu », jamais un rejeu)."""
+    vu = 0.0
+    while True:
+        if time.time() - vu > 2: file_tenue(); vu = time.time()           # l'installation est vue même sans décision (délai juste)
+        expirer_web(); traiter_decisions(); time.sleep(0.3)
+
+
+def traiter_decisions():
+    """Exécute (ou abandonne) les demandes sur lesquelles le propriétaire a décidé : fichier <n>.decision, une à la fois,
+    dans l'ordre des décisions ; aucune tant que la file est tenue par une installation ou que le courtier ferme."""
+    for dec in decisions_en_ordre():
+        if fermeture_active() or file_tenue(): return
+        dem = VALIDATIONS / f"{dec.stem}.json"
+        lignes = dec.read_text().split()
+        decision = lignes[0] if lignes else ""
+        if decision not in ("valider", "refuser"): continue      # illisible ou en cours d'écriture : relu au tour suivant, JAMAIS pris pour un refus
+        fait = VALIDATIONS / f"{dec.stem}.fait.json"
+        if fait.exists(): dec.unlink(); continue                 # validation déjà exécutée : une seconde décision ne rejoue JAMAIS l'action
+        enc = VALIDATIONS / f"{dec.stem}.execution"; dec.rename(enc)   # marque « en cours » : `berger courtier redemarrer` attend qu'elle disparaisse
+        par = next((x[4:] for x in lignes[1:] if x.startswith("par=")), CONFIG.get("proprietaire", "le propriétaire"))
+        options = dict(x.split("=", 1) for x in lignes[1:] if "=" in x and not x.startswith("par="))   # ex. duree=8h (berger valider --duree)
+        if not dem.exists(): enc.unlink(missing_ok=True); continue
+        d = json.loads(dem.read_text())
+        if decision == "valider":
+            try:
+                if d["verbe"] not in ECRITURES.get(d["outil"], {}): raise RuntimeError("verbe d'écriture inconnu")
+                if options:                                  # réglage du valideur (la durée d'un accès web) : l'outil le contrôle
+                    if not hasattr(OBJETS.get(d["outil"]), "ajuster"): raise RuntimeError(f"réglage {', '.join(options)} inconnu pour {d['outil']}")
+                    d["args"] = OBJETS[d["outil"]].ajuster(d["verbe"], d["args"], options)
+                contexte(d["outil"], d["agent"]); resultat = ECRITURES[d["outil"]][d["verbe"]][1](d["args"])
+                # une commande qui sort en erreur (code ≠ 0) n'est PAS « exécutée » (09/10/2026 : un refus de
+                # `berger agent appliquer` s'affichait « validé et exécuté »)
+                echec = isinstance(resultat, dict) and resultat.get("code") not in (None, 0)
+                if contient_secret(json.dumps(resultat, ensure_ascii=False)): resultat = "fait (détail masqué : il contenait un secret)"
+                if echec:
+                    d.update(etat="validé mais ÉCHEC", resultat=resultat)
+                    journal_agent(d["agent"], f"écriture n° {d['n']} validée mais en ÉCHEC : {d['apercu']} → {str(resultat)[-300:]}")
+                    journal(d["agent"], d["outil"], d["verbe"], d["args"], False, f"validation n° {d['n']} : échec")
+                else:
+                    d.update(etat="validé et exécuté", resultat=resultat)
+                    journal_agent(d["agent"], f"écriture n° {d['n']} VALIDÉE par {par} et faite : {d['apercu']} → {resultat}")
+                    journal(d["agent"], d["outil"], d["verbe"], d["args"], True, f"validation n° {d['n']} : exécutée")
+            except Exception as e:
+                d.update(etat="validé mais ÉCHEC", resultat=str(e)[:200])
+                journal_agent(d["agent"], f"écriture n° {d['n']} validée mais en ÉCHEC : {str(e)[:150]}")
+                journal(d["agent"], d["outil"], d["verbe"], d["args"], False, f"validation n° {d['n']} : échec")
+        else:
+            d.update(etat="refusé", resultat=None)
+            journal_agent(d["agent"], f"écriture n° {d['n']} REFUSÉE par {par} : {d['apercu']}")
+            journal(d["agent"], d["outil"], d["verbe"], d["args"], False, f"validation n° {d['n']} : refusée")
+        d["decide"] = datetime.datetime.now().isoformat(timespec="minutes"); d["par"] = par
+        with os.fdopen(os.open(VALIDATIONS / f"{d['n']}.fait.json", os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600), "w") as flux:
+            os.fchmod(flux.fileno(), 0o600)
+            flux.write(json.dumps(d, ensure_ascii=False, indent=1))   # résultat avant notification
+        _transport.lancer(str(BERGER / "bin/berger"), ['parler', d['agent'], '--stdin', '--sans-echange'], input=f"Décision sur ta demande n° {d['n']} : {d['etat']} — consulte le résultat dans les validations" + (' — lis le motif du valideur dans son journal ou ses échanges, puis renvoie la demande au développeur avec ce motif.' if d['etat'] == 'refusé' else ''),
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        echange(par, d["agent"], {"refusé": "refusée", "validé mais ÉCHEC": "validée, en échec"}.get(d["etat"], "validée"),
+                f"n° {d['n']} : {d['apercu']}" + (f" → {d['resultat']}" if d.get("resultat") else ""))
+        dem.unlink(); enc.unlink(missing_ok=True)
+
+
+# ───────────────────────── garde-fou anti-boucle (commun à tous les moteurs) ─────────────────────────
+# Le même agent refait le même appel (outil + verbe + arguments) plus de `boucle_max` fois en une heure glissante SANS rien
+# avoir reçu de Berger entre-temps (message, mission, réveil : bin/berger `solliciter`) : l'appel suivant est refusé
+# poliment, la Synthèse l'affiche (courtier/boucles.json, lu par bin/berger) et le gardien est prévenu UNE fois. Mesuré le
+# 15/10/2026 : « mission suivi » ×1 761 en un jour, jusqu'à 576 par heure. `[courtier] boucle_max = 0` : éteint.
+# Spec : docs/plans/2026-10-15-anti-boucle-spec.md. L'historique des appels est en mémoire (un redémarrage le remet à zéro).
+BOUCLES = BERGER / "courtier/boucles.json"
+SOLLICITATIONS = BERGER / "courtier/sollicitations"
+APPELS_BOUCLE = {}
+VERROU_BOUCLE = threading.Lock()
+
+
+def boucle_max():
+    try: return max(0, int((CONFIG.get("courtier") or {}).get("boucle_max", 6)))
+    except (TypeError, ValueError): return 6
+
+
+def derniere_sollicitation(agent):
+    try: return (SOLLICITATIONS / agent).stat().st_mtime
+    except OSError: return 0.0
+
+
+def prevenir_gardien(agent, appel, n):
+    """Un message de service au gardien (chef de projet de l'équipe qui installe Berger), sans bloquer le courtier."""
+    g = gardien()
+    if not g or not (AGENTS / g / "agent.conf").is_file() or g == agent: return
+    texte = (f"Boucle repérée : {agent} a refait « {appel} » {n} fois en une heure sans rien recevoir ; le courtier refuse la suite "
+             f"(Synthèse). Tu ne seras pas prévenu de nouveau tant que cette boucle dure. À toi de voir : lui écrire, ou le relancer.")
+    def envoi():
+        try:
+            echange("courtier", g, "message", texte)
+            _transport.executer(str(BERGER / "bin/berger"), ["message-deposer", "courtier", g, texte], capture_output=True, text=True, timeout=120)
+        except Exception: pass
+    threading.Thread(target=envoi, daemon=True).start()
+
+
+def controle_boucle(agent, outil, verbe, args):
+    """None : l'appel passe (et compte). Sinon le message de refus (« boucle »)."""
+    n = boucle_max()
+    if not n or verbe == "aide": return None
+    cle = (agent, json.dumps([outil, verbe, args], ensure_ascii=False)); t = time.time()
+    with VERROU_BOUCLE:
+        depuis = max(t - 3600, derniere_sollicitation(agent))
+        vus = [x for x in APPELS_BOUCLE.get(cle, []) if x > depuis]
+        if len(vus) < n: APPELS_BOUCLE[cle] = vus + [t]; return None
+        APPELS_BOUCLE[cle] = vus
+        appel = " ".join([outil, verbe, *args])[:160]
+        try: etat = json.loads(BOUCLES.read_text())
+        except (OSError, ValueError): etat = {}
+        ancien = etat.get(agent) or {}
+        neuf = (ancien.get("appel") != appel or t - ancien.get("dernier_refus", 0) >= 3600
+                or derniere_sollicitation(agent) > ancien.get("dernier_refus", 0))
+        etat[agent] = {"appel": appel, "n": n, "depuis": t if neuf else ancien.get("depuis", t), "dernier_refus": t}
+        tmp = BOUCLES.with_suffix(".tmp"); tmp.write_text(json.dumps(etat)); tmp.replace(BOUCLES)
+    if neuf: prevenir_gardien(agent, appel, n)
+    return (f"boucle : « {appel} » refait {n} fois en une heure sans que rien n'ait changé pour toi. Ne le refais pas : attends un message, "
+            f"ou change de méthode ; une veille périodique passe par ton HEARTBEAT.md, pas par une répétition. Si tu es bloqué, écris-le "
+            f"dans ta checklist (⚠ Bloqué : …).")
+
+
+
+# ───────────────────────── taille des arguments : refus, jamais troncature ─────────────────────────
+# Jusqu'au 16/10, chaque argument était coupé en silence (2 000 caractères pour les textes, 80 ailleurs) : une mission longue
+# arrivait amputée de sa fin. Spec : docs/plans/2026-10-16-courtier-textes-spec.md (1).
+TEXTES_OUTILS, TEXTES_VERBES = ("deleguer", "mission", "equipe"), ("demander-fusion", "renvoyer", "attente")
+
+
+def mission_max():
+    try: return max(1, int((CONFIG.get("courtier") or {}).get("mission_max", 6000)))
+    except (TypeError, ValueError): return 6000
+
+
+def trop_long(outil, verbe, args):
+    """None si chaque argument tient dans sa limite ; sinon le message de refus. ecrire et besoin ont leur propre refus."""
+    if outil in ("ecrire", "besoin"): return None
+    texte = outil in TEXTES_OUTILS or verbe in TEXTES_VERBES
+    m = mission_max() if texte else 80
+    n = max([len(" ".join(args))] if outil == "deleguer" else [len(a) for a in args] or [0])   # deleguer : le texte joint
+    if n <= m: return None
+    return f"trop long ({n} caractères, {m} au plus) : mets le détail dans un fichier de ton dossier et cite son chemin"
+def ecrire_reponse_privee(f, texte):
+    """Réponse bornée, atomique, 600 dans courrier/reponses 700 ; aucun lien suivi."""
+    import stat, uuid
+    contenu = texte.encode('utf-8')
+    if len(contenu) > 1024 * 1024: raise ValueError('réponse trop grande')
+    fds = []; reponses = None; cree = False
+    temporaire = '.' + uuid.uuid4().hex + '.tmp'
+    def ouvrir(parent, nom):
+        try: os.mkdir(nom, 0o700, dir_fd=parent)
+        except FileExistsError: pass
+        fd = os.open(nom, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent)
+        fds.append(fd)
+        if os.fstat(fd).st_uid != os.getuid(): raise ValueError('dossier de réponse non conforme')
+        os.fchmod(fd, 0o700)
+        return fd
+    try:
+        agent = os.open(f.parent.parent.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW); fds.append(agent)
+        boite = ouvrir(agent, 'courrier')
+        reponses = ouvrir(boite, 'reponses')
+        try: meta = os.stat(f.name, dir_fd=reponses, follow_symlinks=False)
+        except FileNotFoundError: meta = None
+        if meta and (not stat.S_ISREG(meta.st_mode) or meta.st_nlink != 1 or meta.st_uid != os.getuid()):
+            raise ValueError('réponse liée ou non conforme')
+        fd = os.open(temporaire, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                     0o600, dir_fd=reponses)
+        cree = True
+        with os.fdopen(fd, 'wb') as flux: flux.write(contenu)
+        os.replace(temporaire, f.name, src_dir_fd=reponses, dst_dir_fd=reponses)
+        cree = False
+    finally:
+        try:
+            if cree:
+                try: os.unlink(temporaire, dir_fd=reponses)
+                except FileNotFoundError: pass
+        finally:
+            for fd in reversed(fds): os.close(fd)
+
+
+def traiter(agent, f, cadence):
+    try: req = json.loads(f.read_text())
+    except (ValueError, OSError): req = {}
+    # f reste dans courrier/encours/ jusqu'à la réponse : le client sait que sa demande est EN COURS et attend.
+    outil, verbe = str(req.get("outil", "")), str(req.get("verbe", ""))
+    args = [str(a) for a in req.get("args", [])]                           # jamais tronqués : trop long ou trop nombreux = REFUSÉ
+    t = time.time(); cadence[agent] = [x for x in cadence.get(agent, []) if t - x < 60] + [t]
+    def repondre(rep, detail):
+        texte = json.dumps(rep, ensure_ascii=False, indent=1)
+        if contient_secret(texte):
+            texte, detail = json.dumps({"ok": False, "erreur": "réponse bloquée : elle contenait un secret"}), "BLOQUÉ (secret dans la réponse)"; rep = {"ok": False}
+        ecrire_reponse_privee(f, texte)
+        f.unlink(missing_ok=True); journal(agent, outil, verbe, args, rep.get("ok"), detail)
+    long = ("trop d'arguments (5 au plus) : mets le détail dans un fichier de ton dossier et cite son chemin" if len(args) > 5
+            else trop_long(outil, verbe, args))
+    if long: args = [a[:80] for a in args[:5]]; return repondre({"ok": False, "erreur": long}, "trop long")   # journal seul
+    boucle = controle_boucle(agent, outil, verbe, args)
+    if boucle: return repondre({"ok": False, "erreur": boucle}, "boucle : refusé")
+    if lecture_seule(agent) and (outil in ("mission", "equipe", "deleguer", "ecrire", "besoin") or (outil == "validation" and verbe != "liste")
+                                 or verbe in ECRITURES.get(outil, {}) or (outil == "projet" and verbe == "partager")):
+        return repondre({"ok": False, "erreur": f"{agent} est en LECTURE SEULE : « {outil} {verbe} » refusé. Une écriture se PROPOSE "
+                                                "dans ton rapport (geste exact, sauvegarde, retour arrière) ; c'est à qui t'a confié la mission de la porter."},
+                        "lecture seule : refusé")
+    if outil == "deleguer":
+        if f"deleguer:{verbe}" not in droits(agent): return repondre({"ok": False, "erreur": f"{agent} n'a pas le droit de déléguer à {verbe}"}, "pas le droit")
+        if agent in EN_DELEGATION: return repondre({"ok": False, "erreur": "pas de délégation en chaîne"}, "chaîne refusée")
+        if verbe in EN_DELEGATION: return repondre({"ok": False, "erreur": f"{verbe} répond déjà à une autre délégation"}, "occupé")
+        if not (AGENTS / verbe / "agent.conf").is_file(): return repondre({"ok": False, "erreur": f"agent inconnu : {verbe}"}, "inconnu")
+        threading.Thread(target=deleguer, args=(agent, verbe, " ".join(args), repondre), daemon=True).start(); return
+    if outil == "ecrire":                                                 # ecrire <cible> "<texte>" : message à sens unique
+        if f"ecrire:{verbe}" not in droits(agent): return repondre({"ok": False, "erreur": f"{agent} n'a pas le droit d'écrire à {verbe}"}, "pas le droit")
+        if agent in EN_DELEGATION: return repondre({"ok": False, "erreur": "pas de message pendant une délégation"}, "en délégation")
+        if not (AGENTS / verbe / "agent.conf").is_file(): return repondre({"ok": False, "erreur": f"agent inconnu : {verbe}"}, "inconnu")
+        texte = " ".join(args).strip()
+        if not texte: return repondre({"ok": False, "erreur": 'message vide : berger-outil ecrire <agent> --stdin (tableau JSON du texte)'}, "vide")
+        if len(texte) > 2000: return repondre({"ok": False, "erreur": f"message trop long ({len(texte)} caractères, 2000 au plus)"}, "trop long")
+        if contient_secret(texte):
+            args = ["[masqué]"]                                           # le journal ne garde rien du texte
+            return repondre({"ok": False, "erreur": "message refusé : il contient un secret (valeur du coffre ou forme de clé)"}, "secret : refusé")
+        if not debit_ecrire(agent, verbe):
+            return repondre({"ok": False, "erreur": f"trop de messages à {verbe} ({ECRIRE_PAR_HEURE} par heure, {ECRIRE_PAR_JOUR} par 24 h au plus)"}, "trop de messages")
+        return ecrire(agent, verbe, texte, repondre)
+    if outil == "besoin": return besoin(agent, verbe, args, repondre)      # ouvert à tout agent : chaque verbe vérifie qui demande
+    if outil == "validation":                                             # liste | accepter <n> | refuser <n>
+        mes = [json.loads(x.read_text()) for x in sorted(VALIDATIONS.glob("*.json")) if x.stem.isdigit()] if VALIDATIONS.is_dir() else []
+        mes = [d for d in mes if d.get("valideur") == agent and d.get("agent") != agent]
+        if verbe == "liste": return repondre({"ok": True, "donnees": [f"n° {d['n']} ({d['agent']}) : {d['apercu']}" for d in mes]}, "liste")
+        if verbe not in ("accepter", "refuser") or not args or not args[0].isdigit():
+            return repondre({"ok": False, "erreur": "validation liste | accepter <n°> | refuser <n°>"}, "verbe inconnu")
+        if (VALIDATIONS / f"{args[0]}.fait.json").exists():
+            return repondre({"ok": False, "erreur": f"la validation n° {args[0]} est déjà faite : aucune nouvelle décision possible"}, "déjà faite")
+        if not any(str(d["n"]) == args[0] for d in mes):
+            return repondre({"ok": False, "erreur": f"la validation n° {args[0]} n'est pas à toi de décider"}, "pas le droit")
+        tmp = VALIDATIONS / f".{args[0]}.decision.{agent}.tmp"           # écriture ATOMIQUE : la boucle ne lit jamais un fichier à moitié écrit
+        tmp.write_text(("valider" if verbe == "accepter" else "refuser") + f"\npar={agent}\n"); tmp.rename(VALIDATIONS / f"{args[0]}.decision")
+        return repondre({"ok": True, "donnees": f"décision enregistrée : n° {args[0]} {'acceptée' if verbe == 'accepter' else 'refusée'} ; le résultat sera noté dans le journal du demandeur"}, f"n° {args[0]} {verbe}")
+    if outil == "equipe":                                                 # ouvrir <projet> <sujet> "<mission>" [moteur] [modèle] | fermer | liste
+        projet = args[0] if args else ""
+        if projet not in EQUIPES: return repondre({"ok": False, "erreur": f"projet d'équipe inconnu : {projet}"}, "inconnu")
+        r = roles_equipe(agent).get(projet, set()) - {"developpeur"}           # hiérarchie d'équipe (spec 2026-10-13)
+        if not r: return repondre({"ok": False, "erreur": f"{agent} n'est ni le chef de projet ni le coordinateur de l'équipe {projet}"}, "pas le droit")
+        if verbe in ("ouvrir", "fermer") and "chef" not in r:
+            return repondre({"ok": False, "erreur": f"seul le chef de projet ({EQUIPES[projet].get('chef_projet') or 'non déclaré'}) ouvre et ferme les "
+                                                    f"développeurs de {projet} : confie-lui le sujet (berger-outil mission confier --stdin (tableau JSON : chef, spec et go))"}, "pas le chef")
+        if verbe in ("domaine", "domaines") and "coordinateur" not in r:
+            return repondre({"ok": False, "erreur": f"les sites permis de {projet} se demandent par le coordinateur"}, "pas le coordinateur")
+        if verbe in ("domaine", "go"):                                    # écritures : site (superviseur), go (propriétaire seul)
+            try:
+                n, texte = demander_validation(agent, "equipe", verbe, args)
+                qui = json.loads((VALIDATIONS / f"{n}.json").read_text()).get("valideur") or CONFIG.get("proprietaire", "ton propriétaire")
+                return repondre({"ok": True, "en_attente": n, "message": f"Demande n° {n} envoyée à {qui} pour validation : {texte}. "
+                                 + ("RIEN n'est inscrit" if verbe == "go" else "RIEN n'est ouvert") + " tant qu'il n'a pas validé ; le résultat sera noté dans ton journal."}, f"validation n° {n} demandée")
+            except Exception as e: return repondre({"ok": False, "erreur": str(e)[:300]}, f"erreur : {str(e)[:80]}")
+        if verbe == "domaines":
+            r = _transport.executer(str(BERGER / "bin/berger"), ['equipe', 'domaines', projet], capture_output=True, text=True, timeout=60)
+            return repondre({"ok": True, "donnees": json.loads(r.stdout)} if r.returncode == 0 else {"ok": False, "erreur": r.stderr.strip()[-200:]}, "domaines")
+        if verbe not in ("ouvrir", "fermer", "liste"): return repondre({"ok": False, "erreur": "equipe ouvrir <projet> <sujet> \"<mission>\" [claude|codex] [modèle] | fermer <projet> <sujet> | liste <projet> | domaine <projet> ajouter|retirer <nom> | domaines <projet> | go <projet> <sujet> <cas> <spec>"}, "verbe inconnu")
+        if verbe == "fermer":                                             # défense : seul un développeur ouvert du projet se ferme, jamais la copie du chef
+            cible = f"{projet}-{(args + [''])[1]}"
+            if cible not in developpeurs(projet) or cible == EQUIPES[projet].get("chef_projet"):
+                return repondre({"ok": False, "erreur": f"« {(args + [''])[1]} » n'est pas un développeur ouvert de {projet} : rien n'est fermé "
+                                                        "(la copie et la branche du chef ne se ferment jamais)"}, "fermer refusé : pas un développeur")
+        threading.Thread(target=equipe_commande, args=(agent, verbe, args, repondre), daemon=True).start(); return
+    if outil == "mission":                                                # confier | suivi | rapport | terminer <agent> [texte]
+        cible = args[0] if args else ""
+        if verbe not in ("confier", "suivi", "rapport", "terminer"): return repondre({"ok": False, "erreur": "verbes : confier <agent> \"<texte>\" [claude|codex] [modèle] | suivi <agent> | rapport <agent> | terminer <agent>"}, "verbe inconnu")
+        if f"mission:{cible}" not in droits(agent): return repondre({"ok": False, "erreur": f"{agent} n'a pas le droit de confier des missions à « {cible} »"}, "pas le droit")
+        if not (AGENTS / cible / "agent.conf").is_file(): return repondre({"ok": False, "erreur": f"agent inconnu : {cible}"}, "inconnu")
+        threading.Thread(target=missionner, args=(agent, verbe, cible, args[1:4], repondre), daemon=True).start(); return
+    if len(cadence[agent]) > 30: rep, detail = {"ok": False, "erreur": "trop d'appels (30 par minute au plus)"}, "limite"
+    elif outil not in droits(agent) and not (outil == "projet" and outil in OUTILS):   # « projet » : chaque verbe vérifie qui demande
+        rep, detail = {"ok": False, "erreur": f"{agent} n'a pas le droit d'utiliser l'outil « {outil} »"}, "pas le droit"
+    elif verbe == "aide":
+        aide = {v: fn.__doc__.strip().splitlines()[0] for v, fn in OUTILS[outil].items()}
+        aide.update({v: "(ÉCRITURE, soumise à validation) " + a.__doc__.strip().splitlines()[0] for v, (a, _) in ECRITURES.get(outil, {}).items()})
+        rep, detail = {"ok": True, "donnees": aide}, "aide"
+    elif verbe in ECRITURES.get(outil, {}):
+        try:
+            # L'OUTIL peut dire qu'une écriture PRÉCISE se passe de validation (ex. etiqueter le commit d'une fusion déjà
+            # validée) : la règle est dans son code versionné, jamais ici ; le geste rendu est exactement ce qui a été contrôlé.
+            contexte(outil, agent); o = OBJETS.get(outil)
+            libre = o.sans_validation(verbe, args) if hasattr(o, "sans_validation") else None
+        except Exception as e:
+            libre, rep, detail = False, {"ok": False, "erreur": str(e)[:200]}, f"erreur : {str(e)[:80]}"
+        if libre:
+            raison, geste = libre
+            try:
+                resultat = geste()
+                rep, detail = {"ok": True, "donnees": resultat, "sans_validation": raison}, f"sans validation : {raison[:100]}"
+                journal_agent(agent, f"{outil} {verbe} {' '.join(args)} : fait SANS validation ({raison}) → {str(resultat)[:300]}")
+            except Exception as e:
+                rep, detail = {"ok": False, "erreur": str(e)[:200]}, f"sans validation, erreur : {str(e)[:80]}"
+        elif libre is None:
+            try:
+                n, texte = demander_validation(agent, outil, verbe, args)
+                qui = json.loads((VALIDATIONS / f"{n}.json").read_text()).get("valideur")
+                rep = {"ok": True, "en_attente": n, "message": f"Demande n° {n} envoyée à {qui + ' (ou ' + CONFIG.get('proprietaire', 'ton propriétaire') + ')' if qui and qui != agent else CONFIG.get('proprietaire', 'ton propriétaire')} "
+                       f"pour validation : {texte}. RIEN n'est fait tant qu'il n'a pas validé ; le résultat sera noté dans ton journal."}
+                detail = f"validation n° {n} demandée"
+            except Exception as e:
+                rep, detail = {"ok": False, "erreur": str(e)[:200]}, f"erreur : {str(e)[:80]}"
+    elif verbe not in OUTILS.get(outil, {}):
+        rep, detail = {"ok": False, "erreur": f"verbe inconnu. Verbes de {outil} : " + ", ".join(
+            f"{v} ({fn.__doc__.strip().splitlines()[0]})" for v, fn in OUTILS.get(outil, {}).items())}, "verbe inconnu"
+    else:
+        try:
+            contexte(outil, agent); donnees = OUTILS[outil][verbe](args)
+            rep = {"ok": True, "donnees": donnees}; detail = f"{len(donnees) if isinstance(donnees, list) else 1} résultat(s)"
+        except Exception as e:
+            rep, detail = {"ok": False, "erreur": str(e)[:200]}, f"erreur : {str(e)[:80]}"
+    texte = json.dumps(rep, ensure_ascii=False, indent=1)
+    if contient_secret(texte):                                           # dernière barrière : valeur du coffre ou forme de clé
+        texte, detail = json.dumps({"ok": False, "erreur": "réponse bloquée : elle contenait un secret"}), "BLOQUÉ (secret dans la réponse)"
+        rep = {"ok": False}
+    ecrire_reponse_privee(f, texte)
+    f.unlink(missing_ok=True); journal(agent, outil, verbe, args, rep.get("ok"), detail)
+
+
+# ───────────────────────── panneaux de sources : un verbe de LECTURE lancé à cadence fixe ─────────────────────────
+# [panneaux.<nom>] de config.toml (outil, verbe, args, cadence en secondes, 60 au moins). Le résultat, filtré comme toute
+# réponse, va dans courtier/panneaux/<nom>.json, que Berger relit (onglets Sources et Synthèse). Jamais un verbe d'écriture.
+PANNEAUX = BERGER / "courtier/panneaux"
+EN_COLLECTE = set()
+
+
+def collecter(nom, p):
+    r = {"titre": p.get("titre", nom), "quand": datetime.datetime.now().isoformat(timespec="seconds")}; t0 = time.time()
+    outil, verbe, args = str(p.get("outil", "")), str(p.get("verbe", "")), [str(a) for a in p.get("args", [])]
+    try:
+        if len(args) > 5 or any(len(a) > 80 for a in args):              # refusé, jamais coupé (comme une demande d'agent)
+            raise ValueError("arguments du panneau trop longs ou trop nombreux (5 au plus, 80 caractères chacun)")
+        if verbe in ECRITURES.get(outil, {}): raise PermissionError("un panneau ne lance jamais un verbe d'écriture")
+        if verbe not in OUTILS.get(outil, {}): raise LookupError(f"outil ou verbe de lecture inconnu : {outil} {verbe}")
+        o = OBJETS.get(outil)
+        if o is not None and hasattr(o, "contexte"): o.contexte = {"agent": f"panneau:{nom}"}   # qui demande, pour les registres des scripts (ce fil seul)
+        d = OUTILS[outil][verbe](args)
+        if isinstance(d, dict) and "sortie" in d: lignes, code = str(d["sortie"]).splitlines(), d.get("code", 0)
+        else: lignes, code = json.dumps(d, ensure_ascii=False, indent=1).splitlines(), 0
+        r.update(ok=code == 0, code=code, lignes=lignes[-400:])
+        if code: r["erreur"] = f"code de sortie {code}"
+    except Exception as e:
+        r.update(ok=False, erreur=f"{type(e).__name__} : {str(e)[:200]}")
+    r["duree"] = round(time.time() - t0, 1)
+    texte = json.dumps(r, ensure_ascii=False)
+    if contient_secret(texte):                                           # même barrière que pour une réponse à un agent
+        r = {"titre": r["titre"], "quand": r["quand"], "duree": r["duree"], "ok": False, "erreur": "résultat bloqué : il contenait un secret"}
+        texte = json.dumps(r, ensure_ascii=False)
+    PANNEAUX.mkdir(parents=True, exist_ok=True)
+    tmp = PANNEAUX / f".{nom}.json.tmp"; tmp.write_text(texte); tmp.replace(PANNEAUX / f"{nom}.json")
+    journal("berger", outil, verbe, args, r["ok"], f"panneau {nom}" + ("" if r["ok"] else f" : {r['erreur'][:80]}"))
+
+
+def collecter_a_part(nom, p):
+    try: collecter(nom, p)
+    except Exception as e: print(f"panneau {nom} : {type(e).__name__}", file=sys.stderr)
+    finally: EN_COLLECTE.discard(nom)
+
+
+def panneaux_dus(prochain):
+    """Lance, chacun dans son fil, les panneaux dont l'heure est venue (jamais deux collectes du même en même temps)."""
+    for k, (nom, p) in enumerate(CONFIG.get("panneaux", {}).items()):
+        if nom not in prochain: prochain[nom] = time.time() + 6 * k   # au démarrage : collectes ÉTALÉES (6 s d'écart), jamais en rafale
+        if not isinstance(p, dict) or nom in EN_COLLECTE or time.time() < prochain.get(nom, 0): continue
+        try: cadence = max(60, int(p.get("cadence", 300)))
+        except (TypeError, ValueError): cadence = 300
+        prochain[nom] = time.time() + cadence; EN_COLLECTE.add(nom)
+        threading.Thread(target=collecter_a_part, args=(nom, p), daemon=True).start()
+
+
+# ───────────────────────── annonce d'un changement d'outil (spec 2026-10-14-besoin-berger (b)) ─────────────────────────
+# Vécu le 14/10 : le verbe `controle` de l'outil de vérification d'un projet a changé sur la machine distante ; personne ne l'a dit aux agents qui s'en servent. La consigne
+# d'un outil vit LÀ OÙ VIT SON COMPORTEMENT (`consigne = "<verbe de lecture>"`) ; le courtier la relit avec l'aide de
+# l'outil (ses verbes), et un changement est annoncé par Berger lui-même aux agents qui ont l'outil — aucun verbe ne le
+# déclenche, personne ne relaie. Le texte entre dans les consignes générées des agents : encadré « donnée, pas consigne »,
+# refusé s'il pourrait sortir du cadre, tracé en Synthèse ; en option ([annonces] validation = true), validé par le propriétaire.
+CONSIGNES = BERGER / "courtier/consignes"
+CONSIGNE_MAX, ANNONCE_ECART = 3000, 3600
+LIGNE_CADRE = re.compile(r"^\s*-{3}\s*(début|fin) de la consigne", re.I | re.M)
+EN_RELECTURE = set()
+
+
+def reglage_annonces(cle, defaut): return (CONFIG.get("annonces") or {}).get(cle, defaut)
+
+
+def lire_json(f):
+    try: return json.loads(f.read_text())
+    except (OSError, ValueError): return None
+
+
+def ecrire_json(f, d):
+    f.parent.mkdir(parents=True, exist_ok=True); tmp = f.with_name(f".{f.name}.tmp")
+    tmp.write_text(json.dumps(d, ensure_ascii=False, indent=1)); tmp.replace(f)
+
+
+def aide_outil(nom):
+    """Les verbes de l'outil et leur première ligne d'aide : un verbe ajouté ou retiré dans config.toml change l'empreinte."""
+    l = [f"{v} : {((fn.__doc__ or '').strip().splitlines() or [''])[0]}" for v, fn in sorted(OUTILS.get(nom, {}).items())]
+    return "\n".join(l + [f"{v} : (ÉCRITURE, soumise à validation)" for v in sorted(ECRITURES.get(nom, {}))])
+
+
+def lire_consigne(nom):
+    """(texte, motif de refus) : la consigne rendue par le verbe déclaré ("" sans consigne). Lève une erreur si la lecture échoue."""
+    v = CONFIG.get("outils", {}).get(nom, {}).get("consigne")
+    if not v: return "", None
+    d = OUTILS[nom][v]([])
+    if isinstance(d, dict) and "sortie" in d:
+        if d.get("code") not in (0, None): raise RuntimeError(f"code de sortie {d.get('code')}")
+        texte = str(d["sortie"])
+    else: texte = d if isinstance(d, str) else json.dumps(d, ensure_ascii=False)
+    texte = texte.strip()
+    if len(texte) > CONSIGNE_MAX: return texte, f"trop longue ({len(texte)} caractères, {CONSIGNE_MAX} au plus)"
+    if not re.match(r"version\s*:\s*\S", texte, re.I): return texte, "pas de ligne « version: <x> » en tête"
+    if contient_secret(texte): return texte, "elle contient un secret"
+    if LIGNE_CADRE.search(texte): return texte, "elle contient une ligne du cadre (début ou fin de consigne)"
+    if re.search(r"^\s*#", texte, re.M): return texte, "elle contient un titre « # » (elle ouvrirait une section de règles)"
+    return texte, None
+
+
+def deja_proposee(nom, empreinte):
+    """Une validation d'annonce (en attente, ou déjà décidée — refusée comprise) existe pour CETTE version : pas de nouvelle demande."""
+    for f in VALIDATIONS.glob("*.json") if VALIDATIONS.is_dir() else []:
+        d = lire_json(f) or {}
+        if d.get("outil") == "annonces" and d.get("args") == [nom, empreinte]: return True
+    return False
+
+
+def appliquer_consigne(nom, nouveau, premiere=False):
+    """Range la nouvelle version, la trace (courtier/consignes/<outil>.log), puis berger l'annonce aux agents qui ont l'outil
+    (message de service et consignes régénérées) ; à la première lecture : consignes seulement, aucun message."""
+    nouveau = {**nouveau, "annonce_t": 0 if premiere else time.time(),
+               "annonce": None if premiere else datetime.datetime.now().isoformat(timespec="minutes")}
+    ecrire_json(CONSIGNES / f"{nom}.json", nouveau)
+    with open(CONSIGNES / f"{nom}.log", "a") as f:
+        f.write(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}\t{'première lecture' if premiere else 'annoncée'}\tversion {nouveau.get('version') or '—'}\t{nouveau['empreinte']}\n")
+    if premiere and not nouveau.get("texte"): return "rangée"              # outil sans consigne : rien à mettre dans les consignes
+    r = _transport.executer(str(BERGER / "bin/berger"), ["annonce-outil", nom, *(["--premiere"] if premiere else [])], capture_output=True, text=True, timeout=300)
+    journal("berger", nom, "consigne", [], r.returncode == 0, ("première lecture" if premiere else "annonce") + f" version {nouveau.get('version') or '—'} "
+            + f"{nouveau['empreinte']} : " + ((r.stdout.strip() or "") if r.returncode == 0 else f"ÉCHEC {(r.stderr or r.stdout).strip()[-80:]}")[:120])
+    return r.stdout.strip()
+
+
+def relire_consigne(nom):
+    """Relit la consigne et l'aide de l'outil ; changée → annoncée (ou proposée à la validation du propriétaire). Ne lève jamais."""
+    if not reglage_annonces("actif", True) or nom not in OUTILS: return
+    etat = lire_json(CONSIGNES / f"{nom}.json")
+    try: texte, motif = lire_consigne(nom)
+    except Exception as e:                                               # machine distante injoignable : rien annoncé, l'ancienne reste
+        journal("berger", nom, "consigne", [], False, f"lecture en échec : {type(e).__name__} {str(e)[:60]}"); return
+    if motif:
+        if etat is not None and etat.get("refus") != motif: ecrire_json(CONSIGNES / f"{nom}.json", {**etat, "refus": motif})
+        elif etat is None: ecrire_json(CONSIGNES / f"{nom}.refus.json", {"outil": nom, "refus": motif})
+        journal("berger", nom, "consigne", [], False, f"consigne refusée : {motif} — rien annoncé"); return
+    (CONSIGNES / f"{nom}.refus.json").unlink(missing_ok=True)
+    aide = aide_outil(nom); import hashlib
+    empreinte = hashlib.sha256(f"{texte}\0{aide}".encode()).hexdigest()[:12]
+    version = re.match(r"version\s*:\s*(\S+)", texte, re.I).group(1) if texte else ""
+    if etat and etat.get("empreinte") == empreinte:
+        if etat.get("refus"): ecrire_json(CONSIGNES / f"{nom}.json", {k: v for k, v in etat.items() if k != "refus"})
+        return
+    nouveau = {"outil": nom, "verbe": CONFIG["outils"][nom].get("consigne", ""), "version": version, "texte": texte, "aide": aide,
+               "empreinte": empreinte, "quand": datetime.datetime.now().isoformat(timespec="minutes")}
+    if etat is None: return appliquer_consigne(nom, nouveau, premiere=True)
+    if time.time() - float(etat.get("annonce_t") or 0) < ANNONCE_ECART: return   # une annonce par heure au plus : changements regroupés
+    if reglage_annonces("validation", False):
+        if deja_proposee(nom, empreinte): return
+        ecrire_json(CONSIGNES / f"{nom}.candidat.json", nouveau)
+        try: demander_validation("berger", "annonces", "annoncer", [nom, empreinte])
+        except Exception as e: journal("berger", nom, "consigne", [], False, f"validation non demandée : {str(e)[:80]}")
+        return
+    return appliquer_consigne(nom, nouveau)
+
+
+class Annonces:
+    """Écriture « annonces annoncer <outil> <empreinte> » : seulement avec [annonces] validation = true, demandée par le courtier
+    lui-même (jamais par un agent : aucun n'a l'outil « annonces »), décidée par le propriétaire."""
+    def _candidat(self, args):
+        if len(args) != 2: raise ValueError("annoncer <outil> <empreinte>")
+        c = lire_json(CONSIGNES / f"{args[0]}.candidat.json")
+        if not c or c.get("empreinte") != args[1]: raise ValueError(f"version {args[1]} de l'outil {args[0]} introuvable (remplacée depuis ?)")
+        return c
+
+    def apercu(self, args):
+        c = self._candidat(args); a = lire_json(CONSIGNES / f"{args[0]}.json") or {}
+        return (f"annoncer la nouvelle consigne de l'outil {args[0]} aux agents qui l'ont : version {a.get('version') or '—'} → "
+                f"{c.get('version') or '—'} (empreinte {args[1]}) — {' '.join(c.get('texte', '').split())[:400] or '(verbes changés)'}")
+
+    def executer(self, args):
+        c = self._candidat(args); r = appliquer_consigne(args[0], c)
+        (CONSIGNES / f"{args[0]}.candidat.json").unlink(missing_ok=True)
+        return r or "annoncée"
+
+
+OBJETS["annonces"] = Annonces(); ECRITURES["annonces"] = {"annoncer": (OBJETS["annonces"].apercu, OBJETS["annonces"].executer)}
+
+
+def relecture_a_part(nom):
+    try: relire_consigne(nom)
+    finally: EN_RELECTURE.discard(nom)
+
+
+def consignes_dues(prochain):
+    """Relit, chacun dans son fil, les outils dont l'heure est venue : au démarrage ÉTALÉS (6 s d'écart, après les panneaux), puis
+    chaque heure ([annonces] cadence, 300 s au moins)."""
+    if not reglage_annonces("actif", True): return
+    try: cadence = max(300, int(reglage_annonces("cadence", 3600)))
+    except (TypeError, ValueError): cadence = 3600
+    for k, nom in enumerate(CONFIG.get("outils", {})):
+        if nom not in prochain: prochain[nom] = time.time() + 6 * (len(CONFIG.get("panneaux", {})) + k)
+        if nom in EN_RELECTURE or time.time() < prochain[nom]: continue
+        prochain[nom] = time.time() + cadence; EN_RELECTURE.add(nom)
+        threading.Thread(target=relecture_a_part, args=(nom,), daemon=True).start()
+
+
+def traiter_a_part(agent, f, cadence):
+    """Chaque demande dans son propre fil : une commande longue (tests d'un projet) ne bloque pas les autres agents."""
+    try: traiter(agent, f, cadence)
+    except Exception as e:
+        print(f"{agent}/{f.name} : {type(e).__name__}", file=sys.stderr)   # jamais le message : il pourrait citer une valeur
+        repondre_erreur(f, "erreur interne du courtier")
+
+
+def repondre_erreur(f, message):
+    ecrire_reponse_privee(f, json.dumps({"ok": False, "erreur": message}, ensure_ascii=False))
+    f.unlink(missing_ok=True)
+
+
+def reprendre_executions():
+    """Au démarrage : une action validée coupée en plein vol n'est JAMAIS rejouée ; elle est dite « état inconnu »."""
+    for enc in VALIDATIONS.glob("*.execution") if VALIDATIONS.is_dir() else []:
+        dem, fait = VALIDATIONS / f"{enc.stem}.json", VALIDATIONS / f"{enc.stem}.fait.json"
+        if dem.exists() and not fait.exists():
+            d = json.loads(dem.read_text()); d.update(etat="validé mais ÉCHEC", decide=datetime.datetime.now().isoformat(timespec="minutes"),
+                                                       resultat="le courtier s'est arrêté pendant l'exécution : état inconnu, à vérifier")
+            fait.write_text(json.dumps(d, ensure_ascii=False, indent=1))
+        dem.unlink(missing_ok=True); enc.unlink(missing_ok=True)
+
+
+# ───────────────────────── serveurs MCP des agents strict (berger-mcp, 18/10/2026) ─────────────────────────
+# Un socket par agent qui a un `mcp =` (courtier/mcp/<agent>.sock, masqué à tous les agents) ; le relais bin/berger-mcp, lancé
+# par le moteur hors bac à sable, s'y connecte. Droit, enveloppe, journal, filtre, bornes : courtier/_mcp.py.
+SOCKETS_MCP = BERGER / "courtier/mcp"
+ECOUTE_MCP = {}
+_spec = importlib.util.spec_from_file_location("courtier__mcp", Path(__file__).resolve().parent / "_mcp.py")
+_mcp = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(_mcp)
+_spec = importlib.util.spec_from_file_location("outil__commandes", Path(__file__).resolve().parent / "outils/_commandes.py")
+_commandes = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(_commandes)
+
+
+def droits_mcp(agent): return {x.strip() for x in reglage(agent, "mcp").split(",") if x.strip()}
+
+
+def session_mcp(agent, c):
+    lecture = c.makefile("rb")
+    def fermer():
+        try: c.close()
+        except OSError: pass
+    _mcp.session(agent, lecture, c.sendall, fermer, droits_mcp(agent), BERGER / "bin/berger", _commandes.bac_a_sable, masques_courtier(),
+                 contient_secret, journal, lambda titre, texte: notifier_proprietaire(titre, texte, urgent=True))
+
+
+def ecouter_mcp(agent):
+    import socket
+    f = SOCKETS_MCP / f"{agent}.sock"; f.unlink(missing_ok=True)
+    s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM); s.bind(str(f)); os.chmod(f, 0o600); s.listen(16)
+    while True:
+        c, _ = s.accept()
+        threading.Thread(target=session_mcp, args=(agent, c), daemon=True).start()
+
+
+def sockets_mcp():
+    """Ouvre l'écoute de chaque agent qui a un `mcp =` (vérifié à chaque tour : un agent créé ensuite l'a aussi)."""
+    for d in sorted(AGENTS.iterdir()) if AGENTS.is_dir() else []:
+        if d.name in ECOUTE_MCP or not (d / "agent.conf").is_file() or not droits_mcp(d.name): continue
+        SOCKETS_MCP.mkdir(mode=0o700, parents=True, exist_ok=True)
+        ECOUTE_MCP[d.name] = threading.Thread(target=ecouter_mcp, args=(d.name,), daemon=True); ECOUTE_MCP[d.name].start()
+
+
+# ───────────────────────── accès web d'un agent (voie B de Rétro, 18/10/2026) ─────────────────────────
+# Spec : docs/plans/2026-10-18-retro-web-spec.md §1 (fusion 1/3 : proxy et cycle). Droit : `web` dans le `outils =` de l'agent.
+# `web demander` et `web prolonger` sont des écritures : validées par le PROPRIÉTAIRE seul (aucun valideur d'outil), qui peut
+# fixer la durée (`berger valider <n> --duree 8h`, 24 h au plus) ; une demande sans réponse expire (WEB_ATTENTE). Le proxy
+# (courtier/_web.py) tourne ici, hors de toute enveloppe ; un accès à la fois par agent ; échéance, `web fermer` (l'agent) ou
+# `berger web fermer <agent>` (le propriétaire) : proxy arrêté, socket supprimé, « accès fermé » au journal.
+_spec = importlib.util.spec_from_file_location("courtier__web", Path(__file__).resolve().parent / "_web.py")
+_web = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(_web)
+_spec_session = importlib.util.spec_from_file_location("courtier__web_session", Path(__file__).resolve().parent / "_web_session.py")
+_web_session = importlib.util.module_from_spec(_spec_session); _spec_session.loader.exec_module(_web_session)
+
+
+def sauvegarder_session_web():
+    """Sauvegarde chiffrée : erreur statique, aucune sortie du programme publiée."""
+    try:
+        resultat = _transport.executer(str(BERGER / "bin/berger"), ['coffre', 'sauvegarder', 'avant-session-web'], capture_output=True, timeout=60)
+        if resultat.returncode: raise RuntimeError()
+    except Exception: raise RuntimeError("sauvegarde chiffrée de session impossible") from None
+
+
+SESSIONS_WEB = _web_session.SessionCoffre(COFFRE, sauvegarder_session_web)
+WEB = _web.Acces(SOCKETS_MCP, BERGER / "courtier/web", journal, journal_agent,
+                 fabrique=lambda n, j: _web.Proxy(n, j, chemins_bloques=(CONFIG.get("web") or {}).get("chemins_bloques", _web.CHEMINS_BLOQUES)),
+                 sessions=SESSIONS_WEB, avant_effacer=valeurs_du_coffre)
+
+WEB_ATTENTE = _web.duree(str((CONFIG.get("web") or {}).get("attente", "4h")))
+
+_spec_relais = importlib.util.spec_from_file_location("courtier__web_relais", Path(__file__).resolve().parent / "_web_relais.py")
+_web_relais = importlib.util.module_from_spec(_spec_relais); _spec_relais.loader.exec_module(_web_relais)
+
+
+def mission_rapport_web(chef, texte, agent):
+    """Mission au chef seulement ; aucune sortie du sous-processus publiée."""
+    try:
+        r = _transport.executer(str(BERGER / "bin/berger"), ['mission', chef, texte, '--par', agent],
+                           capture_output=True, timeout=120)
+        if r.returncode: raise RuntimeError()
+    except Exception: raise RuntimeError("mission du chef non confirmée") from None
+
+
+class OutilWeb:
+    contexte = _contexte.ContexteDeLAppel({})                        # posé par le courtier pour CET appel
+
+    def __init__(self):
+        self.verbes = {"etat": self.etat, "fermer": self.fermer}
+        self.ecritures = {"demander": (self.apercu_demander, self.ouvrir), "prolonger": (self.apercu_prolonger, self.prolonger),
+                          "remettre": (self.apercu_remettre, self.remettre)}
+        b = CONFIG.get("bibliotheque") or {}
+        racine = Path(os.path.expanduser(b["racine"])) if b.get("racine") else BERGER / "bibliotheque"
+        self.relais = _web_relais.Relais(BERGER, racine, EQUIPES, contient_secret, mission_rapport_web)
+
+    def agent(self): return self.contexte.get("agent", "")
+
+    def valideur(self, verbe, args): return None                  # propriétaire seul, aucune validation déléguée
+
+    def apercu_remettre(self, args):
+        """remettre <projet> <rapport.md> : rapport sous analyses, dépôt et mission au chef après validation propriétaire"""
+        return self.relais.apercu(self.agent(), args)
+
+    def remettre(self, args):
+        return self.relais.executer(self.agent(), args)
+
+    def en_attente(self, agent, verbe):
+        """Le n° d'une demande web de cet agent encore en attente (None sinon)."""
+        for f in VALIDATIONS.glob("*.json") if VALIDATIONS.is_dir() else []:
+            try: d = json.loads(f.read_text()) if f.stem.isdigit() else {}
+            except (OSError, ValueError): continue
+            if d.get("agent") == agent and d.get("outil") == "web" and d.get("verbe") == verbe: return d.get("n")
+        return None
+
+    def apercu_demander(self, args):
+        """demander <domaine>[,<sous-domaine>…] "<motif>" [durée] : accès web à CE domaine (GET/HEAD, 2 h par défaut, 24 h au plus)"""
+        a = self.agent()
+        if len(args) < 2 or not args[1].strip(): raise ValueError('web demander <domaine> "<motif>" [durée, ex. 2h]')
+        if contient_secret(" ".join(args)): raise ValueError("demande refusée : elle contient un secret (valeur du coffre ou forme de clé)")
+        noms, s, session = _web.demande(args)
+        if WEB.ouvert(a): raise ValueError(f"un accès web est déjà ouvert ({WEB.ouvert(a)['noms'][0]}) : un à la fois (web fermer, ou l'échéance)")
+        if self.en_attente(a, "demander"): raise ValueError(f"une demande d'accès web est déjà en attente (n° {self.en_attente(a, 'demander')})")
+        return (f"ouvrir l'accès web de {a} à {', '.join(noms)} pendant {_web.libelle(s)} (GET et HEAD ; motif : {args[1].strip()[:80]}) — "
+                + ((f"prêter ta session en lecture seule ; connecter d’abord : berger web connecter {noms[0]} — " if session else "") + f"CGU de {noms[0]} vérifiées ? Durée réglable : berger valider <n°> --duree 8h (24 h au plus)"))
+
+    def ouvrir(self, args):
+        noms, secondes, session = _web.demande(args)
+        return WEB.ouvrir(self.agent(), noms, secondes, session=session)
+
+    def apercu_prolonger(self, args):
+        """prolonger <domaine> [durée] : prolonger l'accès web ouvert (2 h par défaut, 24 h au plus par go)"""
+        if contient_secret(" ".join(args)): raise ValueError("demande refusée : elle contient un secret (valeur du coffre ou forme de clé)")
+        a = self.agent(); dom = _web.noms(args[0] if args else "")[0]; s = _web.duree(args[1] if len(args) > 1 else "")
+        o = WEB.ouvert(a)
+        if not o or o["noms"][0] != dom: raise ValueError(f"aucun accès web ouvert à {dom} : web demander")
+        if self.en_attente(a, "prolonger"): raise ValueError(f"une prolongation est déjà en attente (n° {self.en_attente(a, 'prolonger')})")
+        return f"prolonger de {_web.libelle(s)} l'accès web de {a} à {dom} — durée réglable : berger valider <n°> --duree 8h (24 h au plus)"
+
+    def prolonger(self, args):
+        return WEB.prolonger(self.agent(), _web.noms(args[0])[0], _web.duree(args[1] if len(args) > 1 else ""))
+
+    def ajuster(self, verbe, args, options):
+        """La durée fixée par le valideur (`berger valider <n> --duree`) remplace celle de la demande ; 24 h au plus."""
+        if verbe not in ("demander", "prolonger"): raise ValueError("ce verbe ne permet aucun réglage de durée")
+        if set(options) - {"duree"}: raise ValueError(f"réglage inconnu : {', '.join(sorted(set(options) - {'duree'}))}")
+        _web.duree(options["duree"])
+        if verbe == "demander":
+            _, _, session = _web.demande(args)
+            return list(args[:2]) + [options["duree"]] + (["--session"] if session else [])
+        k = 1
+        args = list(args) + [""] * (k + 1 - len(args)); args[k] = options["duree"]
+        return args
+
+    def etat(self, args):
+        """etat : ton accès web ouvert (domaine, échéance, adresse du proxy)"""
+        o = WEB.ouvert(self.agent())
+        if not o: return "aucun accès web ouvert"
+        return {"noms": o["noms"], "fin": datetime.datetime.fromtimestamp(o["fin_ts"]).isoformat(timespec="minutes"),
+                "proxy": str(WEB.chemin(self.agent())), "methodes": list(_web.METHODES), "session": o.get("session", False)}
+
+    def fermer(self, args):
+        """fermer : ferme ton accès web avant l'échéance"""
+        return "accès fermé" if WEB.fermer(self.agent(), "par l'agent") else "aucun accès web ouvert"
+
+
+OBJETS["web"] = OutilWeb(); ECRITURES["web"] = OBJETS["web"].ecritures; OUTILS["web"] = OBJETS["web"].verbes
+
+
+def expirer_web():
+    """Une demande d'accès web sans décision depuis WEB_ATTENTE expire : rien n'est ouvert, le demandeur l'apprend."""
+    for f in VALIDATIONS.glob("*.json") if VALIDATIONS.is_dir() else []:
+        if not f.stem.isdigit() or any((VALIDATIONS / f"{f.stem}{x}").exists() for x in (".decision", ".execution", ".fait.json")): continue
+        try: d = json.loads(f.read_text()); age = time.time() - f.stat().st_mtime
+        except (OSError, ValueError): continue
+        if d.get("outil") != "web" or age < WEB_ATTENTE: continue
+        d.update(etat="expiré", resultat=None, decide=datetime.datetime.now().isoformat(timespec="minutes"), par="personne (sans réponse)")
+        with os.fdopen(os.open(VALIDATIONS / f"{f.stem}.fait.json", os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600), "w") as flux:
+            os.fchmod(flux.fileno(), 0o600)
+            flux.write(json.dumps(d, ensure_ascii=False, indent=1))
+        f.unlink(missing_ok=True)
+        apercu = str(d.get("apercu", ""))
+        if contient_secret(apercu): apercu = "(aperçu masqué : il contenait un secret)"     # jamais un secret au journal de l'agent
+        journal_agent(d.get("agent", "?"), f"demande n° {d.get('n')} EXPIRÉE sans réponse ({_web.libelle(WEB_ATTENTE)}) : {apercu} — rien n'est ouvert")
+        journal(d.get("agent", "?"), "web", d.get("verbe", "?"), d.get("args", []), False, f"validation n° {d.get('n')} : expirée")
+
+
+def main():
+    cadence = {}; prochain = {}; prochain_consignes = {}; PANNEAUX.mkdir(parents=True, exist_ok=True)
+    for f in AGENTS.glob("*/courrier/encours/*.json"):                  # demandes coupées par un redémarrage du courtier
+        repondre_erreur(f, "le courtier a redémarré pendant ta demande : relance-la")
+    reprendre_executions(); WEB.nettoyer()
+    FERMETURE.unlink(missing_ok=True); FILE_ETAT.unlink(missing_ok=True)  # redémarré : la fermeture est faite, nouveau code chargé
+    FILE["reference"] = tete_installation()
+    fil = threading.Thread(target=executeur, name="executeur", daemon=True); fil.start()
+    while True:
+        if not fil.is_alive():                                           # jamais une file muette : systemd relance le courtier
+            print("l'exécuteur des validations s'est arrêté : arrêt du courtier", file=sys.stderr); sys.exit(1)
+        ferme = fermeture_active()
+        for d in sorted(AGENTS.iterdir()) if AGENTS.is_dir() else []:     # installation neuve : pas encore d'agent
+            boite = d / "courrier" / "demandes"
+            if not (d / "agent.conf").is_file(): continue
+            boite.mkdir(parents=True, exist_ok=True); (d / "courrier/reponses").mkdir(exist_ok=True)
+            (d / "courrier/encours").mkdir(exist_ok=True)
+            attente = d / "courrier/attente"
+            for f in sorted(boite.glob("*.json")):
+                if ferme and not instantanee(f):                         # servie après le redémarrage
+                    attente.mkdir(exist_ok=True); f.rename(attente / f.name); continue
+                enc = d / "courrier/encours" / f.name; f.rename(enc)
+                threading.Thread(target=traiter_a_part, args=(d.name, enc, cadence), daemon=True).start()
+            if not ferme:
+                for f in attente.glob("*.json") if attente.is_dir() else []: f.rename(boite / f.name)   # servie au tour suivant
+            for vieux in (d / "courrier/reponses").glob("*.json"):       # réponses jamais lues : effacées après 10 min
+                if time.time() - vieux.stat().st_mtime > 600: vieux.unlink(missing_ok=True)
+        panneaux_dus(prochain)
+        consignes_dues(prochain_consignes)
+        try: WEB.tour()
+        except OSError as e: print(f"accès web : {type(e).__name__}", file=sys.stderr)
+        try: sockets_mcp()
+        except OSError as e: print(f"berger-mcp : écoute impossible ({e.strerror})", file=sys.stderr)
+        time.sleep(0.3)
+
+
+if __name__ == "__main__":
+    main()

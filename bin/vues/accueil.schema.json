@@ -1,0 +1,380 @@
+{
+ "$id": "accueil.schema.json",
+ "x-version": 3,
+ "description": "Données de la vue « Accueil » (poste de pilotage) : ce qui attend le propriétaire, puis chaque agent (hors développeurs) et chaque équipe.",
+ "type": "object",
+ "properties": {
+  "agents_total": {
+   "x-libelle": "Agents",
+   "x-rendu": "nombre",
+   "type": "integer"
+  },
+  "a_toi": {
+   "x-libelle": "À toi de décider",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "x-rendu": "validation",
+    "$ref": "communs.schema.json#/$defs/Validation"
+   }
+  },
+  "delegues": {
+   "x-libelle": "Attend un autre valideur",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "x-rendu": "validation",
+    "$ref": "communs.schema.json#/$defs/Validation"
+   }
+  },
+  "bloques": {
+   "x-libelle": "Bloqué",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "agent": {
+      "x-libelle": "Agent",
+      "x-rendu": "agent",
+      "$ref": "communs.schema.json#/$defs/Agent"
+     },
+     "bloque": {
+      "x-libelle": "Blocage",
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "required": [
+     "agent",
+     "bloque"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "a_lire": {
+   "x-libelle": "À lire",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "x-libelle": "Identifiant",
+      "x-rendu": "cache",
+      "type": "string"
+     },
+     "titre": {
+      "x-libelle": "Titre",
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "titre"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "agents": {
+   "x-libelle": "Agents",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "agent": {
+      "x-libelle": "Agent",
+      "x-rendu": "agent",
+      "$ref": "communs.schema.json#/$defs/Agent"
+     },
+     "statuts": {
+      "x-libelle": "Statut",
+      "x-rendu": "statuts",
+      "type": "array",
+      "items": {
+       "$ref": "communs.schema.json#/$defs/Statut"
+      }
+     },
+     "checklist": {
+      "x-libelle": "En cours",
+      "x-rendu": "checklist",
+      "anyOf": [
+       {
+        "$ref": "communs.schema.json#/$defs/Checklist"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "derniere_action": {
+      "x-libelle": "Dernière action",
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "required": [
+     "agent",
+     "statuts",
+     "checklist",
+     "derniere_action"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "equipes": {
+   "x-libelle": "Équipes",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "projet": {
+      "x-libelle": "Projet",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "chef": {
+      "x-libelle": "Chef de projet",
+      "x-rendu": "agent",
+      "anyOf": [
+       {
+        "$ref": "communs.schema.json#/$defs/Agent"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "coordinateur": {
+      "x-libelle": "Coordinateur",
+      "x-rendu": "agent",
+      "anyOf": [
+       {
+        "$ref": "communs.schema.json#/$defs/Agent"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "membres": {
+      "x-libelle": "Développeurs",
+      "x-rendu": "liste",
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "agent": {
+         "x-libelle": "Agent",
+         "x-rendu": "agent",
+         "$ref": "communs.schema.json#/$defs/Agent"
+        },
+        "sujet": {
+         "x-libelle": "Sujet",
+         "x-rendu": "texte",
+         "type": "string"
+        },
+        "statuts": {
+         "x-libelle": "Statut",
+         "x-rendu": "statuts",
+         "type": "array",
+         "items": {
+          "$ref": "communs.schema.json#/$defs/Statut"
+         }
+        },
+        "faites": {
+         "x-libelle": "Étapes faites",
+         "x-rendu": "nombre",
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "total": {
+         "x-libelle": "Étapes",
+         "x-rendu": "nombre",
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "demande": {
+         "x-libelle": "Demande de fusion",
+         "x-rendu": "texte",
+         "type": [
+          "string",
+          "null"
+         ]
+        }
+       },
+       "required": [
+        "agent",
+        "sujet",
+        "statuts",
+        "faites",
+        "total",
+        "demande"
+       ],
+       "additionalProperties": false
+      }
+     },
+     "fusionnes": {
+      "x-libelle": "Fusionnés",
+      "x-rendu": "liste",
+      "type": "array",
+      "items": {
+       "x-rendu": "texte",
+       "type": "string"
+      }
+     }
+    },
+    "required": [
+     "projet",
+     "chef",
+     "coordinateur",
+     "membres",
+     "fusionnes"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "attentes": {
+   "x-libelle": "Attentes (mêmes catégories que Décisions)",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "pour": {
+      "x-libelle": "Attend",
+      "x-rendu": "texte",
+      "enum": [
+       "toi",
+       "agent"
+      ]
+     },
+     "titre": {
+      "x-libelle": "Quoi",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "detail": {
+      "x-libelle": "Détail",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "quand": {
+      "x-libelle": "Depuis",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "genre": {
+      "x-libelle": "Genre",
+      "x-rendu": "texte",
+      "enum": [
+       "validation",
+       "terminal",
+       "bloque",
+       "go",
+       "question",
+       "a_lire",
+       "a_decider",
+       "fusion",
+       "proposition",
+       "signalement"
+      ]
+     },
+     "agent": {
+      "x-libelle": "Agent",
+      "x-rendu": "cache",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "n": {
+      "x-libelle": "N° de l'écriture",
+      "x-rendu": "nombre",
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "projet": {
+      "x-libelle": "Projet",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "sujet": {
+      "x-libelle": "Sujet",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "document": {
+      "x-libelle": "Document",
+      "x-rendu": "cache",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "commande": {
+      "x-libelle": "Commande à taper",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "lien": {
+      "x-libelle": "Détail",
+      "x-rendu": "lien",
+      "anyOf": [
+       {
+        "$ref": "communs.schema.json#/$defs/Lien"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "required": [
+     "pour",
+     "titre",
+     "detail",
+     "quand",
+     "genre",
+     "agent",
+     "n",
+     "projet",
+     "sujet",
+     "document",
+     "commande",
+     "lien"
+    ],
+    "additionalProperties": false
+   }
+  }
+ },
+ "required": [
+  "agents_total",
+  "a_toi",
+  "delegues",
+  "bloques",
+  "a_lire",
+  "agents",
+  "equipes",
+  "attentes"
+ ],
+ "additionalProperties": false
+}

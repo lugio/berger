@@ -1,0 +1,17 @@
+{
+ "$id": "echanges.schema.json", "x-version": 1,
+ "description": "Données de la vue « Échanges » : le fil entre le propriétaire et les agents (800 dernières lignes du journal), le plus ancien d'abord. Avec un agent : seulement ce qu'il a reçu ou envoyé.",
+ "type": "object",
+ "properties": {
+  "agent": {"x-libelle": "Agent", "x-rendu": "agent", "anyOf": [{"$ref": "communs.schema.json#/$defs/Agent"}, {"type": "null"}]},
+  "proprietaire": {"x-libelle": "Propriétaire", "x-rendu": "texte", "type": "string"},
+  "echanges": {"x-libelle": "Échanges", "x-rendu": "liste", "type": "array", "maxItems": 800, "items": {"type": "object",
+   "properties": {"quand": {"x-libelle": "Quand", "x-rendu": "quand", "type": "string"},
+                  "de": {"x-libelle": "De", "x-rendu": "agent", "$ref": "communs.schema.json#/$defs/Agent"},
+                  "a": {"x-libelle": "À", "x-rendu": "agent", "$ref": "communs.schema.json#/$defs/Agent"},
+                  "genre": {"x-libelle": "Genre", "x-rendu": "texte", "type": "string"},
+                  "texte": {"x-libelle": "Texte", "x-rendu": "texte", "type": "string"}},
+   "required": ["quand", "de", "a", "genre", "texte"], "additionalProperties": false}}
+ },
+ "required": ["agent", "proprietaire", "echanges"], "additionalProperties": false
+}

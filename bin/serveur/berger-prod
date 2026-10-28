@@ -1,0 +1,426 @@
+#!/usr/bin/env python3
+"""berger-prod — mettre une version étiquetée en production, SUR la machine du projet (spec 2026-10-15-verbe-prod).
+Générique : ni adresse ni nom ici, tout vient du fichier de réglages posé sur le serveur (modèle : berger-prod.exemple.toml).
+Usage : berger-prod [--config <fichier>] prod [--essai] vX.Y.Z | compte-rendu | aide
+  ssh à commande forcée : berger-prod --ssh "$SSH_ORIGINAL_COMMAND" (ou la variable seule), le même verbe y est relu.
+  --essai : étapes 0 à 3 (vérifications et sauvegarde vérifiée), puis arrêt : rien d'autre ne change.
+Prérequis du serveur (contrôlés par « aide », « prod » et « --essai », refus sinon) : python 3.11 ou plus, git, gpg, docker compose.
+Étapes : (0) prérequis et place sur le disque, (1) étiquette de la branche principale, (2) sauvegarde de la base relue en
+flux (pg_restore --list) puis CHIFFRÉE (le serveur n'a que la clé publique) et contrôlée, (3) état d'avant, migrations en
+attente, commandes « avant », (4) branche principale posée sur l'étiquette, construction, migrations SQL, démarrage,
+(5) santé (version servie, puis « controles_sante »), commandes « apres », (6) retour arrière automatique (jamais la base), (7) compte rendu JSON.
+Code de sortie : 0 ok, 1 refus, 2 retour arrière fait, 3 retour arrière en échec."""
+import datetime, fcntl, json, math, os, re, shlex, shutil, signal, subprocess, sys, threading, time, urllib.request
+from pathlib import Path
+
+VERSION = re.compile(r"^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
+CR = {"statut": None, "etape": None, "motif": "", "version_demandee": None, "version_avant": None, "version_apres": None,
+      "commit_avant": None, "commit_apres": None, "migrations_en_attente": [], "migrations_jouees": [], "sauvegarde": None,
+      "retour_arriere": None, "apres_en_echec": [],
+      "restauration": None,
+      "debut": datetime.datetime.now().astimezone().isoformat(timespec="seconds"), "fin": None, "journal": []}
+
+
+class Refus(Exception):
+    pass
+
+
+def nouveau(dossier, modele):
+    """Un nom de fichier jamais pris (deux passages dans la même seconde n'écrasent rien)."""
+    ts, n = f"{datetime.datetime.now():%Y%m%d-%H%M%S}", 1
+    f = Path(dossier) / modele.format(ts)
+    while f.exists() or f.with_name(f.name + ".part").exists():
+        n += 1; f = Path(dossier) / modele.format(f"{ts}-{n}")
+    return f
+
+
+def lire_config(chemin):
+    import tomllib  # python 3.11 : contrôlé avant (prerequis)
+    return tomllib.loads(Path(chemin).read_text(encoding="utf-8"))
+
+
+IDENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)?$")
+RETIRES = {"migrations_en_attente": "migrations_dossier", "migrer": "migrations_dossier"}
+
+
+def commandes(c, k):
+    v = c.get(k) or []
+    return [v] if isinstance(v, str) else list(v)
+
+
+def regler(c):
+    for k in ("depot", "compose", "service_base", "sauvegardes", "gpg_destinataire", "sante_url"):
+        if not str(c.get(k, "")).strip(): raise Refus(f"réglage manquant : {k}")
+    for k, n in RETIRES.items():
+        if k in c: raise Refus(f"réglage « {k} » retiré : utilisez « {n} » (voir le fichier d'exemple)")
+    docker = c.get("docker", "docker")
+    dc = f"{docker} compose -f {shlex.quote(c['compose'])}"
+    base = f"{dc} exec -T {shlex.quote(c['service_base'])}"
+    d = {"principale": "main", "sante_champ": "version", "sante_delai": 120, "sante_intervalle": 5, "gpg": "gpg",
+         "docker": docker, "construire": f"{dc} build", "demarrer": f"{dc} up -d", "disque_seuil": 92,
+         "migrations_dossier": "", "migrations_table": "schema_migrations", "migrations_colonne": "name", "migrations_colonne_par": "",
+         "migrations_motif": r"\.sql$",
+         "psql": f"{base} sh -c 'exec psql -X -q -v ON_ERROR_STOP=1 -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\" \"$@\"' psql",
+         "sauvegarder": f"{base} sh -c 'pg_dump -Fc -U \"$POSTGRES_USER\" \"$POSTGRES_DB\"'",
+         "relire": f"{base} pg_restore --list",
+         "restaurer": f"{base} sh -c 'pg_restore --clean --if-exists -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\"'"}
+    c = {**d, **c}
+    for k in ("avant", "apres", "controles_sante"):
+        if any(re.search(r"\bsystem\s+prune\b", x) for x in commandes(c, k)):
+            raise Refus(f"réglage « {k} » : « docker system prune » est interdit (il efface aussi les volumes et images d'autres usages) ; "
+                        "« docker image prune -f » et « docker builder prune -f » suffisent")
+    if not (isinstance(c["disque_seuil"], (int, float)) and 0 < c["disque_seuil"] <= 100):
+        raise Refus("réglage « disque_seuil » : un pourcentage entre 1 et 100")
+    for k in ("migrations_table", "migrations_colonne", "migrations_colonne_par"):
+        if (c[k] or k != "migrations_colonne_par") and not IDENT.match(str(c[k])):
+            raise Refus(f"réglage « {k} » : un nom SQL simple (lettres, chiffres, _)")
+    try: re.compile(c["migrations_motif"])
+    except re.error: raise Refus("réglage « migrations_motif » : expression régulière invalide")
+    return c
+
+
+def prerequis(c=None):
+    """Ce que le serveur doit avoir, contrôlé AVANT tout geste : sinon refus avec le motif exact."""
+    manque = []
+    if sys.version_info < (3, 11): manque.append(f"python 3.11 ou plus (ici {sys.version.split()[0]})")
+    if not shutil.which("git"): manque.append("git")
+    g = shlex.split((c or {}).get("gpg", "gpg"))[0]
+    if not shutil.which(g): manque.append(f"gpg (« {g} » introuvable)")
+    d = shlex.split((c or {}).get("docker", "docker"))
+    try: ok = shutil.which(d[0]) and subprocess.run([*d, "compose", "version"], capture_output=True, timeout=30).returncode == 0
+    except (OSError, subprocess.TimeoutExpired): ok = False
+    if not ok: manque.append("docker compose")
+    if manque: raise Refus("prérequis absents sur le serveur : " + ", ".join(manque))
+
+
+def occupation(chemin):
+    """Pourcentage occupé, compté comme df (place réservée à root exclue)."""
+    s = os.statvfs(chemin)
+    pris = s.f_blocks - s.f_bfree
+    return math.ceil(100 * pris / (pris + s.f_bavail)) if pris + s.f_bavail else 100
+
+
+def etape0_disque(c):
+    CR["etape"] = "0-disque"
+    for ch in dict.fromkeys(x for x in (c["depot"], c["sauvegardes"], "/var/lib/docker") if os.path.isdir(x)):
+        if (p := occupation(ch)) >= c["disque_seuil"]:
+            raise Refus(f"disque plein à {p} % sous {ch} (seuil {c['disque_seuil']} %) : faire de la place d'abord, rien n'est fait")
+
+
+def destinataires(c):
+    d = c["gpg_destinataire"]
+    return sum((["--recipient", x] for x in ([d] if isinstance(d, str) else d)), [])
+
+
+def gpg(c):
+    g = shlex.split(c["gpg"]) + ["--batch", "--yes", "--no-tty"]
+    return g + (["--homedir", c["gpg_home"]] if c.get("gpg_home") else [])
+
+
+def lancer(c, cmd, *, coquille=True, verifier=True, sortie=False, delai=3600):
+    """Une commande dans le dossier de l'appli, inscrite au journal du compte rendu."""
+    r = subprocess.run(cmd, shell=coquille, cwd=c["depot"], capture_output=True, text=True, timeout=delai)
+    CR["journal"].append({"commande": cmd if coquille else " ".join(cmd), "code": r.returncode})
+    if verifier and r.returncode != 0:
+        raise RuntimeError(f"« {cmd if coquille else ' '.join(cmd)} » : code {r.returncode} — {(r.stderr or r.stdout).strip()[-400:]}")
+    return r.stdout if sortie else r
+
+
+def git(c, *a, **k):
+    """git sous le compte qui possède la copie de l'appli (git_utilisateur : ses droits, sa clé vers « origin ») ; sinon
+    le compte qui lance, la copie déclarée sûre."""
+    u = c.get("git_utilisateur")
+    debut = ["runuser", "-u", u, "--", "git"] if u else ["git", "-c", f"safe.directory={c['depot']}"]
+    return lancer(c, [*debut, *a], coquille=False, **k)
+
+
+def version_servie(c):
+    try:
+        with urllib.request.urlopen(c["sante_url"], timeout=10) as r:
+            return str(json.loads(r.read().decode("utf-8", "replace")).get(c["sante_champ"]))
+    except Exception:
+        return None
+
+
+def attendre_version(c, voulue):
+    voulues = {voulue, voulue.lstrip("v")}
+    fin = time.monotonic() + float(c["sante_delai"])
+    while True:
+        v = version_servie(c)
+        if v in voulues: return v
+        if time.monotonic() >= fin: raise RuntimeError(f"santé : la version servie est {v!r}, attendue {voulue}")
+        time.sleep(float(c["sante_intervalle"]))
+
+
+def attendre_controles(c):
+    """Commandes « controles_sante » (ex. l'image et la santé d'un service annexe) : chacune rejouée toutes les
+    sante_intervalle secondes jusqu'à réussir, dans le délai sante_delai ; une qui n'y arrive pas = échec (retour arrière)."""
+    fin = time.monotonic() + float(c["sante_delai"])
+    for cmd in commandes(c, "controles_sante"):
+        while True:
+            r = subprocess.run(cmd, shell=True, cwd=c["depot"], capture_output=True, text=True, timeout=300)
+            if r.returncode == 0 or time.monotonic() >= fin: break
+            time.sleep(float(c["sante_intervalle"]))
+        CR["journal"].append({"commande": cmd, "code": r.returncode})
+        if r.returncode != 0:
+            raise RuntimeError(f"contrôle de santé « {cmd} » en échec (code {r.returncode}) — {(r.stderr or r.stdout).strip()[-300:]}")
+
+
+def etape1_version(c, version):
+    CR["etape"] = "1-version"
+    if not VERSION.match(version): raise Refus(f"version « {version} » : attendu vX.Y.Z (étiquette SemVer)")
+    p = c["principale"]
+    git(c, "fetch", "--tags", "origin", p)
+    r = git(c, "rev-parse", "--verify", "--quiet", f"refs/tags/{version}^{{commit}}", verifier=False)
+    if r.returncode != 0: raise Refus(f"étiquette {version} absente du dépôt")
+    commit = r.stdout.strip()
+    if git(c, "merge-base", "--is-ancestor", commit, f"origin/{p}", verifier=False).returncode != 0:
+        raise Refus(f"étiquette {version} hors de origin/{p}")
+    if git(c, "status", "--porcelain", "--untracked-files=no", sortie=True).strip():
+        raise Refus("copie du serveur modifiée (git status) : rien n'est fait")
+    return commit
+
+
+def cles_destinataires(c):
+    """Identifiants (clé et sous-clés) des destinataires, lus dans le trousseau PUBLIC du serveur."""
+    ids, d = set(), c["gpg_destinataire"]
+    for x in ([d] if isinstance(d, str) else d):
+        r = subprocess.run(gpg(c) + ["--with-colons", "--list-keys", x], capture_output=True, text=True)
+        ids |= {l.split(":")[4].upper() for l in r.stdout.splitlines() if l[:4] in ("pub:", "sub:") and len(l.split(":")) > 4}
+    return ids
+
+
+def etape2_sauvegarde(c, version):
+    """pg_dump → (pg_restore --list, gpg --encrypt) en flux : le CLAIR est relu au passage, jamais écrit sur le disque ;
+    le fichier chiffré est contrôlé SANS clé privée (le serveur n'a que la clé publique)."""
+    CR["etape"] = "2-sauvegarde"
+    dossier = Path(c["sauvegardes"]); dossier.mkdir(parents=True, exist_ok=True); os.chmod(dossier, 0o700)
+    f = nouveau(dossier, "base-{}-avant-" + version + ".dump.gpg")
+    part = f.with_name(f.name + ".part")
+    os.umask(0o077)
+    taille, liste = 0, []
+    with open(part, "wb") as sortie:
+        dump = subprocess.Popen(c["sauvegarder"], shell=True, cwd=c["depot"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        chif = subprocess.Popen(gpg(c) + ["--trust-model", "always", "--encrypt", *destinataires(c)],
+                                stdin=subprocess.PIPE, stdout=sortie, stderr=subprocess.DEVNULL)
+        rel = subprocess.Popen(c["relire"], shell=True, cwd=c["depot"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                               stderr=subprocess.DEVNULL)
+        lecteur = threading.Thread(target=lambda: liste.append(rel.stdout.read())); lecteur.start()
+        vivants = [chif.stdin, rel.stdin]
+        for bloc in iter(lambda: dump.stdout.read(1 << 20), b""):
+            taille += len(bloc)
+            for t in list(vivants):
+                try: t.write(bloc)
+                except BrokenPipeError: vivants.remove(t)
+        for t in (chif.stdin, rel.stdin):
+            try: t.close()
+            except BrokenPipeError: pass
+        chif.wait(); rel.wait(); lecteur.join(); dump.stdout.close(); dump.wait()
+    CR["journal"] += [{"commande": c["sauvegarder"], "code": dump.returncode}, {"commande": "gpg --encrypt", "code": chif.returncode},
+                      {"commande": c["relire"], "code": rel.returncode}]
+    try:
+        if dump.returncode != 0: raise Refus(f"sauvegarde : la commande de sauvegarde a rendu {dump.returncode}")
+        if taille == 0: raise Refus("sauvegarde : vide")
+        if rel.returncode != 0 or not (liste and liste[0].strip()): raise Refus("sauvegarde : pg_restore --list ne la relit pas")
+        if chif.returncode != 0 or chif.stdin not in vivants: raise Refus("sauvegarde : chiffrement gpg en échec (destinataire ?)")
+        if part.stat().st_size == 0: raise Refus("sauvegarde : fichier chiffré vide")
+        os.chmod(part, 0o600)
+        # Contrôle du fichier SANS clé privée : un paquet chiffré pour un des destinataires réglés.
+        paquets = subprocess.run(gpg(c) + ["--list-only", "--list-packets", str(part)], capture_output=True, text=True)
+        pour = {m.upper() for m in re.findall(r":pubkey enc packet:.*?keyid ([0-9A-Za-z]+)", paquets.stdout)}
+        CR["journal"].append({"commande": "gpg --list-packets", "code": paquets.returncode})
+        if not pour or not (pour & cles_destinataires(c)): raise Refus("sauvegarde : le fichier n'est pas chiffré pour le destinataire réglé")
+    except Refus:
+        part.unlink(missing_ok=True)
+        raise
+    part.rename(f)
+    CR["sauvegarde"] = str(f)
+    return f
+
+
+def migrations_en_attente(c, commit):
+    """Les fichiers <migrations_dossier>/*.sql de la version demandée, absents de la table de suivi, dans l'ordre des noms."""
+    dossier = c["migrations_dossier"].strip("/")
+    r = git(c, "ls-tree", "-z", "--name-only", f"{commit}:{dossier}", verifier=False)
+    if r.returncode != 0: raise Refus(f"migrations : dossier « {dossier} » absent de la version demandée")
+    motif = re.compile(c["migrations_motif"])
+    fichiers = sorted(n for n in r.stdout.split("\0") if n and motif.search(n))
+    # Le nom entre dans l'INSERT de suivi entre apostrophes : un nom hors de [A-Za-z0-9._-] (apostrophe comprise) est refusé.
+    douteux = [n for n in fichiers if not re.fullmatch(r"[A-Za-z0-9._-]+", n)]
+    if douteux: raise Refus(f"migrations : nom de fichier refusé (seuls lettres, chiffres, « . _ - » ; ni apostrophe ni espace) : {douteux[0]!r}")
+    select = f"SELECT {c['migrations_colonne']} FROM {c['migrations_table']}"
+    r = lancer(c, f"{c['psql']} -A -t -c {shlex.quote(select)}", verifier=False)
+    if r.returncode != 0:
+        raise Refus(f"migrations : table de suivi « {c['migrations_table']} » illisible — {(r.stderr or r.stdout).strip()[-300:]}")
+    faites = {l.strip() for l in r.stdout.splitlines() if l.strip()}
+    if fichiers and not faites:
+        raise Refus(f"migrations : la table « {c['migrations_table']} » est vide alors que {len(fichiers)} fichiers existent — "
+                    "inscrire d'abord celles déjà passées à la main (sinon toutes seraient rejouées)")
+    return [n for n in fichiers if n not in faites]
+
+
+SA_TRANSACTION = re.compile(rb"^\s*BEGIN\s*;", re.I | re.M)
+
+
+def jouer_migration(c, nom):
+    """Une migration et son inscription. Cas courant : dans la MÊME transaction (psql --single-transaction), tout ou rien.
+    Un fichier qui ouvre lui-même sa transaction (« BEGIN; ») est joué tel quel, SANS --single-transaction (son COMMIT
+    fermerait la nôtre), puis inscrit juste après s'il a réussi."""
+    sql = (Path(c["depot"]) / c["migrations_dossier"].strip("/") / nom).read_bytes()
+    colonnes, valeurs = [c["migrations_colonne"]], [f"'{nom}'"]
+    if c["migrations_colonne_par"]: colonnes.append(c["migrations_colonne_par"]); valeurs.append(f"'berger-prod {CR['version_demandee']}'")
+    inscrire = f"INSERT INTO {c['migrations_table']} ({', '.join(colonnes)}) VALUES ({', '.join(valeurs)});"
+    propre = bool(SA_TRANSACTION.search(sql))
+    etapes = [(f"{c['psql']} -f -", sql)] if propre else [(f"{c['psql']} --single-transaction -f -", sql + f"\n;\n{inscrire}\n".encode())]
+    if propre: etapes.append((f"{c['psql']} -c {shlex.quote(inscrire)}", None))
+    for cmd, entree in etapes:
+        r = subprocess.run(cmd, shell=True, cwd=c["depot"], input=entree, capture_output=True, timeout=3600)
+        CR["journal"].append({"commande": f"{cmd}  < {nom}" if entree is not None else cmd, "code": r.returncode})
+        if r.returncode != 0:
+            quoi = f"migration {nom}" if entree is not None else f"inscription de {nom} (jouée, NON inscrite)"
+            raise RuntimeError(f"{quoi} : code {r.returncode} — {(r.stderr or r.stdout).decode('utf-8', 'replace').strip()[-400:]}")
+    CR["migrations_jouees"].append(nom)
+
+
+def poser(c, commit):
+    """La copie sur la branche principale, au commit voulu (jamais de HEAD détachée)."""
+    git(c, "checkout", "--quiet", "-B", c["principale"], commit)
+
+
+def commande_restauration(c, f):
+    """Le serveur n'a pas la clé privée : le propriétaire l'apporte (gpg de root, importée le temps de restaurer)."""
+    return f"cd {shlex.quote(c['depot'])} && gpg --decrypt {shlex.quote(str(f))} | {c['restaurer']}"
+
+
+def mise_en_prod(c, version, essai=False):
+    etape0_disque(c)
+    commit = etape1_version(c, version)
+    sauvegarde = etape2_sauvegarde(c, version)
+    CR["etape"] = "3-avant"
+    CR["version_avant"] = version_servie(c)
+    CR["commit_avant"] = git(c, "rev-parse", "HEAD", sortie=True).strip()
+    if c["migrations_dossier"]: CR["migrations_en_attente"] = migrations_en_attente(c, commit)
+    for cmd in commandes(c, "avant"):  # contrôles du projet : un échec = refus, rien n'a changé
+        r = lancer(c, cmd, verifier=False)
+        if r.returncode != 0: raise Refus(f"commande « avant » en échec : « {cmd} » (code {r.returncode}) — {(r.stderr or r.stdout).strip()[-300:]}")
+    if essai:
+        CR["statut"] = "essai"; CR["motif"] = f"essai à blanc : {version} est déployable, sauvegarde vérifiée ; rien n'a changé"
+        CR["version_apres"], CR["commit_apres"] = CR["version_avant"], CR["commit_avant"]
+        return 0
+    # La commande de retour arrière du CODE (la base : « restauration », donnée seulement si une migration a été tentée).
+    CR["retour_arriere"] = " && ".join([f"cd {shlex.quote(c['depot'])}", (f"runuser -u {shlex.quote(c['git_utilisateur'])} -- " if c.get("git_utilisateur") else "")
+                                        + f"git checkout -B {shlex.quote(c['principale'])} {CR['commit_avant']}",
+                                        *([c["construire"]] if c["construire"] else []), c["demarrer"]])
+    tentee = False
+    try:
+        CR["etape"] = "4-mise-en-place"
+        poser(c, commit)
+        if c["construire"]: lancer(c, c["construire"])
+        if c["migrations_dossier"]:
+            for nom in migrations_en_attente(c, commit):  # relue juste avant : rien n'a pu passer entre-temps
+                tentee = True; jouer_migration(c, nom)
+        lancer(c, c["demarrer"])
+        CR["etape"] = "5-sante"
+        CR["version_apres"] = attendre_version(c, version)
+        attendre_controles(c)
+        CR["commit_apres"] = commit
+        CR["statut"] = "ok"; CR["motif"] = f"{version} en production"
+        for cmd in commandes(c, "apres"):  # ménage (images, cache) : un échec est signalé, la version reste en place
+            try: ok = lancer(c, cmd, verifier=False).returncode == 0
+            except subprocess.TimeoutExpired: ok = False
+            if not ok: CR["apres_en_echec"].append(cmd)
+        if CR["apres_en_echec"]: CR["motif"] += f" ; commande(s) « apres » en échec : {', '.join(CR['apres_en_echec'])}"
+        return 0
+    except (RuntimeError, Refus, subprocess.TimeoutExpired) as e:
+        CR["motif"] = f"échec à l'étape {CR['etape']} : {e}"
+    # 6. Retour arrière : le code d'avant, jamais la base.
+    if tentee:
+        CR["restauration"] = commande_restauration(c, sauvegarde)
+    CR["etape"] = "6-retour-arriere"
+    try:
+        poser(c, CR["commit_avant"])
+        if c["construire"]: lancer(c, c["construire"])
+        lancer(c, c["demarrer"])
+        CR["commit_apres"] = CR["commit_avant"]
+        if CR["version_avant"]: CR["version_apres"] = attendre_version(c, CR["version_avant"])
+        else: CR["version_apres"] = version_servie(c)
+        CR["statut"] = "retour-arriere"
+        return 2
+    except (RuntimeError, subprocess.TimeoutExpired) as e:
+        CR["statut"] = "retour-arriere-echoue"; CR["motif"] += f" ; RETOUR ARRIÈRE EN ÉCHEC : {e}"
+        CR["commit_apres"] = git(c, "rev-parse", "HEAD", sortie=True, verifier=False).strip() or None
+        return 3
+
+
+def dernier_compte_rendu(c):
+    d = Path(c["sauvegardes"]) / "comptes-rendus"
+    f = sorted(d.glob("*.json"), key=lambda x: x.stat().st_mtime_ns) if d.is_dir() else []
+    print(f[-1].read_text() if f else "aucun compte rendu")
+    return 0
+
+
+def principal(argv):
+    cfg = os.environ.get("BERGER_PROD_CONFIG", "/etc/berger-prod.toml")
+    if argv[:1] == ["--config"] and len(argv) >= 2: cfg, argv = argv[1], argv[2:]
+    brut = argv[1] if argv[:1] == ["--ssh"] and len(argv) == 2 else os.environ.get("SSH_ORIGINAL_COMMAND") if not argv else None
+    if brut is not None:  # commande forcée : un seul verbe, aucun caractère de coquille
+        if not re.fullmatch(r"[A-Za-z0-9 ._-]{1,64}", brut): raise Refus("commande ssh refusée")
+        argv = brut.split()
+    if argv[:1] == ["aide"]:
+        prerequis(regler(lire_config(cfg)) if Path(cfg).is_file() else None)
+        print(__doc__ + "\nPrérequis : présents."); return 0
+    if argv == ["compte-rendu"]: return dernier_compte_rendu(regler(lire_config(cfg)))
+    essai = argv[1:2] == ["--essai"]
+    if essai: argv = [argv[0], *argv[2:]]
+    if len(argv) != 2 or argv[0] != "prod": raise Refus("usage : prod [--essai] vX.Y.Z")
+    CR["version_demandee"] = argv[1]
+    if not VERSION.match(argv[1]): CR["etape"] = "1-version"; raise Refus(f"version « {argv[1]} » : attendu vX.Y.Z (étiquette SemVer)")
+    CR["etape"] = "0-prerequis"
+    if sys.version_info < (3, 11): prerequis()
+    c = regler(lire_config(cfg))
+    Path(c["sauvegardes"]).mkdir(parents=True, exist_ok=True)
+    CR["_dossier"] = c["sauvegardes"]
+    verrou = open(Path(c["sauvegardes"]) / ".berger-prod.verrou", "w")
+    try:
+        fcntl.flock(verrou, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        raise Refus("une mise en production est déjà en cours")
+    prerequis(c)
+    return mise_en_prod(c, argv[1], essai)
+
+
+def main():
+    # La connexion ssh peut être coupée (délai du client) : la mise en production va quand même au bout, retour arrière
+    # compris, et son compte rendu reste lisible par « compte-rendu ».
+    signal.signal(signal.SIGHUP, signal.SIG_IGN)
+    try:
+        code = principal(sys.argv[1:])
+    except Refus as e:
+        CR["statut"] = "refus"; CR["motif"] = str(e); code = 1
+    except Exception as e:  # imprévu avant toute modification du code servi
+        CR["statut"] = "refus"; CR["motif"] = f"erreur : {e}"; code = 1
+    if CR["statut"] is None: return code  # aide, compte-rendu
+    CR["fin"] = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
+    dossier = CR.pop("_dossier", None)
+    texte = json.dumps(CR, ensure_ascii=False, indent=1)
+    if dossier:
+        try:  # journal du serveur : une ligne par passage
+            with open(Path(dossier) / "berger-prod.log", "a", encoding="utf-8") as j:
+                j.write(f"{CR['fin']} {CR['statut']} {CR['version_demandee']} avant={CR['version_avant']} apres={CR['version_apres']} "
+                        f"sauvegarde={CR['sauvegarde']} — {CR['motif']}\n")
+        except OSError:
+            pass
+        try:
+            d = Path(dossier) / "comptes-rendus"; d.mkdir(exist_ok=True)
+            nouveau(d, "{}-" + f"{CR['version_demandee']}.json").write_text(texte + "\n")
+        except OSError:
+            pass
+    try:
+        print(texte, flush=True)
+    except OSError:
+        pass
+    return code
+
+
+if __name__ == "__main__":
+    sys.exit(main())

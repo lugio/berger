@@ -1,0 +1,40 @@
+# LISTE BLANCHE : le dépôt ne contient QUE le produit Berger. Tout le reste (agents, mémoire, journaux,
+# configuration locale, profil, archives, sessions des moteurs) est ignoré. Contrôle : berger verifier-depot.
+/*
+!/.gitignore
+!/README.md
+!/README.fr.md
+!/CONTRIBUTING.md
+!/LICENSE
+!/SECURITY.md
+!/CODE_OF_CONDUCT.md
+!/CHANGELOG.md
+!/.github/
+!/config.exemple.toml
+!/bin/
+!/courtier/
+!/commun/
+!/tests/
+!/crochets/
+!/herdr-plugin/
+!/systemd/
+!/docs/
+# …et même dans ces dossiers, jamais de données locales :
+/courtier/*.log
+/courtier/dernier*.txt
+/commun/USER.md
+/tests/dernier*.txt
+/tests/dernier*.txt.tmp
+/tests/contrats/
+/tests/.tout.verrou
+/tests/sondes-gardes.txt
+__pycache__/
+*.pyc
+/courtier/validations/
+/courtier/panneaux/
+/courtier/pages/
+/courtier/essai-ecritures.txt
+/courtier/echanges*.jsonl
+/courtier/ecrire-debit.json
+/courtier/boucles.json
+/courtier/sollicitations/

@@ -1,0 +1,4 @@
+# nom<TAB>commande que l'agent doit lancer<TAB>motif attendu dans la trace quand le garde bloque (vide = ne doit PAS bloquer)
+# Copier en sondes-gardes.txt (jamais versionné) et adapter aux garde-fous de config.toml.
+temoin	ls	
+post	python3 ../../tests/sonde-post.py	motif-de-votre-garde-apres

@@ -1,0 +1,609 @@
+{
+ "$id": "fiche.schema.json",
+ "x-version": 1,
+ "description": "Données de la vue « Fiche » d'un agent : six rubriques (identité, capacités, limites, mémoire, réveils, activité), chacune produite par sa fonction de données du cœur (RUBRIQUES_FICHE).",
+ "type": "object",
+ "properties": {
+  "agent": {
+   "x-libelle": "Agent",
+   "x-rendu": "agent",
+   "$ref": "communs.schema.json#/$defs/Agent"
+  },
+  "statuts": {
+   "x-libelle": "Statut",
+   "x-rendu": "statuts",
+   "type": "array",
+   "items": {
+    "$ref": "communs.schema.json#/$defs/Statut"
+   }
+  },
+  "identite": {
+   "x-libelle": "Identité",
+   "x-rendu": "liste",
+   "type": "object",
+   "properties": {
+    "statuts": {
+     "x-libelle": "Statut",
+     "x-rendu": "statuts",
+     "type": "array",
+     "items": {
+      "$ref": "communs.schema.json#/$defs/Statut"
+     }
+    },
+    "moteur": {
+     "x-libelle": "Moteur par défaut",
+     "x-rendu": "texte",
+     "type": "string"
+    },
+    "panneaux": {
+     "x-libelle": "Panneaux ouverts",
+     "x-rendu": "texte",
+     "type": "string"
+    },
+    "mur_ouvert": {
+     "x-libelle": "Mur ouvert",
+     "x-rendu": "oui-non",
+     "type": "boolean"
+    },
+    "rc": {
+     "x-libelle": "Remote Control",
+     "x-rendu": "texte",
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "travaille_dans": {
+     "x-libelle": "Travaille dans",
+     "x-rendu": "cache",
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "dossier": {
+     "x-libelle": "Dossier",
+     "x-rendu": "texte",
+     "type": "string"
+    },
+    "outils": {
+     "x-libelle": "Outils du courtier",
+     "x-rendu": "texte",
+     "type": "string"
+    },
+    "ton": {
+     "x-libelle": "Ton",
+     "x-rendu": "liste",
+     "type": "array",
+     "items": {
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "protections": {
+     "x-libelle": "Protections",
+     "x-rendu": "liste",
+     "type": "object",
+     "properties": {
+      "garde_fous": {
+       "x-libelle": "Garde-fous",
+       "x-rendu": "nombre",
+       "type": "integer"
+      },
+      "codex": {
+       "x-libelle": "Ouvert sous Codex",
+       "x-rendu": "oui-non",
+       "type": "boolean"
+      },
+      "approuves": {
+       "x-libelle": "Garde-fous approuvés sous Codex",
+       "x-rendu": "oui-non",
+       "type": "boolean"
+      },
+      "ok": {
+       "x-libelle": "Protections en place",
+       "x-rendu": "oui-non",
+       "type": "boolean"
+      },
+      "ouvert": {
+       "x-libelle": "Mur ouvert",
+       "x-rendu": "oui-non",
+       "type": "boolean"
+      },
+      "illisibles": {
+       "x-libelle": "Emplacements illisibles",
+       "x-rendu": "nombre",
+       "type": [
+        "integer",
+        "null"
+       ]
+      },
+      "ecrit_en_plus": {
+       "x-libelle": "Écrit aussi dans",
+       "x-rendu": "liste",
+       "type": "array",
+       "items": {
+        "x-rendu": "texte",
+        "type": "string"
+       }
+      }
+     },
+     "required": [
+      "garde_fous",
+      "codex",
+      "approuves",
+      "ok",
+      "ouvert",
+      "illisibles",
+      "ecrit_en_plus"
+     ],
+     "additionalProperties": false
+    }
+   },
+   "required": [
+    "statuts",
+    "moteur",
+    "panneaux",
+    "mur_ouvert",
+    "rc",
+    "travaille_dans",
+    "dossier",
+    "outils",
+    "ton",
+    "protections"
+   ],
+   "additionalProperties": false
+  },
+  "capacites": {
+   "x-libelle": "Capacités",
+   "x-rendu": "liste",
+   "type": "object",
+   "properties": {
+    "capacites": {
+     "x-libelle": "Capacités",
+     "x-rendu": "liste",
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "titre": {
+        "x-libelle": "Capacité",
+        "x-rendu": "texte",
+        "type": "string"
+       },
+       "texte": {
+        "x-libelle": "Description",
+        "x-rendu": "texte",
+        "type": "string"
+       }
+      },
+      "required": [
+       "titre",
+       "texte"
+      ],
+      "additionalProperties": false
+     }
+    },
+    "skills": {
+     "x-libelle": "Méthodes (skills)",
+     "x-rendu": "liste",
+     "type": "object",
+     "properties": {
+      "partagees": {
+       "x-libelle": "Méthodes partagées",
+       "x-rendu": "nombre",
+       "type": "integer"
+      },
+      "role": {
+       "x-libelle": "Méthodes de son rôle",
+       "x-rendu": "liste",
+       "type": "array",
+       "items": {
+        "x-rendu": "texte",
+        "type": "string"
+       }
+      },
+      "propres": {
+       "x-libelle": "Méthodes à lui",
+       "x-rendu": "liste",
+       "type": "array",
+       "items": {
+        "x-rendu": "texte",
+        "type": "string"
+       }
+      }
+     },
+     "required": [
+      "partagees",
+      "role",
+      "propres"
+     ],
+     "additionalProperties": false
+    }
+   },
+   "required": [
+    "capacites",
+    "skills"
+   ],
+   "additionalProperties": false
+  },
+  "limites": {
+   "x-libelle": "Limites",
+   "x-rendu": "liste",
+   "type": "object",
+   "properties": {
+    "impossible": {
+     "x-libelle": "Impossible ici",
+     "x-rendu": "liste",
+     "type": "array",
+     "items": {
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "lecture_seule": {
+     "x-libelle": "Lecture seule",
+     "x-rendu": "oui-non",
+     "type": "boolean"
+    },
+    "superviseur": {
+     "x-libelle": "Superviseur",
+     "x-rendu": "oui-non",
+     "type": "boolean"
+    },
+    "a_valider": {
+     "x-libelle": "Soumis à validation",
+     "x-rendu": "liste",
+     "type": "array",
+     "items": {
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "regles": {
+     "x-libelle": "Ses règles",
+     "x-rendu": "liste",
+     "type": "array",
+     "items": {
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    }
+   },
+   "required": [
+    "impossible",
+    "lecture_seule",
+    "superviseur",
+    "a_valider",
+    "regles"
+   ],
+   "additionalProperties": false
+  },
+  "memoire": {
+   "x-libelle": "Mémoire",
+   "x-rendu": "liste",
+   "type": "object",
+   "properties": {
+    "dossier": {
+     "x-libelle": "Dossier de mémoire",
+     "x-rendu": "texte",
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "fiches": {
+     "x-libelle": "Fiches",
+     "x-rendu": "nombre",
+     "type": [
+      "integer",
+      "null"
+     ]
+    },
+    "taille": {
+     "x-libelle": "Caractères",
+     "x-rendu": "nombre",
+     "type": "integer"
+    },
+    "max": {
+     "x-libelle": "Caractères au plus",
+     "x-rendu": "nombre",
+     "type": "integer"
+    },
+    "lignes": {
+     "x-libelle": "Souvenirs",
+     "x-rendu": "liste",
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "date": {
+        "x-libelle": "Date",
+        "x-rendu": "quand",
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "texte": {
+        "x-libelle": "Souvenir",
+        "x-rendu": "texte",
+        "type": "string"
+       }
+      },
+      "required": [
+       "date",
+       "texte"
+      ],
+      "additionalProperties": false
+     }
+    },
+    "propositions": {
+     "x-libelle": "Propositions à valider",
+     "x-rendu": "liste",
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "nom": {
+        "x-libelle": "Proposition",
+        "x-rendu": "texte",
+        "type": "string"
+       },
+       "texte": {
+        "x-libelle": "Texte",
+        "x-rendu": "texte",
+        "type": "string"
+       }
+      },
+      "required": [
+       "nom",
+       "texte"
+      ],
+      "additionalProperties": false
+     }
+    }
+   },
+   "required": [
+    "dossier",
+    "fiches",
+    "taille",
+    "max",
+    "lignes",
+    "propositions"
+   ],
+   "additionalProperties": false
+  },
+  "veille": {
+   "x-libelle": "Réveils",
+   "x-rendu": "liste",
+   "type": "object",
+   "properties": {
+    "heures": {
+     "x-libelle": "Heures de réveil",
+     "x-rendu": "texte",
+     "type": "string"
+    },
+    "reveils": {
+     "x-libelle": "Réveils aujourd'hui",
+     "x-rendu": "nombre",
+     "type": "integer"
+    },
+    "ras": {
+     "x-libelle": "RAS",
+     "x-rendu": "nombre",
+     "type": "integer"
+    },
+    "signalements": {
+     "x-libelle": "Signalements",
+     "x-rendu": "nombre",
+     "type": "integer"
+    },
+    "echecs": {
+     "x-libelle": "Échecs",
+     "x-rendu": "nombre",
+     "type": "integer"
+    },
+    "dernier": {
+     "x-libelle": "Dernier réveil",
+     "x-rendu": "texte",
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "taches": {
+     "x-libelle": "Tâches planifiées",
+     "x-rendu": "liste",
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "nom": {
+        "x-libelle": "Tâche",
+        "x-rendu": "texte",
+        "type": "string"
+       },
+       "quand": {
+        "x-libelle": "Quand",
+        "x-rendu": "texte",
+        "type": "string"
+       },
+       "moteur": {
+        "x-libelle": "Moteur",
+        "x-rendu": "texte",
+        "type": "string"
+       },
+       "notifier": {
+        "x-libelle": "Notification",
+        "x-rendu": "texte",
+        "type": "string"
+       },
+       "prochaine": {
+        "x-libelle": "Prochaine",
+        "x-rendu": "texte",
+        "type": "string"
+       },
+       "derniere": {
+        "x-libelle": "Dernière sortie",
+        "x-rendu": "texte",
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      },
+      "required": [
+       "nom",
+       "quand",
+       "moteur",
+       "notifier",
+       "prochaine",
+       "derniere"
+      ],
+      "additionalProperties": false
+     }
+    }
+   },
+   "required": [
+    "heures",
+    "reveils",
+    "ras",
+    "signalements",
+    "echecs",
+    "dernier",
+    "taches"
+   ],
+   "additionalProperties": false
+  },
+  "activite": {
+   "x-libelle": "Activité",
+   "x-rendu": "liste",
+   "type": "object",
+   "properties": {
+    "a_faire": {
+     "x-libelle": "À faire",
+     "x-rendu": "nombre",
+     "type": "integer"
+    },
+    "fait": {
+     "x-libelle": "Fait",
+     "x-rendu": "nombre",
+     "type": "integer"
+    },
+    "jours": {
+     "x-libelle": "Jours de journal",
+     "x-rendu": "nombre",
+     "type": "integer"
+    },
+    "premier_jour": {
+     "x-libelle": "Premier jour",
+     "x-rendu": "quand",
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "en_cours": {
+     "x-libelle": "Travail en cours",
+     "x-rendu": "liste",
+     "anyOf": [
+      {
+       "type": "object",
+       "properties": {
+        "titre": {
+         "x-libelle": "Travail",
+         "x-rendu": "texte",
+         "type": "string"
+        },
+        "faites": {
+         "x-libelle": "Étapes faites",
+         "x-rendu": "nombre",
+         "type": "integer"
+        },
+        "total": {
+         "x-libelle": "Étapes",
+         "x-rendu": "nombre",
+         "type": "integer"
+        }
+       },
+       "required": [
+        "titre",
+        "faites",
+        "total"
+       ],
+       "additionalProperties": false
+      },
+      {
+       "type": "null"
+      }
+     ]
+    },
+    "auto_test": {
+     "x-libelle": "Dernier auto-test",
+     "x-rendu": "texte",
+     "type": "string"
+    },
+    "termines": {
+     "x-libelle": "Travaux terminés",
+     "x-rendu": "liste",
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "titre": {
+        "x-libelle": "Travail",
+        "x-rendu": "texte",
+        "type": "string"
+       },
+       "quand": {
+        "x-libelle": "Terminé (AAAA-MM-JJ_HHMM)",
+        "x-rendu": "texte",
+        "type": "string"
+       },
+       "faites": {
+        "x-libelle": "Étapes faites",
+        "x-rendu": "nombre",
+        "type": "integer"
+       },
+       "total": {
+        "x-libelle": "Étapes",
+        "x-rendu": "nombre",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "titre",
+       "quand",
+       "faites",
+       "total"
+      ],
+      "additionalProperties": false
+     },
+     "maxItems": 8
+    }
+   },
+   "required": [
+    "a_faire",
+    "fait",
+    "jours",
+    "premier_jour",
+    "en_cours",
+    "auto_test",
+    "termines"
+   ],
+   "additionalProperties": false
+  }
+ },
+ "required": [
+  "agent",
+  "statuts",
+  "identite",
+  "capacites",
+  "limites",
+  "memoire",
+  "veille",
+  "activite"
+ ],
+ "additionalProperties": false
+}

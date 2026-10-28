@@ -1,0 +1,25 @@
+[Unit]
+Description=Berger — serveur Herdr (session persistante « default »)
+Documentation=https://herdr.dev
+# Sans cette unité, le serveur Herdr n'existe qu'à partir du moment où quelqu'un se connecte et lance « herdr » :
+# test de redémarrage du 07/10/2026, la VM est repartie, AUCUN agent ni panneau jusqu'à la première connexion.
+# Au démarrage du serveur, le crochet [[startup]] du plugin herdr-plugin/ lance « berger reprendre ».
+
+[Service]
+Type=simple
+# Un serveur déjà en route (lancé à la main, ou reprise à chaud « herdr update --handoff ») : on n'en démarre pas un 2e.
+# « herdr status server » sort en 0 même « not running » : on lit la ligne « status: running ».
+ExecCondition=/bin/sh -c '! %h/.local/bin/herdr status server 2>/dev/null | grep -q "^status: running"'
+# Les unités --user ont un PATH minimal, sans ~/.local/bin où vit herdr.
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=TERM=xterm-256color
+WorkingDirectory=%h
+ExecStart=%h/.local/bin/herdr server
+# Arrêt propre par l'API (Herdr enregistre sa session) plutôt qu'un SIGTERM sur les panes.
+ExecStop=%h/.local/bin/herdr server stop
+# on-failure et pas always : « herdr server stop » sort en 0, systemd ne doit pas le ressusciter.
+Restart=on-failure
+RestartSec=30s
+
+[Install]
+WantedBy=default.target

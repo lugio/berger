@@ -1,0 +1,103 @@
+{
+ "$id": "colonnes.schema.json",
+ "x-version": 1,
+ "description": "Données de la vue « Tableau » (colonnes) : les colonnes et les cartes (agent, validation, lecture, demande de fusion) rangées par ce qu'elles attendent.",
+ "type": "object",
+ "properties": {
+  "colonnes": {
+   "x-libelle": "Colonnes",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "cle": {
+      "x-libelle": "Clé",
+      "x-rendu": "cache",
+      "enum": [
+       "cours",
+       "proprio",
+       "agent",
+       "repos",
+       "livre"
+      ]
+     },
+     "libelle": {
+      "x-libelle": "Colonne",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "ton": {
+      "x-libelle": "Ton",
+      "x-rendu": "ton",
+      "enum": [
+       "rouge",
+       "jaune",
+       "vert",
+       "bleu",
+       "cyan",
+       "pale"
+      ]
+     }
+    },
+    "required": [
+     "cle",
+     "libelle",
+     "ton"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "cartes": {
+   "x-libelle": "Cartes",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "colonne": {
+      "x-libelle": "Colonne",
+      "x-rendu": "cache",
+      "enum": [
+       "cours",
+       "proprio",
+       "agent",
+       "repos",
+       "livre"
+      ]
+     },
+     "titre": {
+      "x-libelle": "Titre",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "lignes": {
+      "x-libelle": "Contenu",
+      "x-rendu": "lignes",
+      "type": "array",
+      "items": {
+       "$ref": "communs.schema.json#/$defs/Ligne"
+      }
+     },
+     "vif": {
+      "x-libelle": "Mise en avant",
+      "x-rendu": "oui-non",
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "colonne",
+     "titre",
+     "lignes",
+     "vif"
+    ],
+    "additionalProperties": false
+   }
+  }
+ },
+ "required": [
+  "colonnes",
+  "cartes"
+ ],
+ "additionalProperties": false
+}

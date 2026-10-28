@@ -1,0 +1,113 @@
+{
+ "$id": "missions.schema.json",
+ "x-version": 1,
+ "description": "Données de la vue « Missions » d'un hôte : les missions hébergées dans son onglet Missions, et le compte des missions en cours dans Berger.",
+ "type": "object",
+ "properties": {
+  "hote": {
+   "x-libelle": "Hôte",
+   "x-rendu": "agent",
+   "$ref": "communs.schema.json#/$defs/Agent"
+  },
+  "projet": {
+   "x-libelle": "Projet (chef de projet)",
+   "x-rendu": "texte",
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "en_cours": {
+   "x-libelle": "Missions en cours dans Berger",
+   "x-rendu": "nombre",
+   "type": "integer"
+  },
+  "max": {
+   "x-libelle": "Missions simultanées au plus",
+   "x-rendu": "nombre",
+   "type": "integer"
+  },
+  "missions": {
+   "x-libelle": "Missions",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "agent": {
+      "x-libelle": "Agent",
+      "x-rendu": "agent",
+      "$ref": "communs.schema.json#/$defs/Agent"
+     },
+     "moteur": {
+      "x-libelle": "Moteur",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "modele": {
+      "x-libelle": "Modèle",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "statuts": {
+      "x-libelle": "Statut",
+      "x-rendu": "statuts",
+      "type": "array",
+      "items": {
+       "$ref": "communs.schema.json#/$defs/Statut"
+      }
+     },
+     "checklist": {
+      "x-libelle": "Checklist",
+      "x-rendu": "checklist",
+      "anyOf": [
+       {
+        "$ref": "communs.schema.json#/$defs/Checklist"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "validations": {
+      "x-libelle": "Écritures en attente",
+      "x-rendu": "nombre",
+      "type": "integer"
+     },
+     "demande_fusion": {
+      "x-libelle": "Demande de fusion",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    },
+    "required": [
+     "agent",
+     "moteur",
+     "modele",
+     "statuts",
+     "checklist",
+     "validations",
+     "demande_fusion"
+    ],
+    "additionalProperties": false
+   }
+  }
+ },
+ "required": [
+  "hote",
+  "projet",
+  "en_cours",
+  "max",
+  "missions"
+ ],
+ "additionalProperties": false
+}

@@ -1,0 +1,154 @@
+{
+ "$id": "suivi.schema.json",
+ "x-version": 1,
+ "description": "Sortie JSON de « berger suivi <agent> » (outil mission suivi) : l'état d'une mission. Pas d'enveloppe : l'objet tel quel.",
+ "type": "object",
+ "properties": {
+  "agent": {
+   "x-libelle": "Agent",
+   "x-rendu": "cache",
+   "type": "string"
+  },
+  "nom": {
+   "x-libelle": "Nom",
+   "x-rendu": "texte",
+   "type": "string"
+  },
+  "agent_ouvert": {
+   "x-libelle": "Agent ouvert",
+   "x-rendu": "oui-non",
+   "type": "boolean"
+  },
+  "ou": {
+   "x-libelle": "Où",
+   "x-rendu": "texte",
+   "type": "string"
+  },
+  "moteur": {
+   "x-libelle": "Moteur",
+   "x-rendu": "texte",
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "modele": {
+   "x-libelle": "Modèle",
+   "x-rendu": "texte",
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "statut": {
+   "x-libelle": "Statut par moteur",
+   "x-rendu": "liste",
+   "type": "object",
+   "properties": {},
+   "additionalProperties": {
+    "enum": [
+     "idle",
+     "done",
+     "working",
+     "blocked",
+     "unknown",
+     "?"
+    ]
+   }
+  },
+  "mission": {
+   "x-libelle": "Mission",
+   "x-rendu": "texte",
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "checklist": {
+   "x-libelle": "Checklist",
+   "x-rendu": "liste",
+   "anyOf": [
+    {
+     "type": "object",
+     "properties": {
+      "titre": {
+       "x-libelle": "Titre",
+       "x-rendu": "texte",
+       "type": "string"
+      },
+      "faites": {
+       "x-libelle": "Faites",
+       "x-rendu": "nombre",
+       "type": "integer"
+      },
+      "total": {
+       "x-libelle": "Étapes",
+       "x-rendu": "nombre",
+       "type": "integer"
+      },
+      "en_cours": {
+       "x-libelle": "En cours",
+       "x-rendu": "texte",
+       "type": "string"
+      },
+      "bloque": {
+       "x-libelle": "Bloqué",
+       "x-rendu": "texte",
+       "type": "string"
+      },
+      "fini": {
+       "x-libelle": "Finie",
+       "x-rendu": "oui-non",
+       "type": "boolean"
+      }
+     },
+     "required": [
+      "titre",
+      "faites",
+      "total",
+      "en_cours",
+      "bloque",
+      "fini"
+     ],
+     "additionalProperties": false
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "journal": {
+   "x-libelle": "Journal récent",
+   "x-rendu": "liste",
+   "type": "array",
+   "maxItems": 8,
+   "items": {
+    "x-rendu": "texte",
+    "type": "string"
+   }
+  },
+  "validations_en_attente": {
+   "x-libelle": "Validations en attente",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "x-rendu": "texte",
+    "type": "string"
+   }
+  }
+ },
+ "required": [
+  "agent",
+  "nom",
+  "agent_ouvert",
+  "ou",
+  "moteur",
+  "modele",
+  "statut",
+  "mission",
+  "checklist",
+  "journal",
+  "validations_en_attente"
+ ],
+ "additionalProperties": false
+}

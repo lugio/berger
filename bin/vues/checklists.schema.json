@@ -1,0 +1,20 @@
+{
+ "$id": "checklists.schema.json", "x-version": 1,
+ "description": "Données de la vue « Checklists » : chaque liste cochable du dossier déclaré, son avancement et ses cases restantes avec leur section (texte Markdown tel quel).",
+ "type": "object",
+ "properties": {
+  "dossier": {"x-libelle": "Dossier", "x-rendu": "cache", "type": "string"},
+  "listes": {"x-libelle": "Listes", "x-rendu": "liste", "type": "array", "items": {"type": "object",
+   "properties": {"fichier": {"x-libelle": "Fichier", "x-rendu": "cache", "type": "string"},
+                  "titre": {"x-libelle": "Titre", "x-rendu": "texte", "type": "string"},
+                  "faites": {"x-libelle": "Faites", "x-rendu": "nombre", "type": "integer"},
+                  "total": {"x-libelle": "Cases", "x-rendu": "nombre", "type": "integer"},
+                  "termine": {"x-libelle": "Terminé", "x-rendu": "oui-non", "type": "boolean"},
+                  "restantes": {"x-libelle": "Reste à faire", "x-rendu": "liste", "type": "array", "items": {"type": "object",
+                   "properties": {"section": {"x-libelle": "Section", "x-rendu": "texte", "type": ["string", "null"]},
+                                  "libelle": {"x-libelle": "Case", "x-rendu": "texte", "type": "string"}},
+                   "required": ["section", "libelle"], "additionalProperties": false}}},
+   "required": ["fichier", "titre", "faites", "total", "termine", "restantes"], "additionalProperties": false}}
+ },
+ "required": ["dossier", "listes"], "additionalProperties": false
+}

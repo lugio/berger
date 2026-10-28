@@ -1,0 +1,29 @@
+{
+ "$id": "etat.schema.json", "x-version": 1,
+ "description": "Données de « berger etat » (et de berger etat --json).",
+ "type": "object",
+ "properties": {
+  "vues_ecartees": {"x-libelle": "Vues écartées", "x-rendu": "liste", "type": "array", "items": {"type": "object",
+   "properties": {"vue": {"x-libelle": "Vue", "x-rendu": "texte", "type": "string"},
+                  "cause": {"x-libelle": "Cause", "x-rendu": "texte", "type": "string"}},
+   "required": ["vue", "cause"], "additionalProperties": false}},
+  "moteurs_ecartes": {"x-libelle": "Moteurs écartés", "x-rendu": "liste", "type": "array", "items": {"type": "object",
+   "properties": {"moteur": {"x-libelle": "Moteur", "x-rendu": "texte", "type": "string"},
+                  "cause": {"x-libelle": "Cause", "x-rendu": "texte", "type": "string"}},
+   "required": ["moteur", "cause"], "additionalProperties": false}},
+  "commandes_ecartees": {"x-libelle": "Familles de commandes écartées", "x-rendu": "liste", "type": "array", "items": {"type": "object",
+   "properties": {"commandes": {"x-libelle": "Famille", "x-rendu": "texte", "type": "string"},
+                  "cause": {"x-libelle": "Cause", "x-rendu": "texte", "type": "string"}},
+   "required": ["commandes", "cause"], "additionalProperties": false}},
+  "agents": {"x-libelle": "Agents", "x-rendu": "liste", "type": "array", "items": {"type": "object",
+   "properties": {"agent": {"x-libelle": "Agent", "x-rendu": "agent", "$ref": "communs.schema.json#/$defs/Agent"},
+                  "statuts": {"x-libelle": "Statut", "x-rendu": "statuts", "type": "array", "items": {"$ref": "communs.schema.json#/$defs/Statut"}},
+                  "checklist": {"x-libelle": "En cours", "x-rendu": "checklist", "anyOf": [{"$ref": "communs.schema.json#/$defs/Checklist"}, {"type": "null"}]},
+                  "a_faire": {"x-libelle": "À faire", "x-rendu": "nombre", "type": "integer"},
+                  "a_valider": {"x-libelle": "Propositions à valider", "x-rendu": "nombre", "type": "integer"},
+                  "memoire": {"x-libelle": "Mémoire (caractères)", "x-rendu": "nombre", "type": "integer"},
+                  "memoire_max": {"x-libelle": "Mémoire maximale", "x-rendu": "nombre", "type": "integer"}},
+   "required": ["agent", "statuts", "checklist", "a_faire", "a_valider", "memoire", "memoire_max"], "additionalProperties": false}}
+ },
+ "required": ["vues_ecartees", "moteurs_ecartes", "commandes_ecartees", "agents"], "additionalProperties": false
+}

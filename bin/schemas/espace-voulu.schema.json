@@ -1,0 +1,242 @@
+{
+ "$id": "espace-voulu.schema.json",
+ "x-version": 1,
+ "description": "Données de « berger espace-voulu <agent> --json » (dans l'enveloppe {vue, version, genere, donnees}) : l'espace Herdr que les règles R1…R7 demandent pour l'agent, calculé sans Herdr. Spec docs/plans/2026-10-15-regles-espace-spec.md.",
+ "type": "object",
+ "properties": {
+  "agent": {
+   "x-libelle": "Agent",
+   "x-rendu": "texte",
+   "type": "string"
+  },
+  "nom": {
+   "x-libelle": "Nom",
+   "x-rendu": "texte",
+   "type": "string"
+  },
+  "heberge_par": {
+   "x-libelle": "En mission chez",
+   "x-rendu": "texte",
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "onglets": {
+   "x-libelle": "Onglets voulus",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "cle": {
+      "x-libelle": "Clé",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "libelle": {
+      "x-libelle": "Onglet",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "regle": {
+      "x-libelle": "Règle",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "raison": {
+      "x-libelle": "Raison",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "conditionnel": {
+      "x-libelle": "Conditionnel",
+      "x-rendu": "texte",
+      "type": "boolean"
+     },
+     "condition": {
+      "x-libelle": "Condition",
+      "x-rendu": "texte",
+      "type": [
+       "boolean",
+       "null"
+      ]
+     },
+     "depuis": {
+      "x-libelle": "Depuis",
+      "x-rendu": "quand",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "panneaux": {
+      "x-libelle": "Panneaux",
+      "x-rendu": "liste",
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "cle": {
+         "x-libelle": "Clé",
+         "x-rendu": "texte",
+         "type": "string"
+        },
+        "genre": {
+         "x-libelle": "Genre",
+         "x-rendu": "texte",
+         "type": "string",
+         "enum": [
+          "agent",
+          "panneau"
+         ]
+        },
+        "commande": {
+         "x-libelle": "Commande",
+         "x-rendu": "texte",
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "agent": {
+         "x-libelle": "Agent",
+         "x-rendu": "texte",
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "moteur": {
+         "x-libelle": "Moteur",
+         "x-rendu": "texte",
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "protege": {
+         "x-libelle": "Protégé (jamais fermé)",
+         "x-rendu": "texte",
+         "type": "boolean"
+        },
+        "regle": {
+         "x-libelle": "Règle",
+         "x-rendu": "texte",
+         "type": "string"
+        },
+        "raison": {
+         "x-libelle": "Raison",
+         "x-rendu": "texte",
+         "type": "string"
+        }
+       },
+       "required": [
+        "cle",
+        "genre",
+        "commande",
+        "agent",
+        "moteur",
+        "protege",
+        "regle",
+        "raison"
+       ],
+       "additionalProperties": false
+      }
+     }
+    },
+    "required": [
+     "cle",
+     "libelle",
+     "regle",
+     "raison",
+     "conditionnel",
+     "condition",
+     "depuis",
+     "panneaux"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "ecartes": {
+   "x-libelle": "Onglets non voulus",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "cle": {
+      "x-libelle": "Clé",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "libelle": {
+      "x-libelle": "Onglet",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "regle": {
+      "x-libelle": "Règle",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "depuis": {
+      "x-libelle": "Depuis",
+      "x-rendu": "quand",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raison": {
+      "x-libelle": "Raison",
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "required": [
+     "cle",
+     "libelle",
+     "regle",
+     "depuis",
+     "raison"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "regles": {
+   "x-libelle": "Règles",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "code": {
+      "x-libelle": "Code",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "texte": {
+      "x-libelle": "Règle",
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "required": [
+     "code",
+     "texte"
+    ],
+    "additionalProperties": false
+   }
+  }
+ },
+ "required": [
+  "agent",
+  "nom",
+  "heberge_par",
+  "onglets",
+  "ecartes",
+  "regles"
+ ],
+ "additionalProperties": false
+}

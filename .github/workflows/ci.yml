@@ -1,0 +1,29 @@
+name: Model-free checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify-and-tests:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test prerequisites
+        run: sudo apt-get update && sudo apt-get install -y bubblewrap gnupg socat
+      # Web access proxy (courtier/_web.py) needs cryptography; socat links 127.0.0.1:3128 inside the sandbox (docs/manuel.md).
+      - name: Install Python test prerequisites
+        run: python3 -m pip install --disable-pip-version-check 'cryptography==43.0.3'
+      # Berger launches its helpers with the python3 found first in /usr/local/bin:/usr/bin:/bin (bin/berger, PATH_MISE).
+      # Ubuntu 22.04 ships python3 3.10 there, without tomllib: expose the Python 3.11 under test as that python3.
+      - name: Use Python 3.11 as the system python3
+        run: sudo ln -sf "$(python3 -c 'import os, sys; print(os.path.realpath(sys.executable))')" /usr/local/bin/python3 && /usr/local/bin/python3 --version
+      - name: Verify and test a fresh local clone without personal configuration
+        run: bash tests/clone-frais.sh

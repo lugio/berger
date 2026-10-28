@@ -1,0 +1,109 @@
+{
+ "$id": "equipe-liste.schema.json",
+ "x-version": 1,
+ "description": "Sortie JSON de « berger equipe liste <projet> » : un élément par développeur ouvert, puis un avertissement par equipe:<projet> obsolète. Pas d'enveloppe : la liste telle quelle.",
+ "x-libelle": "Développeurs",
+ "x-rendu": "liste",
+ "type": "array",
+ "items": {
+  "anyOf": [
+   {
+    "type": "object",
+    "properties": {
+     "agent": {
+      "x-libelle": "Agent",
+      "x-rendu": "cache",
+      "type": "string"
+     },
+     "sujet": {
+      "x-libelle": "Sujet",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "branche": {
+      "x-libelle": "Branche",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "port": {
+      "x-libelle": "Port",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "mission": {
+      "x-libelle": "En mission",
+      "x-rendu": "oui-non",
+      "type": "boolean"
+     },
+     "checklist": {
+      "x-libelle": "Checklist",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "bloque": {
+      "x-libelle": "Bloqué",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "demande_de_fusion": {
+      "x-libelle": "Demande de fusion",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "portes": {
+      "x-libelle": "Portes",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "renvois": {
+      "x-libelle": "Renvois",
+      "x-rendu": "nombre",
+      "type": "integer"
+     }
+    },
+    "required": [
+     "agent",
+     "sujet",
+     "branche",
+     "port",
+     "mission",
+     "checklist",
+     "bloque",
+     "demande_de_fusion",
+     "portes",
+     "renvois"
+    ],
+    "additionalProperties": false
+   },
+   {
+    "type": "object",
+    "properties": {
+     "avertissement": {
+      "x-libelle": "Avertissement",
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "required": [
+     "avertissement"
+    ],
+    "additionalProperties": false
+   }
+  ]
+ }
+}

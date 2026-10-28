@@ -1,0 +1,16 @@
+{
+ "$id": "synthese.schema.json", "x-version": 1,
+ "description": "Données de la vue « Synthèse » : seulement le rouge et le jaune, dans l'ordre où Berger les trouve, avec leur première apparition.",
+ "type": "object",
+ "properties": {
+  "alertes": {"x-libelle": "Alertes", "x-rendu": "liste", "type": "array", "items": {"type": "object",
+   "properties": {"gravite": {"x-libelle": "Gravité", "x-rendu": "ton", "enum": ["rouge", "jaune"]},
+                  "domaine": {"x-libelle": "Domaine", "x-rendu": "texte", "type": "string"},
+                  "texte": {"x-libelle": "Alerte", "x-rendu": "texte", "type": "string"},
+                  "depuis": {"x-libelle": "Depuis", "x-rendu": "quand", "type": "string"},
+                  "nouveau": {"x-libelle": "Nouveau (moins de 24 h)", "x-rendu": "oui-non", "type": "boolean"}},
+   "required": ["gravite", "domaine", "texte", "depuis", "nouveau"], "additionalProperties": false}},
+  "surveille": {"x-libelle": "Surveillé", "x-rendu": "liste", "type": "array", "items": {"x-rendu": "texte", "type": "string"}}
+ },
+ "required": ["alertes", "surveille"], "additionalProperties": false
+}

@@ -1,0 +1,137 @@
+{
+ "$id": "decisions.schema.json",
+ "x-version": 3,
+ "description": "Données de la vue « Décisions » : ce qui attend un geste — du propriétaire (pour = toi) ou d'un agent.",
+ "type": "object",
+ "properties": {
+  "decisions": {
+   "x-libelle": "Décisions",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "pour": {
+      "x-libelle": "Attend",
+      "x-rendu": "texte",
+      "enum": [
+       "toi",
+       "agent"
+      ]
+     },
+     "titre": {
+      "x-libelle": "Quoi",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "detail": {
+      "x-libelle": "Détail",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "quand": {
+      "x-libelle": "Depuis",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "genre": {
+      "x-libelle": "Genre",
+      "x-rendu": "texte",
+      "enum": [
+       "validation",
+       "terminal",
+       "bloque",
+       "go",
+       "question",
+       "a_lire",
+       "a_decider",
+       "fusion",
+       "besoin",
+       "proposition",
+       "signalement"
+      ]
+     },
+     "agent": {
+      "x-libelle": "Agent",
+      "x-rendu": "cache",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "n": {
+      "x-libelle": "N° de l'écriture",
+      "x-rendu": "nombre",
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "projet": {
+      "x-libelle": "Projet",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "sujet": {
+      "x-libelle": "Sujet",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "document": {
+      "x-libelle": "Document",
+      "x-rendu": "cache",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "commande": {
+      "x-libelle": "Commande à taper",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "lien": {
+      "x-libelle": "Détail",
+      "x-rendu": "lien",
+      "anyOf": [
+       {
+        "$ref": "communs.schema.json#/$defs/Lien"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "required": [
+     "pour",
+     "titre",
+     "detail",
+     "quand",
+     "genre",
+     "agent",
+     "n",
+     "projet",
+     "sujet",
+     "document",
+     "commande",
+     "lien"
+    ],
+    "additionalProperties": false
+   }
+  }
+ },
+ "required": [
+  "decisions"
+ ],
+ "additionalProperties": false
+}

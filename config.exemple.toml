@@ -1,0 +1,368 @@
+# Configuration de Berger — MODÈLE. Copier en config.toml (jamais versionné) et adapter.
+# Après une modification : berger regenerer, puis ouvrir une conversation neuve dans les agents.
+
+proprietaire = "Camille"                     # celui pour qui travaillent les agents (règles, panneaux)
+fuseau = "Europe/Paris"                      # facultatif (défaut : celui du système)
+icone_berger = "🐑"                         # facultatif : icône de l'espace de pilotage « Berger » dans Herdr
+# marques_privees = ["mon-identifiant"]     # facultatif : mentions propres à l'installation, refusées par verifier-depot
+# depot_public = "https://forge.example/mon-identifiant/berger.git"
+#                                           # facultatif : SEULE exception, l'URL exacte (https, finissant par .git) du
+#                                           # dépôt public ; toute autre mention d'une marque reste refusée
+# entete_appelant = "X-AOS-Agent"          # facultatif : chaque requête Claude porte « <en-tête>: <agent> » pour une
+#                                           # passerelle qui journalise l'appelant (ANTHROPIC_CUSTOM_HEADERS) ; effet au
+#                                           # prochain démarrage de l'agent
+# pied_codex = ["model-with-reasoning", "current-dir", "context-used", "used-tokens", "five-hour-limit", "weekly-limit"]
+#                                           # facultatif : pied de page de Codex ([tui] status_line, éléments intégrés seulement)
+
+# Coffre à secrets : fichier JSON imbriqué (droits 600), une clé = « section.sous_section.cle ».
+# Seul le courtier le lit ; les agents ne le voient jamais (il est aussi masqué par le bac à sable).
+coffre = "~/.config/berger/coffre.json"
+
+# Dossiers (relatifs à ~) rendus ILLISIBLES aux agents, en plus des dossiers des autres agents.
+# Le dossier du coffre doit y figurer. Un chemin absent fait échouer Codex : utiliser masques_si_presents.
+masques = [".config/berger", ".ssh", ".gnupg", ".local/share/keyrings", ".codex"]
+masques_si_presents = [".aws", ".kube", ".config/gh", ".mozilla", ".config/mozilla", ".config/chromium", ".thunderbird"]
+masque_fichier = ".claude/.credentials.json"  # Codex ne sait masquer qu'UN fichier isolé
+# codex_identifiants = "fichier"             # machine SANS trousseau système (serveur) : auth.json dans ~/berger/.codex,
+#                                            # dossier alors masqué à tous les agents. Défaut : "trousseau".
+
+# Garde-fous : commandes appelées avant / après chaque outil (format des hooks Claude Code et Codex :
+# JSON sur l'entrée standard, code 2 = refus). Aucun garde par défaut : à fournir.
+# [[gardes]]
+# moment = "avant"                           # avant | apres
+# outils = "Bash|Read|Grep"                  # filtre Claude Code (Codex : tous les outils)
+# commande = "python3 ~/mes-gardes/secrets-avant.py"
+# timeout = 5
+
+# Outils du courtier : un nom → un type (défini dans courtier/outils/) + ses réglages.
+# [outils.erp-lecture]
+# type = "dolibarr"                          # lecture seule : factures, tiers
+# hote = "erp.exemple.fr"
+# ip_secours = ""                            # adresse de secours (VPN), facultative
+# cle = "erp.cle_api"                        # chemin de la clé dans le coffre
+#
+# [outils.serveur]
+# type = "ssh"                               # commandes FIXÉES ici, jamais fournies par l'agent
+# hote = "serveur.exemple.fr"
+# port = 22
+# utilisateur = "admin"
+# cle_fichier = "~/.ssh/serveur_cle"         # clé privée (dossier masqué à l'agent)
+# consigne = "consigne"                     # facultatif : un verbe de LECTURE (ci-dessous) qui dit ce que fait l'outil, « version: <x> » en tête
+#                                            # — relu par le courtier, annoncé aux agents qui ont l'outil quand il change
+# [outils.serveur.lecture]                   # sans validation : lectures seulement
+# conteneurs = "docker ps -a --format '{{.Names}}\t{{.Status}}'"
+# logs = "docker logs --tail 200 {arg} 2>&1"  # {arg} = UN argument simple fourni par l'agent
+# consigne = "cat /etc/outil/CONSIGNE.txt"   # le verbe désigné par « consigne = » plus haut, versionné sur le serveur
+# {agent} = l'agent QUI DEMANDE (posé par le courtier, jamais fourni par l'agent) : un outil qui ne travaille que dans SON dossier
+# [outils.serveur.actions]                   # écritures : chacune attend « berger valider <n°> »
+# redemarrer = "docker restart {arg}"
+#
+# [outils.veille-editeur]
+# type = "pages_publiques"                   # documents PUBLICS (PDF, HTML) en lecture seule : le courtier télécharge pour l'agent
+# hotes = ["client.editeur.example", "depot.editeur.example", "docs.editeur.example"]   # liste blanche EXACTE (redirections comprises)
+# delai = 60                                 # secondes, redirections comprises (30 par défaut)
+# taille_max = 50                            # Mo (50 par défaut)
+# Chaque verbe = une URL FIXÉE ici, avec au plus un {arg} (jamais dans l'hôte) et le motif que {arg} doit suivre.
+# [outils.veille-editeur.verbes.patchs]
+# url = "https://client.editeur.example/telechargements/Espace client/COMPTAEX/Patchs/Patch_COMPTAEX GESTEX CONNECT {arg}.pdf"
+# motif = '^\d{2}\.\d{2}\.\d{3}$'
+# aide = "version complète (deux chiffres, deux chiffres, trois chiffres)"
+# [outils.veille-editeur.verbes.doc-comptaex]
+# url = "https://docs.editeur.example/comptaex/doc/{arg}"
+# motif = '^\w[\w .()+-]*\.pdf$'
+# aide = "nom de fichier .pdf (espaces permis, sans « / »)"
+# [outils.veille-editeur.verbes.doc-gestex]
+# url = "https://docs.editeur.example/gestex/doc/{arg}"
+# motif = '^\w[\w .()+-]*\.pdf$'
+# aide = "nom de fichier .pdf (espaces permis, sans « / »)"
+# [outils.veille-editeur.verbes.nouveautes-gestex]
+# url = "https://depot.editeur.example/telechargements/Espace client/GESTEX/Doc Nouveautés/{arg}"
+# motif = '^(NOUV|Nouv)_\d{4}-\d_GESTEX CONNECT_[\w.]+\.pdf$'
+# aide = "nom du document des nouveautés (NOUV_<année>-<n°>_GESTEX CONNECT_<version>.pdf)"
+# [outils.veille-editeur.verbes.nouveautes-comptaex]
+# url = "https://depot.editeur.example/telechargements/Espace client/COMPTAEX/Doc Nouveautés/{arg}"
+# motif = '^(NOUV|Nouv)_\d{4}-\d_COMPTAEX CONNECT_[\w.]+\.pdf$'
+# aide = "nom du document des nouveautés (NOUV_<année>-<n°>_COMPTAEX CONNECT_<version>.pdf)"
+
+# [outils.gestion-lecture]
+# type = "sql_lecture"                       # LECTURE d'une base SQL Server : requêtes FIXÉES ici, l'agent ne donne que des valeurs
+# nom = "gestion-lecture"                    # = le nom de la section : le serveur voit « Application Name = berger-gestion-lecture »
+# hote = "192.0.2.10"                        # serveur SQL : nom, « serveur\\instance » ou adresse IP (ici, une adresse d'exemple)
+# port = 62553                               # port fixe (1433 par défaut)
+# base = 'X:\EXEMPLE\base.db'                # nom de base, ou chemin d'une base attachée par fichier (entre apostrophes en TOML)
+# utilisateur_cle = "gestion.utilisateur"    # identifiants dans le coffre ; compte en lecture seule (db_datareader)
+# mot_de_passe_cle = "gestion.mot_de_passe"
+# pilote = "pymssql"                         # paquet Debian python3-pymssql (ou "pyodbc" : python3-pyodbc tdsodbc unixodbc)
+# delai = 30                                 # secondes au plus par requête
+# max_lignes = 200                           # au-delà, la réponse dit « tronqué »
+# Chaque verbe = UNE requête SELECT ou WITH (ni « ; », ni commentaire, ni mot d'écriture : refusée au chargement) ;
+# « :nom » marque un paramètre, déclaré avec le motif que sa valeur doit suivre EN ENTIER (passée liée, jamais collée).
+# Requêtes d'exemple ci-dessous ; colonnes et motifs À CONFIRMER sur la base avant usage.
+# [outils.gestion-lecture.verbes.etat]
+# sql = "SELECT Etat, COUNT(*) AS lignes FROM EX.VueProduction WHERE Annule IS NULL GROUP BY Etat"
+# aide = "nombre de lignes de la production non annulées, par état d'archivage"
+# [outils.gestion-lecture.verbes.etat-dossier]
+# sql = "SELECT Etat, COUNT(*) AS lignes FROM EX.VueProduction WHERE Annule IS NULL AND Client = :client GROUP BY Etat"
+# parametres = [{nom = "client", motif = '[A-Za-z0-9]{1,20}'}]      # motif provisoire, à caler sur la colonne Client
+# aide = "la même chose pour un seul client (lettres et chiffres)"
+# [outils.gestion-lecture.verbes.version-logiciel]
+# sql = "SELECT TOP 1 * FROM EX.VueVersion"                # colonnes à confirmer
+# aide = "version de GESTEX"
+
+# Missions entre agents (droit « mission:<agent> ») : combien en même temps, et les modèles qu'on peut choisir.
+# [missions]
+# max = 3
+# modeles_claude = ["haiku", "sonnet", "opus"]
+# modeles_codex = ["gpt-6-luna", "gpt-6.1-sol", "gpt-6-astra"]
+
+# Besoin Berger (berger-outil besoin, ouvert à tout agent → le gardien) : actif par défaut ; false = refusé « désactivé »,
+# rien n'est effacé (courtier/besoins/ reste lisible). Le gardien = chef_projet de l'équipe à installer_outil.
+# [besoins]
+# actif = true
+
+# Garde-fou anti-boucle (spec 2026-10-15) : le même appel (outil + verbe + arguments) refait plus de boucle_max fois en une heure
+# sans rien recevoir est refusé ; 0 = éteint (le courtier relit config.toml au démarrage). inactif_min : minutes sans sollicitation
+# avant qu'un agent « au travail » en boucle repérée soit relançable ; 0 = jamais (un agent seulement occupé n'est jamais relancé).
+# [courtier]
+# boucle_max = 6
+# mission_max = 6000                       # texte d'une mission, délégation, demande de fusion, renvoi : au-delà, REFUSÉ (jamais coupé)
+# redemarrage_attente = 900                # berger courtier redemarrer : attente max. de la fin des demandes EN COURS (secondes)
+# redemarrage_reessai = 300                # abandon (tracé, notifié) : nouvel essai après ce délai (secondes)…
+# redemarrage_essais = 12                  # …jusqu'à ce nombre d'essais
+# [relance]
+# inactif_min = 30
+
+# Annonce d'un changement d'outil : `consigne = "<verbe de lecture>"` dans [outils.<nom>] (texte « version: <x> » en tête,
+# 3 000 caractères au plus) ; le courtier relit chaque outil et annonce un changement aux agents qui l'ont.
+# [annonces]
+# actif = true
+# cadence = 3600                           # secondes entre deux relectures (300 au moins)
+# validation = false                       # true : chaque nouvelle version attend l'accord du propriétaire
+
+# Accès web d'un agent à UN domaine (voie B, docs/plans/2026-10-18-retro-web-spec.md ; README › Accès web d'un agent).
+# Le droit est dans l'agent.conf : `outils = web` — pour Rétro (agent d'analyse) SEULEMENT, aucun autre agent.
+# Rien d'autre à déclarer ; facultatif : le délai au-delà duquel une demande sans réponse expire (24 h au plus).
+# [web]
+# attente = "4h"
+# Connexion visible du propriétaire : chemins absolus, aucune installation automatique.
+# node = "/usr/bin/node"
+# playwright_module = "/opt/playwright/node_modules/playwright/index.mjs"
+# navigateur = "/usr/bin/chromium"
+# chemins_bloques = ["logout", "delete", "export", "settings", "payment"] # sous-chaînes du chemin décodé, HTTP et HTTPS
+
+# Équipe de développement pour un gros projet (voir README › Équipe de développement).
+# [equipes.monprojet]
+# depot = "~/projets/monprojet"              # le dépôt du chef de projet (branche principale), relié à la forge (origin)
+# principale = "main"
+# copies = "~/berger-copies"                 # où sont créés les clones des développeurs
+# prefixe = "equipe/"                        # branches des développeurs : equipe/<sujet> (et de finition du chef de projet)
+# chef_projet = "monprojet"                  # seul sur la branche principale (« Lead Dev · <projet> ») ; ouvre, suit, ferme ses développeurs
+# coordinateur = "chef-dev"                  # confie les sujets au chef et le suit ; valide les fusions (sans fusion_par)
+#                                            # droits calculés depuis ces deux lignes : rien à écrire dans un agent.conf
+# copie_chef = "~/berger/agents/monprojet/travail/monprojet-fin"   # facultatif : SA copie de travail (branches de finition),
+#                                            # dans SON dossier ; par défaut <son dossier>/travail/<projet>-fin
+# fusion_par = "proprietaire"               # facultatif : les fusions ne sont validées QUE par le propriétaire
+# projet_par = "proprietaire"               # facultatif : qui valide l'ouverture/fermeture d'un projet de la bibliothèque
+#                                            # (proprietaire par défaut | coordinateur | chef_projet — jamais le demandeur)
+# Les PORTES (processus de dév générique, le même pour tous : commun/modeles/equipe-processus.md). Chacune : une commande
+# lancée dans la copie (bac à sable), OU <porte>_outil = "<outil> <verbe>" (verbe de lecture d'un outil, reçoit la branche
+# poussée). Absente = « non mesuré » (jamais « vert ») ; pret est OBLIGATOIRE (sans elle : ni demande ni fusion).
+# verify = "npm run lint"                    # rapide
+# verify_outil = "monprojet-dev-distant verifier"
+# tests = "npm test"                         # la suite complète (branche saine)
+# tests_outil = "moncab-verif tests"         # ex. MonCab : contrôles lancés sur le serveur de dev
+# gate = "npm run couverture"                # facultative (qualité, couverture…)
+# pret = "./outils/pret.sh"                  # finition du projet (« Definition of Done ») : doc, journal, conventions
+# finition = "developpeur"                 # facultatif : "chef" → le développeur livre sa branche sans pret (« à finir »),
+#                                            # le chef fait la finition sur SA branche (qui doit contenir le commit livré)
+# motif_tests = "(^|/)tests?/"               # facultatif : ce qui compte comme fichier de test (règle du correctif)
+# moteur = "claude"
+# ports = [5191, 5192, 5193]                 # un par développeur, pour sa pile
+# pile_creer = "./outils/pile-dev.sh creer {sujet} {port}"        # facultatif : application + base du développeur
+# pile_supprimer = "./outils/pile-dev.sh supprimer {sujet}"
+# skills = ["code-review", "domaine-x"]      # facultatif : méthodes du catalogue skills/ données à CHAQUE développeur
+# memoire = "equipes/monprojet/memoire"     # facultatif : mémoire de l'équipe (index MEMORY.md + une fiche par fait), lue
+#                                            # par CHAQUE développeur, jamais réécrite par lui (une leçon passe par la demande de fusion)
+# outils_developpeur = ["navigateur"]        # facultatif : outils du courtier en plus du sien pour CHAQUE développeur (déclarés ici,
+#                                             ou "ecrire:<agent existant>", ex. prévenir le chef de projet)
+# crochet_ecriture = "node {depot}/outils/quels-skills.js --hook"   # facultatif : crochet du projet avant chaque écriture
+#                                            # d'un développeur — lancé depuis le DÉPÔT (`{depot}`, lecture seule pour lui),
+#                                            # jamais depuis sa copie (`{copie}` refusé) ; le fichier visé lui est passé ramené au dépôt
+# regle_go = false                           # facultatif : coupe le contrôle du go à l'ouverture, à la demande et à la fusion
+#                                            # (défaut : actif ; les fichiers equipes/<projet>/go/ restent, inertes)
+# go_mots = ["mot de passe", "production"]   # facultatif : mots qui marquent un sujet « règle de go » dans la mission (défaut :
+#                                            # ceux des cinq cas — mot de passe, mdp, secret, coffre, identifiants, jeton,
+#                                            # token, clé d'API, credentials, droits, authentification, logiciel métier,
+#                                            # production, pare-feu)
+# Alignement après une mise en production (spec docs/plans/2026-10-16-alignement-spec.md) — facultatif ; absent ou [] : rien.
+# Refusé au chargement du courtier : élément inconnu, prod_outil qui n'est pas une action, *_outil qui n'est pas une lecture,
+# wiki vide, avec « .. » ou hors des zones de l'outil wiki, relire qui n'est pas wiki: / skill: / memoire:. Retour arrière : retirer ces lignes.
+# alignement = ["changelog", "wiki", "memoire", "skills", "versions"]   # ce qui est tenu après chaque mise en production
+# prod_outil = "monprojet-prod prod"                  # l'ACTION dont le compte rendu « ok » ouvre la liste d'alignement
+# compte_rendu_outil = "monprojet-prod compte-rendu"  # sa LECTURE (connexion coupée à 180 s : le compte rendu relu)
+# version_servie_outil = "monprojet-prod version"     # lecture qui rend la version servie
+# wiki = "docs/monprojet"                            # l'arborescence du projet au wiki (dans les zones de l'outil wiki)
+# [equipes.monprojet.modules]                # facultatif ; sans lui, un module = un dossier de premier niveau
+# facturation = { chemins = ["app/factu/"], relire = ["wiki:docs/monprojet/facturation", "skill:facturation"] }
+# [equipes.monprojet.lecture]                # commandes en plus pour le développeur (dans SA copie)
+# demarrer = "./outils/pile-dev.sh demarrer {sujet}"
+# Outils du wiki pour l'alignement (facultatif ; défaut : wikijs-lecture et wikijs-ecriture). Leurs zones : `zones` de
+# [outils.<lecture>], sinon `zones` du reglages.json de son dossier (scripts du wiki, hors dépôt).
+# [wiki]
+# lecture = "wikijs-lecture"
+# ecriture = "wikijs-ecriture"
+
+# Équipe qui corrige Berger (agent gardien « Master », voir README › Master) — JAMAIS dans l'installation en service
+# (une fusion y serait un déploiement) : une FORGE LOCALE, dépôt nu qui sert d'origin à l'équipe, et un clone pour le chef.
+# Validé par le propriétaire : fusion (forge locale), que suit SEULE l'installation (installer_outil : l'installation prend
+# la forge locale ; retour arrière automatique si une vérification échoue) → publier (la forge locale part en ligne, avance
+# rapide seule, avec une clé d'ÉCRITURE que seul le courtier utilise).
+#   git clone --bare <url de la forge en ligne> ~/projets/berger.git
+#   git -C ~/projets/berger.git config remote.origin.fetch "+refs/heads/*:refs/remotes/forge/*"
+#   git -C ~/projets/berger.git fetch origin
+#   git -C ~/projets/berger.git remote add publication <alias ssh de la clé d'écriture>:<compte>/<dépôt>.git
+#   git clone ~/projets/berger.git ~/projets/berger
+# [equipes.berger]
+# depot = "~/projets/berger"                 # origin = ~/projets/berger.git (la forge locale)
+# principale = "main"
+# copies = "~/berger-copies"
+# prefixe = "berger/"
+# chef_projet = "master"
+# coordinateur = "master"
+# fusion_par = "proprietaire"               # OBLIGATOIRE ici : un agent ne change pas ses propres murs
+# installer_outil = "berger-admin installer" # ce projet EST l'installation : sa fusion validée lance cette action (la même
+#                                            # que l'action manuelle) — UNE validation pour fusion + installation. Refusé au
+#                                            # chargement du courtier si ce n'est pas une action déclarée ou sans fusion_par ci-dessus
+# verify = "bash tests/syntaxe.sh"          # rapide : syntaxe Python et shell
+# tests = "bash tests/suites.sh"            # les suites sans modèle (verifier-depot, qui lit le coffre, tourne à « installer »)
+# pret = "bash tests/pret.sh"               # finition : diff propre, code → test et doc, chaque suite jouée
+# moteur = "claude"
+# ports = [5491, 5492]                       # 2 développeurs au plus
+
+# Outil du gardien : diagnostiquer Berger (lectures) et agir par les commandes prévues (actions validées par le propriétaire).
+# [outils.berger-admin]
+# type = "commandes"
+# dossier = "~/berger"
+# delai = 900
+# [outils.berger-admin.lecture]
+# etat = "bin/berger etat"
+# services = "systemctl --user status berger.timer berger-courtier.service berger-herdr.service --no-pager"
+# journal-courtier = "journalctl --user -u berger-courtier -n 150 --no-pager"
+# journal-planificateur = "journalctl --user -u berger.service -n 150 --no-pager"
+# validations = "bin/berger validations"
+# audit-secrets = "bin/berger secrets audit"
+# equipe = "bin/berger equipe liste {arg}"
+# projets = "bin/berger projet liste"
+# agent-apercu = "bin/berger agent apercu {agent} {arg}"   # ce que changerait sa proposition propositions/<agent>.md
+# suivi = "bin/berger suivi {arg}"
+# depot = "git status --short --branch && git log --oneline -15"
+# relancer = "bin/berger relancer {arg}"     # SANS validation : l'agent AU REPOS seulement (refus s'il travaille), tracé
+#                                            # (appels.log, journal de l'agent) ; --force reste au propriétaire en ligne de commande
+# [outils.berger-admin.actions]              # chacune attend la VALIDATION du propriétaire (berger valider <n°>)
+# regenerer = "bin/berger regenerer"
+# espace = "bin/berger espace {arg}"
+# refaire-espace = "bin/berger refaire-espace {arg}"
+# entretien = "bin/berger entretien"
+# agent-appliquer = "bin/berger agent appliquer {agent} {arg}"   # <agent>.<empreinte> : exactement l'aperçu montré
+# installer = "bin/berger installer ~/projets/berger.git main"
+#                                            # l'installation prend ce que l'équipe a fusionné (avance rapide seule), HEAD = main
+#                                            # de la forge, verifier-depot, regenerer ; redémarrage DÉTACHÉ et contrôlé du courtier
+#                                            # (après l'inscription du résultat) ; une vérification en échec → RETOUR ARRIÈRE
+#                                            # automatique au commit d'avant (courtier/installations.log). Lancée seule après une
+#                                            # fusion validée de [equipes.berger] (installer_outil) ; à la main : validée.
+# publier = "git -C ~/projets/berger.git push -q publication main && git -C ~/projets/berger.git fetch -q origin && git -C ~/projets/berger.git log --oneline -1 forge/main"
+#                                            # la forge locale part en ligne : JAMAIS de force (une avance rapide ou un refus)
+# synchroniser = "git -C ~/projets/berger.git fetch -q origin && git -C ~/projets/berger.git merge-base --is-ancestor main forge/main && git -C ~/projets/berger.git update-ref refs/heads/main refs/remotes/forge/main && git -C ~/projets/berger pull -q --ff-only && git -C ~/projets/berger log --oneline -1"
+#                                            # ce que le propriétaire a changé en ligne revient dans la forge locale (avance rapide seule)
+# exporter = "F=$PWD/a-lire/berger-$(date +%Y%m%d-%H%M).bundle && git -C ~/projets/berger.git fetch -q origin && git -C ~/projets/berger.git bundle create $F forge/main..main && git -C ~/projets/berger.git bundle verify -q $F && echo $F"
+#                                            # sans clé d'écriture : un bundle dans a-lire/, que le propriétaire pousse lui-même
+
+# Supervision (chaque minute) : relance automatique, escalade développeur → chef → coordinateur → propriétaire (notification).
+# [supervision]
+# sans_avancee_min = 20                      # mission sans trace de travail → l'agent est relancé, puis (×2) son chef, (×3) le coordinateur
+# escalade_min = 60                          # blocage déclaré toujours là après ce délai → notification au propriétaire
+# max_renvois = 3                            # demande de fusion renvoyée N fois → chef ; N+1 → coordinateur ; N+2 → propriétaire
+
+# Auto-test (tests/tout.sh) : facultatif — un appel réel au courtier (sinon seul le refus est testé).
+# [tests]
+# courtier_agent = "compta"
+# courtier_outil = "erp-lecture"
+# courtier_verbe = "factures-impayees"
+
+# Sauvegarde quotidienne des DONNÉES (agents, mémoires, config) vers un WebDAV (Nextcloud…), chiffrée.
+# La phrase de chiffrement est créée au 1er passage dans le trousseau système (secret-tool, service=berger) :
+# la recopier dans un gestionnaire de mots de passe, sinon les archives seront illisibles si la machine disparaît.
+# Interface web (spec docs/plans/2026-10-13-interface-spec.md) : servie par `berger interface servir` (service
+# systemd/berger-interface.service) ; entrée par `berger interface lien`. Sans réglage : 127.0.0.1, accès par tunnel ssh.
+# Derrière le mandataire inverse SWAG (lot 1c) : adresse de la VM, nom public interne, source = SWAG, TLS jusqu'à la VM.
+# [interface]
+# port = 8765                                # fixe ; en tunnel, le même des deux côtés : ssh -L 8765:127.0.0.1:8765 <la VM>
+# adresse = "<adresse IP de la VM>"          # IP littérale, jamais 0.0.0.0 (défaut 127.0.0.1)
+# nom = "berger.<domaine interne>"           # l'en-tête Host exigé ; cookie Secure ; lien https://<nom>/
+# sources = ["<adresse source de SWAG>"]     # MESURÉE sur la 1re requête (journal du service), jamais supposée (défaut 127.0.0.1)
+# tls = true                                 # certificat interne : berger interface certificat (à déposer chez SWAG)
+
+# [sauvegarde]
+# webdav = "https://cloud.exemple.fr/remote.php/dav/files/{utilisateur}/"
+# utilisateur_cle = "nextcloud.utilisateur"
+# mot_de_passe_cle = "nextcloud.mot_de_passe_application"
+# dossier = "Sauvegardes/berger"
+# garder = 14
+
+# Copie CHIFFRÉE du coffre avant de le modifier (`berger coffre sauvegarder <motif>`) : jamais de copie en clair. age vers une
+# clé PUBLIQUE ; la clé privée reste dans ton gestionnaire de mots de passe, jamais sur cette machine. Purge par l'entretien.
+# Bibliothèque (lot 2) : un dossier de travail par agent INSCRIT (`bibliotheque = oui` dans son agent.conf) —
+# <racine>/agents/<agent>/travail/, lui seul y écrit, masqué aux autres agents — et <racine>/commun/, que le propriétaire
+# remplit et que tous les agents lisent sans jamais l'écrire. Sans inscription, rien ne change pour un agent.
+# Par défaut DANS l'installation (non versionnée, prise par `berger sauvegarder`).
+# [bibliotheque]
+# racine = "~/berger/bibliotheque"
+
+# [coffre_sauvegarde]
+# destinataire = "age1…"            # clé publique (age-keygen -y <clé privée>)
+# dossier = "~/sauvegardes/coffre"
+# garder_jours = 7
+
+# Panneaux de SOURCES (onglets 🔎 Sources et 🚦 Synthèse de l'espace Berger) : le courtier lance un verbe de LECTURE d'un
+# outil déclaré plus haut, à la cadence dite, et range le résultat (filtré comme toute réponse) dans courtier/panneaux/.
+# Le panneau relit ce fichier : aucun secret côté panneau. La Synthèse ne garde que le rouge et le jaune : lignes avec ✗/❌
+# (rouge) ou ⚠ (jaune), plus les motifs (expressions régulières) `rouge` / `jaune` ; collecte en échec = rouge, figée = jaune.
+# [panneaux.conteneurs]
+# titre = "Conteneurs du serveur"
+# outil = "serveur"
+# verbe = "conteneurs"                       # un verbe de LECTURE de l'outil (jamais une action)
+# args = []
+# cadence = 300                              # secondes (60 au moins)
+# rouge = ["Exited \\([1-9]"]
+# jaune = ["Restarting", "unhealthy"]
+# max_lignes = 12                            # lignes affichées dans Sources (la Synthèse les lit toutes)
+# ignorer = ["no_license"]                   # lignes d'un fait CONNU et voulu : jamais en couleur, jamais dans la Synthèse
+
+# Onglet ✅ Checklists : les listes Markdown cochables (« - [ ] » / « - [x] ») de ce dossier, en lecture (défaut : checklists/).
+# [checklists]
+# dossier = "~/berger/checklists"
+
+# Méthodes (skills) selon le RÔLE : un catalogue de dossiers <nom>/SKILL.md (défaut : skills/ de l'installation, ignoré par
+# git). Un agent ne reçoit que celles que nomme son agent.conf (`skills = pare-feu, wiki`) — ~/.claude/skills, lui, est lié par
+# Berger chez TOUS les agents, sauf `partager_utilisateur = false` (chacun n'a alors que son rôle). Une méthode qui cite le coffre (son nom de fichier) ou un motif `interdits` (regex) est
+# refusée au `berger regenerer`, nommée. Le Catalogue montre qui reçoit quoi ; une méthode à soi (skills-agent/) prime.
+# [skills]
+# dossier = "~/berger/skills"
+# partager_utilisateur = false
+# interdits = ["mot-de-passe\\s*[:=]", "BEGIN [A-Z ]*PRIVATE KEY"]
+
+# Panneaux selon le RÔLE de chaque agent, dans SON espace (l'espace Berger reste la vue commune). Onglet Travail : à droite de
+# l'agent, « en cours » puis `a_cote` (3 au plus) ; `onglets` : ses autres onglets, 1 à 4 panneaux chacun. Un élément :
+#   "source:<nom>[,<nom>…]"  sources [panneaux.<nom>] (le courtier les lit ; la Synthèse les relit toutes)
+#   "checklists[:mot,…]"     listes du dossier checklists dont le nom contient l'un des mots
+#   "panneau:missions"       suivi des missions que l'agent confie
+#   "fichiers"               lecteur de fichiers (plugin Herdr herdr-file-viewer, chemin dans lecteur_fichiers)
+# Appliquer à un espace ouvert, sans redémarrer l'agent : berger refaire-espace <agent>.
+# lecteur_fichiers = "~/plugins/herdr-file-viewer"
+# [espaces.infra]
+# a_cote = ["source:conteneurs", "fichiers"]
+# [espaces.infra.onglets]
+# "Sauvegardes" = ["source:sauvegardes"]
+# Le planificateur y remet de lui-même l'espace voulu (berger espace-voulu <agent>), au plus toutes les 5 min ; pour l'arrêter :
+# [espaces]
+# auto = false

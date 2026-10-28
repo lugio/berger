@@ -1,0 +1,143 @@
+{
+ "$id": "documents.schema.json",
+ "x-version": 1,
+ "description": "Données de la vue « Documents » (spec interface §6.1 bis, consultation seule) : les fichiers de la bibliothèque (commun, projets d'équipe, dossiers de travail), des À lire et des branches en cours, les plus récents d'abord, 2 000 au plus — le même lister que Livrables. L'id est une empreinte, jamais un chemin.",
+ "type": "object",
+ "properties": {
+  "documents": {
+   "x-libelle": "Documents",
+   "x-rendu": "liste",
+   "type": "array",
+   "maxItems": 2000,
+   "items": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "x-libelle": "Identifiant",
+      "x-rendu": "cache",
+      "type": "string"
+     },
+     "titre": {
+      "x-libelle": "Titre",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "auteur": {
+      "x-libelle": "Auteur",
+      "x-rendu": "agent",
+      "anyOf": [
+       {
+        "$ref": "communs.schema.json#/$defs/Agent"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "origine": {
+      "x-libelle": "Origine",
+      "x-rendu": "texte",
+      "type": "string",
+      "enum": [
+       "commun",
+       "projet",
+       "travail",
+       "a_lire",
+       "branche"
+      ]
+     },
+     "projet": {
+      "x-libelle": "Projet",
+      "x-rendu": "texte",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "branche": {
+      "x-libelle": "Branche",
+      "x-rendu": "texte",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "chemin": {
+      "x-libelle": "Chemin",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "genre": {
+      "x-libelle": "Genre",
+      "x-rendu": "texte",
+      "type": "string",
+      "enum": [
+       "md",
+       "html",
+       "pdf",
+       "png",
+       "jpeg",
+       "gif",
+       "webp",
+       "autre"
+      ]
+     },
+     "taille": {
+      "x-libelle": "Taille (octets)",
+      "x-rendu": "nombre",
+      "type": "integer"
+     },
+     "date": {
+      "x-libelle": "Date",
+      "x-rendu": "quand",
+      "type": "string"
+     },
+     "lu": {
+      "x-libelle": "Lu",
+      "x-rendu": "oui-non",
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "lien": {
+      "x-libelle": "Ouvrir",
+      "x-rendu": "lien",
+      "$ref": "communs.schema.json#/$defs/Lien"
+     }
+    },
+    "required": [
+     "id",
+     "titre",
+     "auteur",
+     "origine",
+     "projet",
+     "branche",
+     "chemin",
+     "genre",
+     "taille",
+     "date",
+     "lu",
+     "lien"
+    ],
+    "additionalProperties": false
+   }
+  }
+ },
+ "required": [
+  "documents"
+ ],
+ "additionalProperties": false
+}
