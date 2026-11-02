@@ -1,0 +1,339 @@
+{
+ "$id": "demande.schema.json",
+ "x-version": 1,
+ "description": "Données de la vue d'objet « Demande de fusion » (berger vue demande <projet>,<sujet>) : la demande inscrite (résumé complet, portes avec qui les a jouées et quand, rejeux du chef), et, lus dans le dépôt du chef sans fetch, ses commits et les fichiers touchés.",
+ "type": "object",
+ "properties": {
+  "projet": {
+   "x-libelle": "Projet",
+   "x-rendu": "texte",
+   "type": "string"
+  },
+  "sujet": {
+   "x-libelle": "Sujet",
+   "x-rendu": "texte",
+   "type": "string"
+  },
+  "branche": {
+   "x-libelle": "Branche",
+   "x-rendu": "texte",
+   "type": "string"
+  },
+  "commit": {
+   "x-libelle": "Commit",
+   "x-rendu": "texte",
+   "type": "string"
+  },
+  "agent": {
+   "x-libelle": "Développeur",
+   "x-rendu": "agent",
+   "$ref": "communs.schema.json#/$defs/Agent"
+  },
+  "etat": {
+   "x-libelle": "État",
+   "x-rendu": "texte",
+   "type": "string"
+  },
+  "demande": {
+   "x-libelle": "Demandée le",
+   "x-rendu": "quand",
+   "type": "string"
+  },
+  "resume": {
+   "x-libelle": "Résumé",
+   "x-rendu": "texte",
+   "type": "string"
+  },
+  "tronque": {
+   "x-libelle": "Résumé coupé à l'inscription",
+   "x-rendu": "oui-non",
+   "type": "boolean"
+  },
+  "renvois": {
+   "x-libelle": "Renvois",
+   "x-rendu": "nombre",
+   "type": "integer"
+  },
+  "motif": {
+   "x-libelle": "Dernier motif de renvoi",
+   "x-rendu": "texte",
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "portes": {
+   "x-libelle": "Portes (à la demande)",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "porte": {
+      "x-libelle": "Porte",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "etat": {
+      "x-libelle": "État",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "code": {
+      "x-libelle": "Code",
+      "x-rendu": "nombre",
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "bilan": {
+      "x-libelle": "Bilan",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "par": {
+      "x-libelle": "Jouée par",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "quand": {
+      "x-libelle": "Quand",
+      "x-rendu": "quand",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "ou": {
+      "x-libelle": "Où",
+      "x-rendu": "texte",
+      "enum": [
+       "demande",
+       "rejeu",
+       "fusion"
+      ]
+     }
+    },
+    "required": [
+     "porte",
+     "etat",
+     "code",
+     "bilan",
+     "par",
+     "quand",
+     "ou"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "rejeux": {
+   "x-libelle": "Rejeux du chef",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "par": {
+      "x-libelle": "Par",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "quand": {
+      "x-libelle": "Quand",
+      "x-rendu": "quand",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "recompte": {
+      "x-libelle": "Recompte",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "portes": {
+      "x-libelle": "Portes rejouées",
+      "x-rendu": "liste",
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "porte": {
+         "x-libelle": "Porte",
+         "x-rendu": "texte",
+         "type": "string"
+        },
+        "etat": {
+         "x-libelle": "État",
+         "x-rendu": "texte",
+         "type": "string"
+        },
+        "code": {
+         "x-libelle": "Code",
+         "x-rendu": "nombre",
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "bilan": {
+         "x-libelle": "Bilan",
+         "x-rendu": "texte",
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "par": {
+         "x-libelle": "Jouée par",
+         "x-rendu": "texte",
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "quand": {
+         "x-libelle": "Quand",
+         "x-rendu": "quand",
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "ou": {
+         "x-libelle": "Où",
+         "x-rendu": "texte",
+         "enum": [
+          "demande",
+          "rejeu",
+          "fusion"
+         ]
+        }
+       },
+       "required": [
+        "porte",
+        "etat",
+        "code",
+        "bilan",
+        "par",
+        "quand",
+        "ou"
+       ],
+       "additionalProperties": false
+      }
+     }
+    },
+    "required": [
+     "par",
+     "quand",
+     "recompte",
+     "portes"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "commits": {
+   "x-libelle": "Commits",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "x-libelle": "Commit",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "sujet": {
+      "x-libelle": "Sujet",
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "sujet"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "fichiers": {
+   "x-libelle": "Fichiers touchés",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "chemin": {
+      "x-libelle": "Fichier",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "ajouts": {
+      "x-libelle": "Lignes ajoutées",
+      "x-rendu": "nombre",
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "retraits": {
+      "x-libelle": "Lignes retirées",
+      "x-rendu": "nombre",
+      "type": [
+       "integer",
+       "null"
+      ]
+     }
+    },
+    "required": [
+     "chemin",
+     "ajouts",
+     "retraits"
+    ],
+    "additionalProperties": false
+   },
+   "maxItems": 300
+  },
+  "git": {
+   "x-libelle": "Dépôt",
+   "x-rendu": "texte",
+   "type": [
+    "string",
+    "null"
+   ]
+  }
+ },
+ "required": [
+  "projet",
+  "sujet",
+  "branche",
+  "commit",
+  "agent",
+  "etat",
+  "demande",
+  "resume",
+  "tronque",
+  "renvois",
+  "motif",
+  "portes",
+  "rejeux",
+  "commits",
+  "fichiers",
+  "git"
+ ],
+ "additionalProperties": false
+}

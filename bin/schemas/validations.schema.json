@@ -1,0 +1,9 @@
+{
+ "$id": "validations.schema.json", "x-version": 2,
+ "description": "Données de « berger validations » (et de berger validations --json) : les écritures en attente, sans leurs arguments.",
+ "type": "object",
+ "properties": {
+  "validations": {"x-libelle": "Écritures en attente", "x-rendu": "liste", "type": "array", "items": {"x-rendu": "validation", "$ref": "communs.schema.json#/$defs/Validation"}}
+ },
+ "required": ["validations"], "additionalProperties": false
+}

@@ -1,0 +1,23 @@
+[
+"\u001b[7m\u001b[1m 🔔 DÉCISIONS  ·  ce qui attend un geste                                                     10:00  \u001b[0m",
+"",
+"\u001b[33m\u001b[1mT'ATTEND (5)\u001b[0m",
+"\u001b[33m\u001b[2m────────────\u001b[0m",
+"  \u001b[33m▲\u001b[0m \u001b[1mvalidation n° 1 · Vigie\u001b[0m\u001b[2m  · 2026-10-13 09:00\u001b[0m",
+"    recréer l'espace de vigie  →  berger valider 1 / refuser 1",
+"  \u001b[33m▲\u001b[0m \u001b[1mvalidation n° 3 · Vigie\u001b[0m\u001b[2m  · 2026-10-13 09:30\u001b[0m",
+"    fusionner menu  →  berger valider 3 / refuser 3",
+"  \u001b[33m▲\u001b[0m \u001b[1m● Demo ecran\u001b[0m",
+"    bloqué : la base de test ne répond pas",
+"  \u001b[33m▲\u001b[0m \u001b[1m🛡 Vigie\u001b[0m",
+"    attend une réponse dans son terminal (permission ou choix)",
+"  \u001b[33m▲\u001b[0m \u001b[1m📖 2 document(s) à lire\u001b[0m",
+"    Compte rendu de la réunion · Document commun  →  onglet À lire",
+"",
+"\u001b[36m\u001b[1mATTEND UN AGENT (2)\u001b[0m",
+"\u001b[36m\u001b[2m───────────────────\u001b[0m",
+"  \u001b[36m▲\u001b[0m \u001b[1mvalidation n° 2 · attend Scribe\u001b[0m\u001b[2m  · 2026-10-13 09:10\u001b[0m",
+"    Demo ecran : ouvrir le projet x",
+"  \u001b[36m▲\u001b[0m \u001b[1mfusion demo · à relire · attend Vigie\u001b[0m\u001b[2m  · 13/10 09:20\u001b[0m",
+"    ecran"
+]

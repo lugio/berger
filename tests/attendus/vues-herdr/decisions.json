@@ -1,0 +1,21 @@
+[
+"\u001b[7m\u001b[1m \ud83d\udd14 D\u00c9CISIONS  \u00b7  ce qui attend un geste                                                     10:00  \u001b[0m",
+"",
+"\u001b[33m\u001b[1mT'ATTEND (3)\u001b[0m",
+"\u001b[33m\u001b[2m\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u001b[0m",
+"  \u001b[33m\u25b2\u001b[0m \u001b[1m\u00c9criture n\u00b0 1\u001b[0m \u00b7 Vigie : recr\u00e9er l'espace de vigie\u001b[2m  \u00b7 2026-10-13 09:00\u001b[0m",
+"      \u001b[1mberger valider 1\u001b[0m",
+"      \u001b[1mberger refuser 1\u001b[0m",
+"  \u001b[33m\u25b2\u001b[0m \u001b[1m\u00c9criture n\u00b0 3\u001b[0m \u00b7 Vigie : fusionner menu\u001b[2m  \u00b7 2026-10-13 09:30\u001b[0m",
+"      \u001b[1mberger valider 3\u001b[0m",
+"      \u001b[1mberger refuser 3\u001b[0m",
+"  \u001b[33m\u25b2\u001b[0m \u001b[1m\ud83d\udee1 Vigie\u001b[0m : attend une r\u00e9ponse dans son terminal (permission ou choix)",
+"",
+"\u001b[2m\u25b8 PROPOSITIONS (2) \u00b7 repli\u00e9es : retention \u00b7 disque presque plein sur le serveur 1\u001b[0m",
+"",
+"\u001b[36m\u001b[1mATTEND UN AGENT (3)\u001b[0m",
+"\u001b[36m\u001b[2m\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u001b[0m",
+"  \u001b[36m\u25b2\u001b[0m \u001b[1mvalidation n\u00b0 2 \u00b7 attend Scribe\u001b[0m : Demo ecran : ouvrir le projet x\u001b[2m  \u00b7 2026-10-13 09:10\u001b[0m",
+"  \u001b[36m\u25b2\u001b[0m \u001b[1m\u25cf Demo ecran\u001b[0m : bloqu\u00e9 : la base de test ne r\u00e9pond pas",
+"  \u001b[36m\u25b2\u001b[0m \u001b[1mfusion demo \u00b7 \u00e0 relire \u00b7 attend Vigie\u001b[0m : ecran\u001b[2m  \u00b7 13/10 09:20\u001b[0m"
+]

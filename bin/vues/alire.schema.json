@@ -1,0 +1,113 @@
+{
+ "$id": "alire.schema.json",
+ "x-version": 3,
+ "description": "Données de la vue « À lire » : les documents déposés pour le propriétaire, les plus récents d'abord. L'id est une empreinte de la clé de lecture, jamais le chemin. Une note qui déclare « Lié à : validation <n> | demande <projet>,<sujet> » est lue d'elle-même quand l'objet est réglé (regle dit pourquoi).",
+ "type": "object",
+ "properties": {
+  "documents": {
+   "x-libelle": "Documents",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "x-libelle": "Identifiant",
+      "x-rendu": "cache",
+      "type": "string"
+     },
+     "auteur": {
+      "x-libelle": "Auteur",
+      "x-rendu": "agent",
+      "anyOf": [
+       {
+        "$ref": "communs.schema.json#/$defs/Agent"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "titre": {
+      "x-libelle": "Titre",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "date": {
+      "x-libelle": "Date",
+      "x-rendu": "quand",
+      "type": "string"
+     },
+     "lu": {
+      "x-libelle": "Lu",
+      "x-rendu": "oui-non",
+      "type": "boolean"
+     },
+     "regle": {
+      "x-libelle": "Réglé",
+      "x-rendu": "texte",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "required": [
+     "id",
+     "auteur",
+     "titre",
+     "date",
+     "lu",
+     "regle"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "non_lus": {
+   "x-libelle": "Non lus",
+   "x-rendu": "nombre",
+   "type": "integer"
+  },
+  "autres": {
+   "x-libelle": "Autres documents (bibliothèque, travail, branches)",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "titre": {
+      "x-libelle": "Titre",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "origine": {
+      "x-libelle": "Origine",
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "required": [
+     "titre",
+     "origine"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "autres_total": {
+   "x-libelle": "Autres documents : total",
+   "x-rendu": "nombre",
+   "type": "integer"
+  }
+ },
+ "required": [
+  "documents",
+  "non_lus",
+  "autres",
+  "autres_total"
+ ],
+ "additionalProperties": false
+}

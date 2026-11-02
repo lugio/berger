@@ -1,0 +1,215 @@
+{
+ "$id": "communs.schema.json",
+ "description": "Types communs aux données des vues de Berger (spec docs/plans/2026-10-13-interface-spec.md, §1). Une date « quand » est un texte ISO 8601 à l'heure locale.",
+ "$defs": {
+  "Agent": {
+   "type": "object",
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "nom": {
+     "type": "string"
+    },
+    "icone": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "id",
+    "nom",
+    "icone"
+   ],
+   "additionalProperties": false
+  },
+  "Statut": {
+   "type": "object",
+   "properties": {
+    "moteur": {
+     "type": "string"
+    },
+    "etat": {
+     "enum": [
+      "idle",
+      "done",
+      "working",
+      "blocked",
+      "unknown",
+      "?"
+     ]
+    },
+    "libelle": {
+     "type": "string",
+     "description": "le statut en mots (« au repos », « travaille »…), celui des panneaux"
+    }
+   },
+   "required": [
+    "moteur",
+    "etat",
+    "libelle"
+   ],
+   "additionalProperties": false
+  },
+  "Checklist": {
+   "type": "object",
+   "properties": {
+    "titre": {
+     "type": "string"
+    },
+    "faites": {
+     "type": "integer"
+    },
+    "total": {
+     "type": "integer"
+    },
+    "en_cours": {
+     "type": "string"
+    },
+    "bloque": {
+     "type": "string"
+    },
+    "fini": {
+     "type": "boolean"
+    },
+    "etapes": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "fait": {
+        "type": "boolean"
+       },
+       "libelle": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "fait",
+       "libelle"
+      ],
+      "additionalProperties": false
+     }
+    },
+    "go": {
+     "type": "boolean",
+     "description": "le blocage est « ⚠ Go attendu : … » : un go que le propriétaire doit donner"
+    },
+    "question": {
+     "type": "string",
+     "description": "« ❓ Question : … » posée au propriétaire (vide sinon)"
+    }
+   },
+   "required": [
+    "titre",
+    "faites",
+    "total",
+    "en_cours",
+    "bloque",
+    "fini",
+    "etapes",
+    "go",
+    "question"
+   ],
+   "additionalProperties": false
+  },
+  "Validation": {
+   "type": "object",
+   "properties": {
+    "n": {
+     "type": [
+      "integer",
+      "null"
+     ]
+    },
+    "agent": {
+     "$ref": "#/$defs/Agent"
+    },
+    "outil": {
+     "type": "string"
+    },
+    "verbe": {
+     "type": "string"
+    },
+    "apercu": {
+     "type": "string"
+    },
+    "demande": {
+     "type": "string"
+    },
+    "valideur": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/Agent"
+      },
+      {
+       "type": "null"
+      }
+     ]
+    },
+    "fusion": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "description": "le sujet de la demande de fusion que cette écriture fusionnerait (verbe fusionner), sinon null"
+    }
+   },
+   "required": [
+    "n",
+    "agent",
+    "outil",
+    "verbe",
+    "apercu",
+    "demande",
+    "valideur",
+    "fusion"
+   ],
+   "additionalProperties": false
+  },
+  "Ligne": {
+   "description": "Une ligne en morceaux : chaque morceau a son texte et son ton (couleur sémantique, null = normal). Le texte de la ligne = les textes mis bout à bout.",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "texte": {
+      "type": "string"
+     },
+     "ton": {
+      "enum": [
+       "rouge",
+       "jaune",
+       "vert",
+       "bleu",
+       "cyan",
+       "pale",
+       null
+      ]
+     }
+    },
+    "required": [
+     "texte",
+     "ton"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "Lien": {
+   "description": "Une vue d'objet à ouvrir : berger vue <vue> <a>.",
+   "type": "object",
+   "properties": {
+    "vue": {
+     "type": "string"
+    },
+    "a": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "vue",
+    "a"
+   ],
+   "additionalProperties": false
+  }
+ }
+}

@@ -1,0 +1,25 @@
+{
+  "moteur": "claude",
+  "version": "2.1.314",
+  "mesure": "copie de claude-2.1.312.json (01/11/2026, go du propriétaire) : contrat joué par le propriétaire sur le serveur de développement, claude 2.1.314 — aucun outil inconnu par rapport à 2.1.312 (13 outils) ; mesure d'origine : 2026-10-31, web-integre lot 1 bis (renvoi n° 108)",
+  "comment": "événement init (stream-json) d'un claude -p sans modèle ni réseau, mur MCP strict : témoin sans le refus de Berger (24 outils), strict avec (22) ; outils MCP de l'agent à part (mcp__<serveur>__<outil>, par son `mcp =`) ; 31/10 : RemoteTrigger, PushNotification, DesignSync, SendMessage, ListAgents, Workflow, CronCreate, CronDelete, CronList, ScheduleWakeup refusés à tout strict (reglages_claude de bin/berger) : absents de la liste",
+  "web": [
+    "WebFetch",
+    "WebSearch"
+  ],
+  "outils": [
+    "Task",
+    "Bash",
+    "Edit",
+    "EnterWorktree",
+    "ExitWorktree",
+    "Monitor",
+    "NotebookEdit",
+    "Read",
+    "ReportFindings",
+    "Skill",
+    "TaskStop",
+    "ToolSearch",
+    "Write"
+  ]
+}
