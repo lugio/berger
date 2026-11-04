@@ -1,0 +1,23 @@
+[
+"\u001b[7m\u001b[1m COURTIER DE SECRETS  ·  ARRÊTÉ                                                              10:00  \u001b[0m",
+"",
+"  \u001b[2mqui a accès à quoi\u001b[0m  4 droits attribués · détail et dernier usage : onglet \u001b[1mCatalogue\u001b[0m",
+"",
+"  \u001b[2maudit des secrets\u001b[0m  \u001b[32m2026-10-13 06:00 : aucune fuite (12 valeurs cherchées)\u001b[0m",
+"",
+"\u001b[33m\u001b[1mÉCRITURES À VALIDER (3)\u001b[0m",
+"\u001b[33m\u001b[2m───────────────────────\u001b[0m",
+"\u001b[33m  ✎ \u001b[0mn° 1 · Vigie · recréer l'espace de vigie   → berger valider 1 | refuser 1",
+"\u001b[33m  ✎ \u001b[0mn° 2 · Demo ecran · ouvrir le projet x   → berger valider 2 | refuser 2",
+"\u001b[33m  ✎ \u001b[0mn° 3 · Vigie · fusionner menu   → berger valider 3 | refuser 3",
+"  \u001b[2msauvegarde\u001b[0m         \u001b[32m2026-10-13 02:00 : archive envoyée (14 Mo)\u001b[0m",
+"",
+"  \u001b[2maujourd'hui\u001b[0m  3 appels · \u001b[33m\u001b[1m1 refusé\u001b[0m   \u001b[2m· les secrets ne quittent jamais le courtier\u001b[0m",
+"",
+"\u001b[36m\u001b[1mDERNIERS APPELS\u001b[0m",
+"\u001b[36m\u001b[2m───────────────\u001b[0m",
+"  \u001b[2m07:00\u001b[0m  vigie    lecture \u001b[1malertes.py\u001b[0m   \u001b[32m✓\u001b[0m \u001b[2mok\u001b[0m",
+"  \u001b[2m08:10\u001b[0m  vigie    berger-admin \u001b[1msuivi\u001b[0m demo-ecran  \u001b[32m✓\u001b[0m \u001b[2mok\u001b[0m",
+"  \u001b[2m08:05\u001b[0m  scribe   lecture \u001b[1mmauvais\u001b[0m   \u001b[33m\u001b[1m✗ verbe inconnu\u001b[0m",
+"  \u001b[2m08:00\u001b[0m  vigie    berger-admin \u001b[1metat\u001b[0m   \u001b[32m✓\u001b[0m \u001b[2mok\u001b[0m"
+]

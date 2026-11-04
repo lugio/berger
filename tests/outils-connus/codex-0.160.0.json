@@ -1,0 +1,132 @@
+{
+  "moteur": "codex",
+  "version": "0.160.0",
+  "mesure": "copie de codex-0.165.0.json (01/11/2026, go du propriétaire) : contrat joué par le propriétaire sur le serveur de développement, codex 0.160.0 — aucun outil inconnu par rapport à 0.165.0 ; collaboration seul, sous (13), verte (enfant workspace-write, 4 évasions refusées) ; mesure d'origine : 2026-10-31, web-integre lot 1 bis (renvois n° 108 et 111) ; puis requêtes réelles du modèle par défaut gpt-6.1-sol (additional_tools : namespaces functions, clock, collaboration — tests/fixtures/codex-0.165.0-requetes.json) ; 31/10 (demande du propriétaire) : sous-agents (multi_agent_v1, collaboration) et clock retirés — refusés aux stricts (features.multi_agent=false, features.sleep_tool=false), rouges s'ils restent",
+  "comment": "requête de codex exec au modèle, lue par un faux fournisseur local, 13 modèles (gpt-5 à gpt-5.5, o3, codex-mini) ; renvoi n° 111 : types connus et leur structure (nom, outils imbriqués), outils en paires structurées (type, nom), jamais concaténés ; outils MCP de l'agent à part (namespace mcp__<serveur>, outils function)",
+  "revue_additional_tools": "functions : exec (JavaScript sans accès réseau propre), wait, request_user_input, request_user_input_async déjà dans outils. Aucun outil web ajouté. clock.sleep reste exclu conformément au refus existant. collaboration (followup_task, interrupt_agent, list_agents, send_message, spawn_agent, wait_agent) : jamais dans « outils » ; sous condition (13) seulement (« si_13 », décision du propriétaire du 31/10, go n° 121). Mesure des enveloppes et formes inconnues : non mesurable, jamais ignorée à côté d'une requête valide.",
+  "modele_temoin": "gpt-5.5",
+  "comment_modele_temoin": "témoin (12) joué sur ce modèle : le modèle par défaut (gpt-6.1-sol, code_mode_only) n'envoie aucun outil web, avec ou sans le réglage ; la liste fermée est vérifiée sur le modèle par défaut ET sur celui-ci",
+  "types": {
+    "function": {
+      "nom": true
+    },
+    "custom": {
+      "nom": true
+    },
+    "namespace": {
+      "nom": true,
+      "outils": true
+    },
+    "tool_search": {},
+    "web_search": {}
+  },
+  "web": [
+    {
+      "type": "web_search"
+    }
+  ],
+  "outils": [
+    {
+      "type": "function",
+      "name": "exec_command"
+    },
+    {
+      "type": "function",
+      "name": "write_stdin"
+    },
+    {
+      "type": "function",
+      "name": "list_mcp_resources"
+    },
+    {
+      "type": "function",
+      "name": "list_mcp_resource_templates"
+    },
+    {
+      "type": "function",
+      "name": "read_mcp_resource"
+    },
+    {
+      "type": "function",
+      "name": "request_user_input"
+    },
+    {
+      "type": "function",
+      "name": "view_image"
+    },
+    {
+      "type": "function",
+      "name": "get_goal"
+    },
+    {
+      "type": "function",
+      "name": "create_goal"
+    },
+    {
+      "type": "function",
+      "name": "update_goal"
+    },
+    {
+      "type": "custom",
+      "name": "apply_patch"
+    },
+    {
+      "type": "tool_search"
+    },
+    {
+      "type": "namespace",
+      "name": "functions",
+      "tools": [
+        {
+          "type": "custom",
+          "name": "exec"
+        },
+        {
+          "type": "function",
+          "name": "wait"
+        },
+        {
+          "type": "function",
+          "name": "request_user_input"
+        },
+        {
+          "type": "function",
+          "name": "request_user_input_async"
+        }
+      ]
+    }
+  ],
+  "comment_si_13": "outils SOUS CONDITION (codex-sous-agents, 31/10/2026, docs/plans/2026-10-31-codex-sous-agents-spec.md) : acceptés par (12) seulement si la condition (13) est verte dans le même contrat (sous-agent réellement lancé, sa sortie reçue, ses quatre évasions refusées) ; jamais en dur, jamais un outil web ; clock reste refusé",
+  "si_13": [
+    {
+      "type": "namespace",
+      "name": "collaboration",
+      "tools": [
+        {
+          "type": "function",
+          "name": "followup_task"
+        },
+        {
+          "type": "function",
+          "name": "interrupt_agent"
+        },
+        {
+          "type": "function",
+          "name": "list_agents"
+        },
+        {
+          "type": "function",
+          "name": "send_message"
+        },
+        {
+          "type": "function",
+          "name": "spawn_agent"
+        },
+        {
+          "type": "function",
+          "name": "wait_agent"
+        }
+      ]
+    }
+  ]
+}

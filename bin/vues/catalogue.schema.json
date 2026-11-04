@@ -1,0 +1,384 @@
+{
+ "$id": "catalogue.schema.json",
+ "x-version": 1,
+ "description": "Données de la vue « Catalogue » : outils du courtier (verbes de lecture et d'écriture, qui y a droit, dernier usage accepté), autres droits, modules, méthodes, garde-fous, réveils. Des noms seulement, aucune valeur secrète.",
+ "type": "object",
+ "properties": {
+  "outils": {
+   "x-libelle": "Outils du courtier",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "nom": {
+      "x-libelle": "Outil",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "type": {
+      "x-libelle": "Type",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "lecture": {
+      "x-libelle": "Lecture",
+      "x-rendu": "liste",
+      "type": "array",
+      "items": {
+       "x-rendu": "texte",
+       "type": "string"
+      }
+     },
+     "ecriture": {
+      "x-libelle": "Écriture (validée)",
+      "x-rendu": "liste",
+      "type": "array",
+      "items": {
+       "x-rendu": "texte",
+       "type": "string"
+      }
+     },
+     "droits": {
+      "x-libelle": "Qui y a droit",
+      "x-rendu": "liste",
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "agent": {
+         "x-libelle": "Agent",
+         "x-rendu": "agent",
+         "$ref": "communs.schema.json#/$defs/Agent"
+        },
+        "dernier_usage": {
+         "x-libelle": "Dernier usage",
+         "x-rendu": "quand",
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "jours": {
+         "x-libelle": "Jours depuis",
+         "x-rendu": "nombre",
+         "type": [
+          "integer",
+          "null"
+         ]
+        }
+       },
+       "required": [
+        "agent",
+        "dernier_usage",
+        "jours"
+       ],
+       "additionalProperties": false
+      }
+     }
+    },
+    "required": [
+     "nom",
+     "type",
+     "lecture",
+     "ecriture",
+     "droits"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "autres_droits": {
+   "x-libelle": "Autres droits",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "droit": {
+      "x-libelle": "Droit",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "agents": {
+      "x-libelle": "Agents",
+      "x-rendu": "liste",
+      "type": "array",
+      "items": {
+       "x-rendu": "agent",
+       "$ref": "communs.schema.json#/$defs/Agent"
+      }
+     }
+    },
+    "required": [
+     "droit",
+     "agents"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "modules": {
+   "x-libelle": "Modules d'outils",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "nom": {
+      "x-libelle": "Module",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "utilise": {
+      "x-libelle": "Utilisé",
+      "x-rendu": "oui-non",
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "nom",
+     "utilise"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "skills": {
+   "x-libelle": "Méthodes (skills)",
+   "x-rendu": "liste",
+   "type": "object",
+   "properties": {
+    "partagees": {
+     "x-libelle": "Partagées (tous les agents)",
+     "x-rendu": "liste",
+     "type": "array",
+     "items": {
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "dossier_catalogue": {
+     "x-libelle": "Dossier du catalogue",
+     "x-rendu": "cache",
+     "type": "string"
+    },
+    "catalogue": {
+     "x-libelle": "Catalogue des rôles",
+     "x-rendu": "liste",
+     "type": "array",
+     "items": {
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "par_agent": {
+     "x-libelle": "Par agent",
+     "x-rendu": "liste",
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "agent": {
+        "x-libelle": "Agent",
+        "x-rendu": "agent",
+        "$ref": "communs.schema.json#/$defs/Agent"
+       },
+       "skills": {
+        "x-libelle": "Méthodes",
+        "x-rendu": "liste",
+        "type": "array",
+        "items": {
+         "type": "object",
+         "properties": {
+          "nom": {
+           "x-libelle": "Méthode",
+           "x-rendu": "texte",
+           "type": "string"
+          },
+          "absente": {
+           "x-libelle": "Absente (ni produit ni catalogue)",
+           "x-rendu": "oui-non",
+           "type": "boolean"
+          }
+         },
+         "required": [
+          "nom",
+          "absente"
+         ],
+         "additionalProperties": false
+        }
+       }
+      },
+      "required": [
+       "agent",
+       "skills"
+      ],
+      "additionalProperties": false
+     }
+    },
+    "par_equipe": {
+     "x-libelle": "Par équipe",
+     "x-rendu": "liste",
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "projet": {
+        "x-libelle": "Équipe",
+        "x-rendu": "texte",
+        "type": "string"
+       },
+       "skills": {
+        "x-libelle": "Méthodes",
+        "x-rendu": "liste",
+        "type": "array",
+        "items": {
+         "type": "object",
+         "properties": {
+          "nom": {
+           "x-libelle": "Méthode",
+           "x-rendu": "texte",
+           "type": "string"
+          },
+          "absente": {
+           "x-libelle": "Absente (ni produit ni catalogue)",
+           "x-rendu": "oui-non",
+           "type": "boolean"
+          }
+         },
+         "required": [
+          "nom",
+          "absente"
+         ],
+         "additionalProperties": false
+        }
+       }
+      },
+      "required": [
+       "projet",
+       "skills"
+      ],
+      "additionalProperties": false
+     }
+    },
+    "orphelines": {
+     "x-libelle": "Données à personne",
+     "x-rendu": "liste",
+     "type": "array",
+     "items": {
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "propres": {
+     "x-libelle": "Propres à un agent",
+     "x-rendu": "liste",
+     "type": "array",
+     "items": {
+      "type": "object",
+      "properties": {
+       "agent": {
+        "x-libelle": "Agent",
+        "x-rendu": "agent",
+        "$ref": "communs.schema.json#/$defs/Agent"
+       },
+       "skills": {
+        "x-libelle": "Méthodes",
+        "x-rendu": "liste",
+        "type": "array",
+        "items": {
+         "x-rendu": "texte",
+         "type": "string"
+        }
+       }
+      },
+      "required": [
+       "agent",
+       "skills"
+      ],
+      "additionalProperties": false
+     }
+    }
+   },
+   "required": [
+    "partagees",
+    "dossier_catalogue",
+    "catalogue",
+    "par_agent",
+    "par_equipe",
+    "orphelines",
+    "propres"
+   ],
+   "additionalProperties": false
+  },
+  "gardes": {
+   "x-libelle": "Garde-fous",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "moment": {
+      "x-libelle": "Moment",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "outils": {
+      "x-libelle": "Outils",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "script": {
+      "x-libelle": "Script",
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "required": [
+     "moment",
+     "outils",
+     "script"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "reveils": {
+   "x-libelle": "Réveils et tâches",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "agent": {
+      "x-libelle": "Agent",
+      "x-rendu": "agent",
+      "$ref": "communs.schema.json#/$defs/Agent"
+     },
+     "heures": {
+      "x-libelle": "Heures",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "taches": {
+      "x-libelle": "Tâches",
+      "x-rendu": "nombre",
+      "type": "integer"
+     }
+    },
+    "required": [
+     "agent",
+     "heures",
+     "taches"
+    ],
+    "additionalProperties": false
+   }
+  }
+ },
+ "required": [
+  "outils",
+  "autres_droits",
+  "modules",
+  "skills",
+  "gardes",
+  "reveils"
+ ],
+ "additionalProperties": false
+}

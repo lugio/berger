@@ -1,0 +1,1321 @@
+[
+ {
+  "scenario": "equipe en texte positionnel",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "usage : berger --stdin ; commande et paramètres dans un tableau JSON UTF-8, texte positionnel refusé",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet en texte positionnel",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "usage : berger --stdin ; commande et paramètres dans un tableau JSON UTF-8, texte positionnel refusé",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe sans sous-commande",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "berger equipe ouvrir <projet> <sujet> \"<mission>\" | fermer <projet> <sujet> | liste <projet> | domaine <projet> ajouter|retirer <nom> [--essai] | domaines <projet> | go <projet> <sujet> <cas> <spec> [--essai] — équipes : p, inst",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe liste sans projet",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "berger equipe ouvrir <projet> <sujet> \"<mission>\" | fermer <projet> <sujet> | liste <projet> | domaine <projet> ajouter|retirer <nom> [--essai] | domaines <projet> | go <projet> <sujet> <cas> <spec> [--essai] — équipes : p, inst",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe liste, projet inconnu",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "projet d'équipe inconnu : inconnu — berger equipe ouvrir <projet> <sujet> \"<mission>\" | fermer <projet> <sujet> | liste <projet> | domaine <projet> ajouter|retirer <nom> [--essai] | domaines <projet> | go <projet> <sujet> <cas> <spec> [--essai] — équipes : p, inst",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe ouvrir, arguments manquants",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "berger equipe ouvrir <projet> <sujet> \"<mission>\" | fermer <projet> <sujet> | liste <projet> | domaine <projet> ajouter|retirer <nom> [--essai] | domaines <projet> | go <projet> <sujet> <cas> <spec> [--essai] — équipes : p, inst",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe fermer, arguments manquants",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "berger equipe ouvrir <projet> <sujet> \"<mission>\" | fermer <projet> <sujet> | liste <projet> | domaine <projet> ajouter|retirer <nom> [--essai] | domaines <projet> | go <projet> <sujet> <cas> <spec> [--essai] — équipes : p, inst",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe, sous-commande inconnue",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "berger equipe ouvrir <projet> <sujet> \"<mission>\" | fermer <projet> <sujet> | liste <projet> | domaine <projet> ajouter|retirer <nom> [--essai] | domaines <projet> | go <projet> <sujet> <cas> <spec> [--essai] — équipes : p, inst",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe domaine, forme trop longue",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "berger equipe ouvrir <projet> <sujet> \"<mission>\" | fermer <projet> <sujet> | liste <projet> | domaine <projet> ajouter|retirer <nom> [--essai] | domaines <projet> | go <projet> <sujet> <cas> <spec> [--essai] — équipes : p, inst",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "transport : JSON invalide",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "ValueError: commande JSON invalide",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "transport : pas un tableau de textes",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "ValueError: commande privée : tableau de textes requis",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "transport : verbe privé imbriqué",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "ValueError: commande privée : tableau de textes requis",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "transport : UTF-8 requis",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "ValueError: commande JSON invalide",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "transport : plus d'un Mio",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "ValueError: commande JSON invalide",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe liste (développeur, demande renvoyée, avertissement)",
+  "code": 0,
+  "stdout": "[\n {\n  \"agent\": \"p-ancien\",\n  \"sujet\": \"ancien\",\n  \"branche\": \"p/ancien\",\n  \"port\": \"0\",\n  \"mission\": true,\n  \"checklist\": \"1/2\",\n  \"bloque\": \"une question\",\n  \"demande_de_fusion\": \"renvoyée\",\n  \"portes\": \"verify : vert ; pret : rouge\",\n  \"renvois\": 1\n },\n {\n  \"avertissement\": \"intrus déclare equipe:p sans être le coordinateur déclaré : ignoré, à retirer de son agent.conf\"\n }\n]\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe liste, demande de fusion illisible : « { »",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line <N> column 2 (char 1)",
+  "fichiers_ecrits": {
+   "equipes/p/demandes/ancien.json": [
+    "{"
+   ]
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe liste, demande de fusion illisible : pas un objet",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "AttributeError: 'list' object has no attribute 'get'",
+  "fichiers_ecrits": {
+   "equipes/p/demandes/ancien.json": [
+    "[1]"
+   ]
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe liste, demande de fusion illisible : trop imbriquée",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "RecursionError: Stack overflow (used <N> kB) while decoding a JSON array from a unicode string",
+  "fichiers_ecrits": {
+   "equipes/p/demandes/ancien.json": [
+    "sha256:a424233baadccd66"
+   ]
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe liste, demande de fusion illisible : non UTF-8",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 10: invalid start byte",
+  "fichiers_ecrits": {
+   "equipes/p/demandes/ancien.json": [
+    "{\"etat\": \"�\"}"
+   ]
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe liste, demande de fusion illisible : renvois illisibles",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "ValueError: invalid literal for int() with base 10: 'trois'",
+  "fichiers_ecrits": {
+   "equipes/p/demandes/ancien.json": [
+    "{\"renvois\": \"trois\"}"
+   ]
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe liste, checklist du développeur non UTF-8",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 10: invalid start byte",
+  "fichiers_ecrits": {
+   "agents/p-ancien/CHECKLIST.md": [
+    "# x\n- [ ] �\n"
+   ],
+   "equipes/p/demandes/ancien.json": [
+    "{\"sujet\": \"ancien\", \"agent\": \"p-ancien\", \"etat\": \"renvoy\\u00e9e\", \"renvois\": 1, \"portes\": {\"verify\": {\"etat\": \"vert\"}, \"pret\": {\"etat\": \"rouge\"}}}"
+   ]
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe liste, dépôt = installation (refusé)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "[equipes.inst] : le dépôt ne peut pas être l'installation (<T>) — un clone séparé (ex. ~/projets/berger)",
+  "fichiers_ecrits": {
+   "agents/p-ancien/CHECKLIST.md": [
+    "# x\n- [x] lu\n- [ ] codé\n⚠ Bloqué : une question\n"
+   ]
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe domaines, aucun",
+  "code": 0,
+  "stdout": "[]\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe domaines, liste non UTF-8",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 12: invalid start byte",
+  "fichiers_ecrits": {
+   "equipes/p/domaines": [
+    "exemple.org\n�\n"
+   ]
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet liste, projets.json illisible : « { »",
+  "code": 0,
+  "stdout": "{\n \"p\": {},\n \"inst\": {}\n}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "equipes/p/projets.json": [
+    "{"
+   ],
+   "equipes/p/domaines": "(supprimé)"
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet liste, projets.json illisible : trop imbriqué",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "RecursionError: Stack overflow (used <N> kB) while decoding a JSON array from a unicode string",
+  "fichiers_ecrits": {
+   "equipes/p/projets.json": [
+    "sha256:a424233baadccd66"
+   ]
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet liste, projets.json illisible : non UTF-8",
+  "code": 0,
+  "stdout": "{\n \"p\": {},\n \"inst\": {}\n}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "equipes/p/projets.json": [
+    "{\"�\": 1}"
+   ]
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe domaine, nom inexact",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "« *.joker.org » n'est pas un nom de domaine exact (minuscules, chiffres, tirets, au moins un point ; ni joker, ni IP, ni port)",
+  "fichiers_ecrits": {
+   "equipes/p/projets.json": "(supprimé)"
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe domaine, action inconnue",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "berger equipe domaine <projet> ajouter|retirer <domaine>",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe domaine, projet inconnu",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "projet d'équipe inconnu : inconnu — berger equipe ouvrir <projet> <sujet> \"<mission>\" | fermer <projet> <sujet> | liste <projet> | domaine <projet> ajouter|retirer <nom> [--essai] | domaines <projet> | go <projet> <sujet> <cas> <spec> [--essai] — équipes : p, inst",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe domaine ajouter --essai (aperçu seul)",
+  "code": 0,
+  "stdout": "ajouter le site exemple.org au projet p → sites permis : exemple.org ; mur de : coord, p-ancien (Claude ; Codex reste sans réseau)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe domaine ajouter (écrit, échange, journal, régénère)",
+  "code": 0,
+  "stdout": "fait : ajouter le site exemple.org au projet p → sites permis : exemple.org ; mur de : coord, p-ancien (Claude ; Codex reste sans réseau) — effet au prochain lancement (berger relancer <agent>)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/chef/.agents/skills/": [
+    "<dossier>"
+   ],
+   "agents/chef/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/chef/agent.conf)\",\n      \"Edit(~/agents/chef/espace.toml)\",\n      \"Edit(~/agents/chef/.reseau-claude.json)\",\n      \"Edit(~/agents/chef/.reglages-claude.json)\",\n      \"Edit(~/agents/chef/.mcp.json)\",\n      \"Write(~/agents/chef/.mcp.json)\",\n      \"Edit(~/agents/chef/.claude/settings.json)\",\n      \"Write(~/agents/chef/.claude/settings.json)\",\n      \"Edit(~/agents/chef/.claude/settings.local.json)\",\n      \"Write(~/agents/chef/.claude/settings.local.json)\",\n      \"Edit(~/agents/chef/.codex/**)\",\n      \"Write(~/agents/chef/.codex/**)\",\n      \"Edit(~/agents/chef/.mcp-berger.json)\",\n      \"Write(~/agents/chef/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline chef\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [],\n      \"deniedDomains\": [\n        \"*\"\n      ]\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/chef/agent.conf\",\n        \"<T>/agents/chef/espace.toml\",\n        \"<T>/agents/chef/.reseau-claude.json\",\n        \"<T>/agents/chef/.reglages-claude.json\",\n        \"<T>/agents/chef/.mcp.json\",\n        \"<T>/agents/chef/.claude/settings.json\",\n        \"<T>/agents/chef/.claude/settings.local.json\",\n        \"<T>/agents/chef/.codex\",\n        \"<T>/agents/chef/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/5ecc077ed454\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/f59ac0828b9a\"\n  }\n}\n"
+   ],
+   "agents/chef/.claude/settings.local.json": [
+    "{\n  \"skipDangerousModePermissionPrompt\": true\n}\n"
+   ],
+   "agents/chef/.claude/skills/": [
+    "<dossier>"
+   ],
+   "agents/chef/AGENTS.md": [
+    "sha256:2b27b111148e2906"
+   ],
+   "agents/chef/CLAUDE.md": [
+    "sha256:336cc4fbf19beaad"
+   ],
+   "agents/chef/a-lire/": [
+    "<dossier>"
+   ],
+   "agents/chef/espace.toml": [
+    "# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n"
+   ],
+   "agents/coord/.agents/skills/": [
+    "<dossier>"
+   ],
+   "agents/coord/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/coord/agent.conf)\",\n      \"Edit(~/agents/coord/espace.toml)\",\n      \"Edit(~/agents/coord/.reseau-claude.json)\",\n      \"Edit(~/agents/coord/.reglages-claude.json)\",\n      \"Edit(~/agents/coord/.mcp.json)\",\n      \"Write(~/agents/coord/.mcp.json)\",\n      \"Edit(~/agents/coord/.claude/settings.json)\",\n      \"Write(~/agents/coord/.claude/settings.json)\",\n      \"Edit(~/agents/coord/.claude/settings.local.json)\",\n      \"Write(~/agents/coord/.claude/settings.local.json)\",\n      \"Edit(~/agents/coord/.codex/**)\",\n      \"Write(~/agents/coord/.codex/**)\",\n      \"Edit(~/agents/coord/.mcp-berger.json)\",\n      \"Write(~/agents/coord/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline coord\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [\n        \"exemple.org\"\n      ],\n      \"strictAllowlist\": true\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/coord/agent.conf\",\n        \"<T>/agents/coord/espace.toml\",\n        \"<T>/agents/coord/.reseau-claude.json\",\n        \"<T>/agents/coord/.reglages-claude.json\",\n        \"<T>/agents/coord/.mcp.json\",\n        \"<T>/agents/coord/.claude/settings.json\",\n        \"<T>/agents/coord/.claude/settings.local.json\",\n        \"<T>/agents/coord/.codex\",\n        \"<T>/agents/coord/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/5ecc077ed454\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/e23f0a6462d0\"\n  }\n}\n"
+   ],
+   "agents/coord/.claude/settings.local.json": [
+    "{\n  \"skipDangerousModePermissionPrompt\": true\n}\n"
+   ],
+   "agents/coord/.claude/skills/": [
+    "<dossier>"
+   ],
+   "agents/coord/.reseau-claude.json": [
+    "{\n  \"sandbox\": {\n    \"network\": {\n      \"allowedDomains\": [\n        \"exemple.org\"\n      ],\n      \"strictAllowlist\": true\n    }\n  }\n}\n"
+   ],
+   "agents/coord/AGENTS.md": [
+    "sha256:52b118a622370835"
+   ],
+   "agents/coord/CLAUDE.md": [
+    "sha256:336cc4fbf19beaad"
+   ],
+   "agents/coord/a-lire/": [
+    "<dossier>"
+   ],
+   "agents/coord/espace.toml": [
+    "# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n"
+   ],
+   "agents/coord/memory/<DATE>.md": [
+    "- <HEURE> — site exemple.org ajouté au projet p\n"
+   ],
+   "agents/intrus/.agents/skills/": [
+    "<dossier>"
+   ],
+   "agents/intrus/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/intrus/agent.conf)\",\n      \"Edit(~/agents/intrus/espace.toml)\",\n      \"Edit(~/agents/intrus/.reseau-claude.json)\",\n      \"Edit(~/agents/intrus/.reglages-claude.json)\",\n      \"Edit(~/agents/intrus/.mcp.json)\",\n      \"Write(~/agents/intrus/.mcp.json)\",\n      \"Edit(~/agents/intrus/.claude/settings.json)\",\n      \"Write(~/agents/intrus/.claude/settings.json)\",\n      \"Edit(~/agents/intrus/.claude/settings.local.json)\",\n      \"Write(~/agents/intrus/.claude/settings.local.json)\",\n      \"Edit(~/agents/intrus/.codex/**)\",\n      \"Write(~/agents/intrus/.codex/**)\",\n      \"Edit(~/agents/intrus/.mcp-berger.json)\",\n      \"Write(~/agents/intrus/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline intrus\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [],\n      \"deniedDomains\": [\n        \"*\"\n      ]\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/intrus/agent.conf\",\n        \"<T>/agents/intrus/espace.toml\",\n        \"<T>/agents/intrus/.reseau-claude.json\",\n        \"<T>/agents/intrus/.reglages-claude.json\",\n        \"<T>/agents/intrus/.mcp.json\",\n        \"<T>/agents/intrus/.claude/settings.json\",\n        \"<T>/agents/intrus/.claude/settings.local.json\",\n        \"<T>/agents/intrus/.codex\",\n        \"<T>/agents/intrus/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/5ecc077ed454\"\n  }\n}\n"
+   ],
+   "agents/intrus/.claude/settings.local.json": [
+    "{\n  \"skipDangerousModePermissionPrompt\": true\n}\n"
+   ],
+   "agents/intrus/.claude/skills/": [
+    "<dossier>"
+   ],
+   "agents/intrus/AGENTS.md": [
+    "sha256:d2d094450bc85ea8"
+   ],
+   "agents/intrus/CLAUDE.md": [
+    "sha256:336cc4fbf19beaad"
+   ],
+   "agents/intrus/a-lire/": [
+    "<dossier>"
+   ],
+   "agents/intrus/espace.toml": [
+    "# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n"
+   ],
+   "agents/p-ancien/.agents/skills/": [
+    "<dossier>"
+   ],
+   "agents/p-ancien/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/p-ancien/agent.conf)\",\n      \"Edit(~/agents/p-ancien/espace.toml)\",\n      \"Edit(~/agents/p-ancien/.reseau-claude.json)\",\n      \"Edit(~/agents/p-ancien/.reglages-claude.json)\",\n      \"Edit(~/agents/p-ancien/.mcp.json)\",\n      \"Write(~/agents/p-ancien/.mcp.json)\",\n      \"Edit(~/agents/p-ancien/.claude/settings.json)\",\n      \"Write(~/agents/p-ancien/.claude/settings.json)\",\n      \"Edit(~/agents/p-ancien/.claude/settings.local.json)\",\n      \"Write(~/agents/p-ancien/.claude/settings.local.json)\",\n      \"Edit(~/agents/p-ancien/.codex/**)\",\n      \"Write(~/agents/p-ancien/.codex/**)\",\n      \"Edit(~/agents/p-ancien/.mcp-berger.json)\",\n      \"Write(~/agents/p-ancien/.mcp-berger.json)\",\n      \"Edit(~/depot/**)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline p-ancien\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [\n        \"exemple.org\"\n      ],\n      \"strictAllowlist\": true\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/p-ancien/agent.conf\",\n        \"<T>/agents/p-ancien/espace.toml\",\n        \"<T>/agents/p-ancien/.reseau-claude.json\",\n        \"<T>/agents/p-ancien/.reglages-claude.json\",\n        \"<T>/agents/p-ancien/.mcp.json\",\n        \"<T>/agents/p-ancien/.claude/settings.json\",\n        \"<T>/agents/p-ancien/.claude/settings.local.json\",\n        \"<T>/agents/p-ancien/.codex\",\n        \"<T>/agents/p-ancien/.mcp-berger.json\",\n        \"<T>/depot\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/5ecc077ed454\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Edit|Write\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"<T>/bin/berger crochet-equipe p-ancien\",\n            \"timeout\": 10\n          }\n        ]\n      }\n    ],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/21c19756b3a3\"\n  }\n}\n"
+   ],
+   "agents/p-ancien/.claude/settings.local.json": [
+    "{\n  \"skipDangerousModePermissionPrompt\": true\n}\n"
+   ],
+   "agents/p-ancien/.claude/skills/": [
+    "<dossier>"
+   ],
+   "agents/p-ancien/.reseau-claude.json": [
+    "{\n  \"sandbox\": {\n    \"network\": {\n      \"allowedDomains\": [\n        \"exemple.org\"\n      ],\n      \"strictAllowlist\": true\n    }\n  }\n}\n"
+   ],
+   "agents/p-ancien/AGENTS.md": [
+    "sha256:18aee124fab8f396"
+   ],
+   "agents/p-ancien/CLAUDE.md": [
+    "sha256:336cc4fbf19beaad"
+   ],
+   "agents/p-ancien/a-lire/": [
+    "<dossier>"
+   ],
+   "agents/p-ancien/espace.toml": [
+    "# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n"
+   ],
+   "equipes/p/domaines": [
+    "# Sites permis au projet p — écrit par `berger equipe domaine` (validé), jamais à la main\nexemple.org\n"
+   ],
+   "courtier/echanges.jsonl": "{\"quand\": \"<DATE-HEURE>\", \"de\": \"coord\", \"a\": \"p\", \"genre\": \"domaine\", \"texte\": \"+ exemple.org — sites permis : exemple.org\"}\n",
+   "agents/coord/memory/": "(supprimé)"
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe domaine ajouter, déjà permis",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "exemple.org est déjà permis au projet p",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe domaines, un site",
+  "code": 0,
+  "stdout": "[\"exemple.org\"]\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe domaine retirer, absent",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "absent.org n'est pas dans les sites permis du projet p",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe domaines, lignes retouchées à la main (ignorées)",
+  "code": 0,
+  "stdout": "[\"autre.org\", \"exemple.org\"]\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "equipes/p/domaines": [
+    "# Sites permis au projet p — écrit par `berger equipe domaine` (validé), jamais à la main\nexemple.org\n*.joker.org\nexemple.org\nautre.org\n"
+   ]
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe domaine retirer (écrit, régénère)",
+  "code": 0,
+  "stdout": "fait : retirer le site exemple.org au projet p → sites permis : autre.org ; mur de : coord, p-ancien (Claude ; Codex reste sans réseau) — effet au prochain lancement (berger relancer <agent>)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/coord/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/coord/agent.conf)\",\n      \"Edit(~/agents/coord/espace.toml)\",\n      \"Edit(~/agents/coord/.reseau-claude.json)\",\n      \"Edit(~/agents/coord/.reglages-claude.json)\",\n      \"Edit(~/agents/coord/.mcp.json)\",\n      \"Write(~/agents/coord/.mcp.json)\",\n      \"Edit(~/agents/coord/.claude/settings.json)\",\n      \"Write(~/agents/coord/.claude/settings.json)\",\n      \"Edit(~/agents/coord/.claude/settings.local.json)\",\n      \"Write(~/agents/coord/.claude/settings.local.json)\",\n      \"Edit(~/agents/coord/.codex/**)\",\n      \"Write(~/agents/coord/.codex/**)\",\n      \"Edit(~/agents/coord/.mcp-berger.json)\",\n      \"Write(~/agents/coord/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline coord\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [\n        \"autre.org\"\n      ],\n      \"strictAllowlist\": true\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/coord/agent.conf\",\n        \"<T>/agents/coord/espace.toml\",\n        \"<T>/agents/coord/.reseau-claude.json\",\n        \"<T>/agents/coord/.reglages-claude.json\",\n        \"<T>/agents/coord/.mcp.json\",\n        \"<T>/agents/coord/.claude/settings.json\",\n        \"<T>/agents/coord/.claude/settings.local.json\",\n        \"<T>/agents/coord/.codex\",\n        \"<T>/agents/coord/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/5ecc077ed454\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/e23f0a6462d0\"\n  }\n}\n"
+   ],
+   "agents/coord/.reseau-claude.json": [
+    "{\n  \"sandbox\": {\n    \"network\": {\n      \"allowedDomains\": [\n        \"autre.org\"\n      ],\n      \"strictAllowlist\": true\n    }\n  }\n}\n"
+   ],
+   "agents/coord/AGENTS.md": [
+    "sha256:e818cd3ff4d567d3"
+   ],
+   "agents/coord/memory/<DATE>.md": [
+    "- <HEURE> — site exemple.org ajouté au projet p\n- <HEURE> — site exemple.org retiré du projet p\n"
+   ],
+   "agents/p-ancien/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/p-ancien/agent.conf)\",\n      \"Edit(~/agents/p-ancien/espace.toml)\",\n      \"Edit(~/agents/p-ancien/.reseau-claude.json)\",\n      \"Edit(~/agents/p-ancien/.reglages-claude.json)\",\n      \"Edit(~/agents/p-ancien/.mcp.json)\",\n      \"Write(~/agents/p-ancien/.mcp.json)\",\n      \"Edit(~/agents/p-ancien/.claude/settings.json)\",\n      \"Write(~/agents/p-ancien/.claude/settings.json)\",\n      \"Edit(~/agents/p-ancien/.claude/settings.local.json)\",\n      \"Write(~/agents/p-ancien/.claude/settings.local.json)\",\n      \"Edit(~/agents/p-ancien/.codex/**)\",\n      \"Write(~/agents/p-ancien/.codex/**)\",\n      \"Edit(~/agents/p-ancien/.mcp-berger.json)\",\n      \"Write(~/agents/p-ancien/.mcp-berger.json)\",\n      \"Edit(~/depot/**)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline p-ancien\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [\n        \"autre.org\"\n      ],\n      \"strictAllowlist\": true\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/p-ancien/agent.conf\",\n        \"<T>/agents/p-ancien/espace.toml\",\n        \"<T>/agents/p-ancien/.reseau-claude.json\",\n        \"<T>/agents/p-ancien/.reglages-claude.json\",\n        \"<T>/agents/p-ancien/.mcp.json\",\n        \"<T>/agents/p-ancien/.claude/settings.json\",\n        \"<T>/agents/p-ancien/.claude/settings.local.json\",\n        \"<T>/agents/p-ancien/.codex\",\n        \"<T>/agents/p-ancien/.mcp-berger.json\",\n        \"<T>/depot\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/5ecc077ed454\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Edit|Write\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"<T>/bin/berger crochet-equipe p-ancien\",\n            \"timeout\": 10\n          }\n        ]\n      }\n    ],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/21c19756b3a3\"\n  }\n}\n"
+   ],
+   "agents/p-ancien/.reseau-claude.json": [
+    "{\n  \"sandbox\": {\n    \"network\": {\n      \"allowedDomains\": [\n        \"autre.org\"\n      ],\n      \"strictAllowlist\": true\n    }\n  }\n}\n"
+   ],
+   "agents/p-ancien/AGENTS.md": [
+    "sha256:275aa0d56791f864"
+   ],
+   "equipes/p/domaines": [
+    "# Sites permis au projet p — écrit par `berger equipe domaine` (validé), jamais à la main\nautre.org\n"
+   ],
+   "courtier/echanges.jsonl": "{\"quand\": \"<DATE-HEURE>\", \"de\": \"coord\", \"a\": \"p\", \"genre\": \"domaine\", \"texte\": \"− exemple.org — sites permis : autre.org\"}\n"
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe go par un non-membre (refusé)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "seuls le chef de projet et le coordinateur de p demandent un go",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe go, sujet invalide",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "sujet : 2 à 30 caractères, minuscules, chiffres et tirets",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe go, cas invalide",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "cas : 1 à 5 (les cas de la règle de go), séparés par des virgules (ex. 1,3)",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe go, chemin de spec invalide",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "spec : un chemin dans le dépôt du projet (ex. docs/plans/AAAA-MM-JJ-sujet-spec.md)",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe go, spec introuvable",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "spec introuvable : docs/plans/absente.md n'est ni sur p/demo ni sur main (dépôt du chef ; pousse-la d'abord)",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe go, spec vide",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "spec vide : docs/plans/vide-spec.md",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe go, inscrire sans demande (empreinte inconnue)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "la spec docs/plans/demo-spec.md a changé depuis la demande de go (empreinte None → 9f62cf64e332) : redemande le go",
+  "fichiers_ecrits": {
+   "equipes/p/go/": [
+    "<dossier>"
+   ]
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe go --essai (marqué « demandé »)",
+  "code": 0,
+  "stdout": "GO du propriétaire pour p/demo (règle de go, cas 1) sur la spec docs/plans/demo-spec.md (origin/main) « Demo : un bouton », empreinte 9f62cf64e332 — début :\n# Demo : un bouton\n\nConstat. Comportement. Tests.\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "equipes/p/go/demo.json": [
+    "{\n \"sujet\": \"demo\",\n \"etat\": \"demandé\",\n \"cas\": \"1\",\n \"spec\": \"docs/plans/demo-spec.md\",\n \"empreinte\": \"9f62cf64e332ec6390059fc75f0f47974b1ef4af7f29320c96a444ebe17a3e37\",\n \"demande\": \"<DATE-HEURE>\",\n \"demande_par\": \"chef\"\n}"
+   ],
+   "equipes/p/go/": "(supprimé)"
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe go inscrit par le propriétaire",
+  "code": 0,
+  "stdout": "go inscrit pour p/demo : validation n° ?, spec docs/plans/demo-spec.md (empreinte 9f62cf64e332)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/chef/memory/<DATE>.md": [
+    "- <HEURE> — go inscrit pour p/demo : validation n° ?, spec docs/plans/demo-spec.md\n"
+   ],
+   "equipes/p/go/demo.json": [
+    "{\n \"sujet\": \"demo\",\n \"etat\": \"inscrit\",\n \"cas\": \"1\",\n \"spec\": \"docs/plans/demo-spec.md\",\n \"empreinte\": \"9f62cf64e332ec6390059fc75f0f47974b1ef4af7f29320c96a444ebe17a3e37\",\n \"demande\": \"<DATE-HEURE>\",\n \"demande_par\": \"chef\",\n \"validation\": null,\n \"inscrit\": \"<DATE-HEURE>\",\n \"par\": \"Proprio\"\n}"
+   ],
+   "courtier/echanges.jsonl": "{\"quand\": \"<DATE-HEURE>\", \"de\": \"Proprio\", \"a\": \"p\", \"genre\": \"go\", \"texte\": \"demo : go inscrit (validation n° ?) sur docs/plans/demo-spec.md, empreinte 9f62cf64e332\"}\n",
+   "agents/chef/memory/": "(supprimé)"
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe go, déjà inscrit",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "go déjà inscrit pour p/demo sur cette version de la spec : n° None",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe go --essai d'un autre sujet (secu)",
+  "code": 0,
+  "stdout": "GO du propriétaire pour p/secu (règle de go, cas 1,4) sur la spec docs/plans/demo-spec.md (origin/main) « Demo : un bouton », empreinte 9f62cf64e332 — début :\n# Demo : un bouton\n\nConstat. Comportement. Tests.\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "equipes/p/go/secu.json": [
+    "{\n \"sujet\": \"secu\",\n \"etat\": \"demandé\",\n \"cas\": \"1,4\",\n \"spec\": \"docs/plans/demo-spec.md\",\n \"empreinte\": \"9f62cf64e332ec6390059fc75f0f47974b1ef4af7f29320c96a444ebe17a3e37\",\n \"demande\": \"<DATE-HEURE>\",\n \"demande_par\": \"coord\"\n}"
+   ]
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe ouvrir par le coordinateur (refusé)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "coord n'est pas le chef de projet de p (chef) : ouvrir refusé — seul le chef ouvre et ferme ses développeurs",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe ouvrir, sujet invalide",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "sujet : 2 à 30 caractères, minuscules, chiffres et tirets",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe ouvrir, modèle non permis",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "modèle non permis pour claude : haiku (permis : sonnet) — rien n'a été créé",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe ouvrir, go seulement demandé (refusé)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "sujet de la règle de go (go demandé pour ce sujet ; mots : pare-feu) sans go inscrit du propriétaire : rien n'est ouvert — demande le go (berger-outil equipe go --fichier .transport/requete.json, JSON : p secu <cas> <spec>), puis rouvre",
+  "fichiers_ecrits": {
+   "equipes/.ouverture.lock": [
+    ""
+   ]
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe ouvrir, dépôt = installation (refusé)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "[equipes.inst] : le dépôt ne peut pas être l'installation (<T>) — un clone séparé (ex. ~/projets/berger)",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe ouvrir, sujet trop long pour Herdr",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "sujet trop long : « p-un-sujet-bien-trop-long-xx-claude » fait 35 caractères, Herdr en accepte 32 au plus — prends un sujet de 23 caractères au plus",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe ouvrir (go inscrit, clone, agent strict, mission)",
+  "code": 0,
+  "stdout": "mission confiée à P · demo — branche p/demo, copie <T>/copies/p-demo, port 5301\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/chef/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(~/agents/p-demo/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/agents/p-demo/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/chef/agent.conf)\",\n      \"Edit(~/agents/chef/espace.toml)\",\n      \"Edit(~/agents/chef/.reseau-claude.json)\",\n      \"Edit(~/agents/chef/.reglages-claude.json)\",\n      \"Edit(~/agents/chef/.mcp.json)\",\n      \"Write(~/agents/chef/.mcp.json)\",\n      \"Edit(~/agents/chef/.claude/settings.json)\",\n      \"Write(~/agents/chef/.claude/settings.json)\",\n      \"Edit(~/agents/chef/.claude/settings.local.json)\",\n      \"Write(~/agents/chef/.claude/settings.local.json)\",\n      \"Edit(~/agents/chef/.codex/**)\",\n      \"Write(~/agents/chef/.codex/**)\",\n      \"Edit(~/agents/chef/.mcp-berger.json)\",\n      \"Write(~/agents/chef/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Read(/<T>/tmp-agents/c8b4e1f73d6f/**)\",\n      \"Edit(/<T>/tmp-agents/c8b4e1f73d6f/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline chef\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [],\n      \"deniedDomains\": [\n        \"*\"\n      ]\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/chef/agent.conf\",\n        \"<T>/agents/chef/espace.toml\",\n        \"<T>/agents/chef/.reseau-claude.json\",\n        \"<T>/agents/chef/.reglages-claude.json\",\n        \"<T>/agents/chef/.mcp.json\",\n        \"<T>/agents/chef/.claude/settings.json\",\n        \"<T>/agents/chef/.claude/settings.local.json\",\n        \"<T>/agents/chef/.codex\",\n        \"<T>/agents/chef/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/5ecc077ed454\",\n        \"<T>/tmp-agents/21c19756b3a3\",\n        \"<T>/tmp-agents/c8b4e1f73d6f\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/f59ac0828b9a\"\n  }\n}\n"
+   ],
+   "agents/chef/.herdr.json": [
+    "{\n  \"workspace\": \"ws-chef\",\n  \"agents\": {\n    \"claude\": \"pe-chef\"\n  },\n  \"missions\": {\n    \"tab\": \"t1\",\n    \"suivi\": \"p2\",\n    \"agents\": {\n      \"p-demo\": \"p3\"\n    }\n  }\n}\n"
+   ],
+   "agents/coord/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(~/agents/p-demo/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/agents/p-demo/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/coord/agent.conf)\",\n      \"Edit(~/agents/coord/espace.toml)\",\n      \"Edit(~/agents/coord/.reseau-claude.json)\",\n      \"Edit(~/agents/coord/.reglages-claude.json)\",\n      \"Edit(~/agents/coord/.mcp.json)\",\n      \"Write(~/agents/coord/.mcp.json)\",\n      \"Edit(~/agents/coord/.claude/settings.json)\",\n      \"Write(~/agents/coord/.claude/settings.json)\",\n      \"Edit(~/agents/coord/.claude/settings.local.json)\",\n      \"Write(~/agents/coord/.claude/settings.local.json)\",\n      \"Edit(~/agents/coord/.codex/**)\",\n      \"Write(~/agents/coord/.codex/**)\",\n      \"Edit(~/agents/coord/.mcp-berger.json)\",\n      \"Write(~/agents/coord/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Read(/<T>/tmp-agents/c8b4e1f73d6f/**)\",\n      \"Edit(/<T>/tmp-agents/c8b4e1f73d6f/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline coord\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [\n        \"autre.org\"\n      ],\n      \"strictAllowlist\": true\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/coord/agent.conf\",\n        \"<T>/agents/coord/espace.toml\",\n        \"<T>/agents/coord/.reseau-claude.json\",\n        \"<T>/agents/coord/.reglages-claude.json\",\n        \"<T>/agents/coord/.mcp.json\",\n        \"<T>/agents/coord/.claude/settings.json\",\n        \"<T>/agents/coord/.claude/settings.local.json\",\n        \"<T>/agents/coord/.codex\",\n        \"<T>/agents/coord/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/5ecc077ed454\",\n        \"<T>/tmp-agents/21c19756b3a3\",\n        \"<T>/tmp-agents/c8b4e1f73d6f\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/e23f0a6462d0\"\n  }\n}\n"
+   ],
+   "agents/intrus/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(~/agents/p-demo/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/agents/p-demo/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/intrus/agent.conf)\",\n      \"Edit(~/agents/intrus/espace.toml)\",\n      \"Edit(~/agents/intrus/.reseau-claude.json)\",\n      \"Edit(~/agents/intrus/.reglages-claude.json)\",\n      \"Edit(~/agents/intrus/.mcp.json)\",\n      \"Write(~/agents/intrus/.mcp.json)\",\n      \"Edit(~/agents/intrus/.claude/settings.json)\",\n      \"Write(~/agents/intrus/.claude/settings.json)\",\n      \"Edit(~/agents/intrus/.claude/settings.local.json)\",\n      \"Write(~/agents/intrus/.claude/settings.local.json)\",\n      \"Edit(~/agents/intrus/.codex/**)\",\n      \"Write(~/agents/intrus/.codex/**)\",\n      \"Edit(~/agents/intrus/.mcp-berger.json)\",\n      \"Write(~/agents/intrus/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Read(/<T>/tmp-agents/c8b4e1f73d6f/**)\",\n      \"Edit(/<T>/tmp-agents/c8b4e1f73d6f/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline intrus\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [],\n      \"deniedDomains\": [\n        \"*\"\n      ]\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/intrus/agent.conf\",\n        \"<T>/agents/intrus/espace.toml\",\n        \"<T>/agents/intrus/.reseau-claude.json\",\n        \"<T>/agents/intrus/.reglages-claude.json\",\n        \"<T>/agents/intrus/.mcp.json\",\n        \"<T>/agents/intrus/.claude/settings.json\",\n        \"<T>/agents/intrus/.claude/settings.local.json\",\n        \"<T>/agents/intrus/.codex\",\n        \"<T>/agents/intrus/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/21c19756b3a3\",\n        \"<T>/tmp-agents/c8b4e1f73d6f\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/5ecc077ed454\"\n  }\n}\n"
+   ],
+   "agents/p-ancien/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/agents/p-demo/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/agents/p-demo/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/p-ancien/agent.conf)\",\n      \"Edit(~/agents/p-ancien/espace.toml)\",\n      \"Edit(~/agents/p-ancien/.reseau-claude.json)\",\n      \"Edit(~/agents/p-ancien/.reglages-claude.json)\",\n      \"Edit(~/agents/p-ancien/.mcp.json)\",\n      \"Write(~/agents/p-ancien/.mcp.json)\",\n      \"Edit(~/agents/p-ancien/.claude/settings.json)\",\n      \"Write(~/agents/p-ancien/.claude/settings.json)\",\n      \"Edit(~/agents/p-ancien/.claude/settings.local.json)\",\n      \"Write(~/agents/p-ancien/.claude/settings.local.json)\",\n      \"Edit(~/agents/p-ancien/.codex/**)\",\n      \"Write(~/agents/p-ancien/.codex/**)\",\n      \"Edit(~/agents/p-ancien/.mcp-berger.json)\",\n      \"Write(~/agents/p-ancien/.mcp-berger.json)\",\n      \"Edit(~/depot/**)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Read(/<T>/tmp-agents/c8b4e1f73d6f/**)\",\n      \"Edit(/<T>/tmp-agents/c8b4e1f73d6f/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline p-ancien\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [\n        \"autre.org\"\n      ],\n      \"strictAllowlist\": true\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/p-ancien/agent.conf\",\n        \"<T>/agents/p-ancien/espace.toml\",\n        \"<T>/agents/p-ancien/.reseau-claude.json\",\n        \"<T>/agents/p-ancien/.reglages-claude.json\",\n        \"<T>/agents/p-ancien/.mcp.json\",\n        \"<T>/agents/p-ancien/.claude/settings.json\",\n        \"<T>/agents/p-ancien/.claude/settings.local.json\",\n        \"<T>/agents/p-ancien/.codex\",\n        \"<T>/agents/p-ancien/.mcp-berger.json\",\n        \"<T>/depot\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/5ecc077ed454\",\n        \"<T>/tmp-agents/c8b4e1f73d6f\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Edit|Write\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"<T>/bin/berger crochet-equipe p-ancien\",\n            \"timeout\": 10\n          }\n        ]\n      }\n    ],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/21c19756b3a3\"\n  }\n}\n"
+   ],
+   "agents/p-demo/.agents/skills/": [
+    "<dossier>"
+   ],
+   "agents/p-demo/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/p-demo/agent.conf)\",\n      \"Edit(~/agents/p-demo/espace.toml)\",\n      \"Edit(~/agents/p-demo/.reseau-claude.json)\",\n      \"Edit(~/agents/p-demo/.reglages-claude.json)\",\n      \"Edit(~/agents/p-demo/.mcp.json)\",\n      \"Write(~/agents/p-demo/.mcp.json)\",\n      \"Edit(~/agents/p-demo/.claude/settings.json)\",\n      \"Write(~/agents/p-demo/.claude/settings.json)\",\n      \"Edit(~/agents/p-demo/.claude/settings.local.json)\",\n      \"Write(~/agents/p-demo/.claude/settings.local.json)\",\n      \"Edit(~/agents/p-demo/.codex/**)\",\n      \"Write(~/agents/p-demo/.codex/**)\",\n      \"Edit(~/agents/p-demo/.mcp-berger.json)\",\n      \"Write(~/agents/p-demo/.mcp-berger.json)\",\n      \"Edit(~/depot/**)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ],\n    \"additionalDirectories\": [\n      \"<T>/copies/p-demo\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline p-demo\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [\n        \"autre.org\"\n      ],\n      \"strictAllowlist\": true\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/p-demo/agent.conf\",\n        \"<T>/agents/p-demo/espace.toml\",\n        \"<T>/agents/p-demo/.reseau-claude.json\",\n        \"<T>/agents/p-demo/.reglages-claude.json\",\n        \"<T>/agents/p-demo/.mcp.json\",\n        \"<T>/agents/p-demo/.claude/settings.json\",\n        \"<T>/agents/p-demo/.claude/settings.local.json\",\n        \"<T>/agents/p-demo/.codex\",\n        \"<T>/agents/p-demo/.mcp-berger.json\",\n        \"<T>/depot\"\n      ],\n      \"allowWrite\": [\n        \"<T>/copies/p-demo\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/5ecc077ed454\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Edit|Write\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"<T>/bin/berger crochet-equipe p-demo\",\n            \"timeout\": 10\n          }\n        ]\n      }\n    ],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/c8b4e1f73d6f\"\n  }\n}\n"
+   ],
+   "agents/p-demo/.claude/settings.local.json": [
+    "{\n  \"skipDangerousModePermissionPrompt\": true\n}\n"
+   ],
+   "agents/p-demo/.claude/skills/": [
+    "<dossier>"
+   ],
+   "agents/p-demo/.herdr.json": [
+    "{\n  \"agents\": {\n    \"claude\": \"p3\"\n  },\n  \"mission\": {\n    \"hote\": \"chef\",\n    \"tab\": \"t1\"\n  }\n}\n"
+   ],
+   "agents/p-demo/.reseau-claude.json": [
+    "{\n  \"sandbox\": {\n    \"network\": {\n      \"allowedDomains\": [\n        \"autre.org\"\n      ],\n      \"strictAllowlist\": true\n    }\n  }\n}\n"
+   ],
+   "agents/p-demo/AGENTS.md": [
+    "sha256:59d696a310b2c12e"
+   ],
+   "agents/p-demo/CLAUDE.md": [
+    "sha256:336cc4fbf19beaad"
+   ],
+   "agents/p-demo/HEARTBEAT.md": [
+    "# Battement de cœur — ce que tu vérifies à chaque réveil\n\nTu es réveillé automatiquement, sans que Proprio soit là. Fais ces vérifications, rien d'autre.\nNe déduis aucune tâche des anciennes conversations : seule cette liste compte.\n\n1. **Points ouverts** : dans le journal d'aujourd'hui et d'hier (`memory/`), une ligne « à faire » ou\n   « point ouvert » sans suite ? Rappelle-la en une ligne.\n2. **Travail bloqué** : `CHECKLIST.md` contient-il une ligne « ⚠ Bloqué » ? Rappelle-la.\n3. **Mémoire pleine** : `MEMORY.md` dépasse-t-il 2 400 caractères (80 %) ? Dis-le.\n\n## Pas de rabâchage\n\n`heartbeat/AAAA-MM-JJ.md` liste ce que tu as déjà signalé aujourd'hui : ne le signale pas une seconde fois.\n\n## Comment répondre\n\n- Rien de NOUVEAU à signaler : exactement `RAS`, seul, sans explication ni autre langue que le français.\n- Sinon : trois lignes au maximum, en français simple. Tu n'agis pas : tu signales, Proprio décide.\n"
+   ],
+   "agents/p-demo/MEMORY.md": [
+    "# Mémoire longue\n\n<!-- - [AAAA-MM-JJ] … — 3 000 caractères max. -->\n"
+   ],
+   "agents/p-demo/MISSION.md": [
+    "# Mission confiée par chef — <DATE-HEURE>\nmoteur : claude\n\nGo du propriétaire : validation n° ?, spec docs/plans/demo-spec.md (empreinte 9f62cf64). Ajouter un bouton.\n"
+   ],
+   "agents/p-demo/SOUL.md": [
+    "# P · demo — développeur de l'équipe p\n\nTu es un développeur de l'équipe p, ouvert pour le sujet **demo**. Ton rôle d'équipe est dans tes consignes.\n\n## Ce que tu sais faire\n\n- **Développer ton sujet** dans ta copie, sur ta branche.\n- **Tester de ton côté** et **pousser ta branche**.\n- **Demander la fusion** au chef de projet quand c'est prêt.\n\nCe que tu ne peux PAS faire ici : toucher la branche principale, la copie d'un autre ou la production ; aller sur Internet ; fusionner toi-même.\n"
+   ],
+   "agents/p-demo/TODO.md": [
+    "# À faire\n\n"
+   ],
+   "agents/p-demo/a-lire/": [
+    "<dossier>"
+   ],
+   "agents/p-demo/agent.conf": [
+    "nom = P · demo\nicone = 🔧\nmoteur = claude\npanneaux = claude\nmur = strict                 # développeur d'équipe : n'écrit que dans son dossier et SA copie\nheures = aucune              # ne vit que pendant sa mission\necrire_aussi = <T>/copies/p-demo\noutils = p-dev\nprojet = p\nsujet = demo\ncopie = <T>/copies/p-demo\nbranche = p/demo\nport = 5301\n"
+   ],
+   "agents/p-demo/espace.toml": [
+    "# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n"
+   ],
+   "agents/p-demo/heartbeat/": [
+    "<dossier>"
+   ],
+   "agents/p-demo/historique/": [
+    "<dossier>"
+   ],
+   "agents/p-demo/memory/<DATE>.md": [
+    "- <HEURE> — mission reçue de chef (claude) : Go du propriétaire : validation n° ?, spec docs/plans/demo-spec.md (empreinte 9f62cf64). Ajouter un bouton.\n"
+   ],
+   "agents/p-demo/pending/": [
+    "<dossier>"
+   ],
+   "agents/p-demo/skills-agent/": [
+    "<dossier>"
+   ],
+   "agents/p-demo/sorties/": [
+    "<dossier>"
+   ],
+   "agents/p-demo/taches/": [
+    "<dossier>"
+   ],
+   "courtier/echanges.jsonl": "{\"quand\": \"<DATE-HEURE>\", \"de\": \"chef\", \"a\": \"p-demo\", \"genre\": \"mission\", \"texte\": \"Go du propriétaire : validation n° ?, spec docs/plans/demo-spec.md (empreinte 9f62cf64). Ajouter un bouton.\"}\n",
+   "copies/p-demo": [
+    [
+     "p/demo",
+     "<T>/forge.git",
+     ""
+    ]
+   ]
+  },
+  "herdr_et_lancements": [
+   "[\"workspace\", \"list\"]",
+   "[\"tab\", \"create\", \"--workspace\", \"ws-chef\", \"--cwd\", \"<T>/agents/chef\", \"--label\", \"\\ud83d\\udc65 \\u00c9quipe\", \"--no-focus\"]",
+   "[\"pane\", \"rename\", \"p2\", \"missions-chef\"]",
+   "[\"pane\", \"run\", \"p2\", \"clear; <T>/bin/berger panneau missions chef\"]",
+   "[\"pane\", \"split\", \"--pane\", \"p2\", \"--direction\", \"down\", \"--ratio\", \"0.22\", \"--cwd\", \"<T>/agents/p-demo\", \"--no-focus\"]",
+   "[\"@\", \"demarrer\", \"p-demo\", \"claude\", \"p3\", \"[\\\"--setting-sources\\\", \\\"project,local\\\", \\\"--dangerously-skip-permissions\\\", \\\"--strict-mcp-config\\\", \\\"--settings\\\", \\\"<T>/agents/p-demo/.reseau-claude.json\\\"]\"]",
+   "[\"@\", \"parler\", \"p-demo\", \"None\", \"False\", \"Nouvelle mission de chef : lis MISSION.md dans ton dossier et fais-la. Tiens CHECKLIST.md \\u00e0 jour (une \\u00e9tape = une case), note chaque \\u00e9tape avec berger noter, rends ton rapport dans a-lire/AAAA-MM-JJ_<sujet>.md (\\u00ab # Titre \\u00bb en premi\\u00e8re ligne), et termine la checklist par \\u00ab Termin\\u00e9 \\u00bb quand c'est fini.\"]"
+  ]
+ },
+ {
+  "scenario": "equipe ouvrir, déjà ouvert",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "le développeur p-demo existe déjà (berger equipe fermer p demo)",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe ouvrir, plafond [missions] max",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "déjà 2 missions en cours : maximum 2",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe liste, deux développeurs",
+  "code": 0,
+  "stdout": "[\n {\n  \"agent\": \"p-ancien\",\n  \"sujet\": \"ancien\",\n  \"branche\": \"p/ancien\",\n  \"port\": \"0\",\n  \"mission\": true,\n  \"checklist\": \"1/2\",\n  \"bloque\": \"une question\",\n  \"demande_de_fusion\": \"renvoyée\",\n  \"portes\": \"verify : vert ; pret : rouge\",\n  \"renvois\": 1\n },\n {\n  \"agent\": \"p-demo\",\n  \"sujet\": \"demo\",\n  \"branche\": \"p/demo\",\n  \"port\": \"5301\",\n  \"mission\": true,\n  \"checklist\": null,\n  \"bloque\": null,\n  \"demande_de_fusion\": null,\n  \"portes\": null,\n  \"renvois\": 0\n },\n {\n  \"avertissement\": \"intrus déclare equipe:p sans être le coordinateur déclaré : ignoré, à retirer de son agent.conf\"\n }\n]\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe fermer par le coordinateur (refusé)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "coord n'est pas le chef de projet de p (chef) : fermer refusé — seul le chef ouvre et ferme ses développeurs",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe fermer, sujet inconnu",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "pas de développeur p-inexistant",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe fermer, travail non commité (refusé)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "la copie <T>/copies/p-demo a du travail NON COMMITÉ : rien n'est fermé (le développeur doit commiter, ou Proprio décide)",
+  "fichiers_ecrits": {
+   "copies/p-demo": [
+    [
+     "p/demo",
+     "<T>/forge.git",
+     "?? brouillon.txt"
+    ]
+   ]
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe fermer, checklist non finie (refusé)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "mission de P · demo NON terminée : sa CHECKLIST.md ne finit pas par « Terminé … » ou « Abandonné : … ». Terminer une mission ne lève pas une garde : si P · demo est bloqué, le blocage se signale au propriétaire (⚠ Bloqué dans sa checklist, ou berger-outil ecrire).",
+  "fichiers_ecrits": {
+   "copies/p-demo": [
+    [
+     "p/demo",
+     "<T>/forge.git",
+     ""
+    ]
+   ]
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "equipe fermer (mission rangée, copie supprimée, journal gardé chez le chef)",
+  "code": 0,
+  "stdout": "développeur p-demo fermé — journal gardé dans <T>/agents/chef/historique/equipe/demo-<DATE-HEURE> — branche p/demo : aucun commit\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/chef/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/chef/agent.conf)\",\n      \"Edit(~/agents/chef/espace.toml)\",\n      \"Edit(~/agents/chef/.reseau-claude.json)\",\n      \"Edit(~/agents/chef/.reglages-claude.json)\",\n      \"Edit(~/agents/chef/.mcp.json)\",\n      \"Write(~/agents/chef/.mcp.json)\",\n      \"Edit(~/agents/chef/.claude/settings.json)\",\n      \"Write(~/agents/chef/.claude/settings.json)\",\n      \"Edit(~/agents/chef/.claude/settings.local.json)\",\n      \"Write(~/agents/chef/.claude/settings.local.json)\",\n      \"Edit(~/agents/chef/.codex/**)\",\n      \"Write(~/agents/chef/.codex/**)\",\n      \"Edit(~/agents/chef/.mcp-berger.json)\",\n      \"Write(~/agents/chef/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline chef\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [],\n      \"deniedDomains\": [\n        \"*\"\n      ]\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/chef/agent.conf\",\n        \"<T>/agents/chef/espace.toml\",\n        \"<T>/agents/chef/.reseau-claude.json\",\n        \"<T>/agents/chef/.reglages-claude.json\",\n        \"<T>/agents/chef/.mcp.json\",\n        \"<T>/agents/chef/.claude/settings.json\",\n        \"<T>/agents/chef/.claude/settings.local.json\",\n        \"<T>/agents/chef/.codex\",\n        \"<T>/agents/chef/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/5ecc077ed454\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/f59ac0828b9a\"\n  }\n}\n"
+   ],
+   "agents/chef/.herdr.json": [
+    "{\n  \"workspace\": \"ws-chef\",\n  \"agents\": {\n    \"claude\": \"pe-chef\"\n  }\n}\n"
+   ],
+   "agents/chef/historique/equipe/demo-<DATE-HEURE>/<DATE>.md": [
+    "- <HEURE> — mission reçue de chef (claude) : Go du propriétaire : validation n° ?, spec docs/plans/demo-spec.md (empreinte 9f62cf64). Ajouter un bouton.\n- <HEURE> — mission terminée par chef : agent arrêté, son panneau fermé\n"
+   ],
+   "agents/chef/historique/equipe/demo-<DATE-HEURE>/CHECKLIST.md": [
+    "# Bouton\n- [x] fait\nTerminé <DATE-HEURE>\n"
+   ],
+   "agents/chef/historique/equipe/demo-<DATE-HEURE>/mission-<DATE-HEURE>.md": [
+    "# Mission confiée par chef — <DATE-HEURE>\nmoteur : claude\n\nGo du propriétaire : validation n° ?, spec docs/plans/demo-spec.md (empreinte 9f62cf64). Ajouter un bouton.\n"
+   ],
+   "agents/coord/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/coord/agent.conf)\",\n      \"Edit(~/agents/coord/espace.toml)\",\n      \"Edit(~/agents/coord/.reseau-claude.json)\",\n      \"Edit(~/agents/coord/.reglages-claude.json)\",\n      \"Edit(~/agents/coord/.mcp.json)\",\n      \"Write(~/agents/coord/.mcp.json)\",\n      \"Edit(~/agents/coord/.claude/settings.json)\",\n      \"Write(~/agents/coord/.claude/settings.json)\",\n      \"Edit(~/agents/coord/.claude/settings.local.json)\",\n      \"Write(~/agents/coord/.claude/settings.local.json)\",\n      \"Edit(~/agents/coord/.codex/**)\",\n      \"Write(~/agents/coord/.codex/**)\",\n      \"Edit(~/agents/coord/.mcp-berger.json)\",\n      \"Write(~/agents/coord/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline coord\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [\n        \"autre.org\"\n      ],\n      \"strictAllowlist\": true\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/coord/agent.conf\",\n        \"<T>/agents/coord/espace.toml\",\n        \"<T>/agents/coord/.reseau-claude.json\",\n        \"<T>/agents/coord/.reglages-claude.json\",\n        \"<T>/agents/coord/.mcp.json\",\n        \"<T>/agents/coord/.claude/settings.json\",\n        \"<T>/agents/coord/.claude/settings.local.json\",\n        \"<T>/agents/coord/.codex\",\n        \"<T>/agents/coord/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/5ecc077ed454\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/e23f0a6462d0\"\n  }\n}\n"
+   ],
+   "agents/intrus/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/intrus/agent.conf)\",\n      \"Edit(~/agents/intrus/espace.toml)\",\n      \"Edit(~/agents/intrus/.reseau-claude.json)\",\n      \"Edit(~/agents/intrus/.reglages-claude.json)\",\n      \"Edit(~/agents/intrus/.mcp.json)\",\n      \"Write(~/agents/intrus/.mcp.json)\",\n      \"Edit(~/agents/intrus/.claude/settings.json)\",\n      \"Write(~/agents/intrus/.claude/settings.json)\",\n      \"Edit(~/agents/intrus/.claude/settings.local.json)\",\n      \"Write(~/agents/intrus/.claude/settings.local.json)\",\n      \"Edit(~/agents/intrus/.codex/**)\",\n      \"Write(~/agents/intrus/.codex/**)\",\n      \"Edit(~/agents/intrus/.mcp-berger.json)\",\n      \"Write(~/agents/intrus/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline intrus\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [],\n      \"deniedDomains\": [\n        \"*\"\n      ]\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/intrus/agent.conf\",\n        \"<T>/agents/intrus/espace.toml\",\n        \"<T>/agents/intrus/.reseau-claude.json\",\n        \"<T>/agents/intrus/.reglages-claude.json\",\n        \"<T>/agents/intrus/.mcp.json\",\n        \"<T>/agents/intrus/.claude/settings.json\",\n        \"<T>/agents/intrus/.claude/settings.local.json\",\n        \"<T>/agents/intrus/.codex\",\n        \"<T>/agents/intrus/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/5ecc077ed454\"\n  }\n}\n"
+   ],
+   "agents/p-ancien/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/p-ancien/agent.conf)\",\n      \"Edit(~/agents/p-ancien/espace.toml)\",\n      \"Edit(~/agents/p-ancien/.reseau-claude.json)\",\n      \"Edit(~/agents/p-ancien/.reglages-claude.json)\",\n      \"Edit(~/agents/p-ancien/.mcp.json)\",\n      \"Write(~/agents/p-ancien/.mcp.json)\",\n      \"Edit(~/agents/p-ancien/.claude/settings.json)\",\n      \"Write(~/agents/p-ancien/.claude/settings.json)\",\n      \"Edit(~/agents/p-ancien/.claude/settings.local.json)\",\n      \"Write(~/agents/p-ancien/.claude/settings.local.json)\",\n      \"Edit(~/agents/p-ancien/.codex/**)\",\n      \"Write(~/agents/p-ancien/.codex/**)\",\n      \"Edit(~/agents/p-ancien/.mcp-berger.json)\",\n      \"Write(~/agents/p-ancien/.mcp-berger.json)\",\n      \"Edit(~/depot/**)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline p-ancien\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [\n        \"autre.org\"\n      ],\n      \"strictAllowlist\": true\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/p-ancien/agent.conf\",\n        \"<T>/agents/p-ancien/espace.toml\",\n        \"<T>/agents/p-ancien/.reseau-claude.json\",\n        \"<T>/agents/p-ancien/.reglages-claude.json\",\n        \"<T>/agents/p-ancien/.mcp.json\",\n        \"<T>/agents/p-ancien/.claude/settings.json\",\n        \"<T>/agents/p-ancien/.claude/settings.local.json\",\n        \"<T>/agents/p-ancien/.codex\",\n        \"<T>/agents/p-ancien/.mcp-berger.json\",\n        \"<T>/depot\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/5ecc077ed454\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Edit|Write\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"<T>/bin/berger crochet-equipe p-ancien\",\n            \"timeout\": 10\n          }\n        ]\n      }\n    ],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/21c19756b3a3\"\n  }\n}\n"
+   ],
+   "courtier/echanges.jsonl": "{\"quand\": \"<DATE-HEURE>\", \"de\": \"chef\", \"a\": \"p-demo\", \"genre\": \"fin de mission\", \"texte\": \"mission terminée : agent arrêté, son panneau fermé\"}\n",
+   "agents/p-demo/.agents/skills/": "(supprimé)",
+   "agents/p-demo/.claude/settings.json": "(supprimé)",
+   "agents/p-demo/.claude/settings.local.json": "(supprimé)",
+   "agents/p-demo/.claude/skills/": "(supprimé)",
+   "agents/p-demo/.herdr.json": "(supprimé)",
+   "agents/p-demo/.reseau-claude.json": "(supprimé)",
+   "agents/p-demo/AGENTS.md": "(supprimé)",
+   "agents/p-demo/CLAUDE.md": "(supprimé)",
+   "agents/p-demo/HEARTBEAT.md": "(supprimé)",
+   "agents/p-demo/MEMORY.md": "(supprimé)",
+   "agents/p-demo/MISSION.md": "(supprimé)",
+   "agents/p-demo/SOUL.md": "(supprimé)",
+   "agents/p-demo/TODO.md": "(supprimé)",
+   "agents/p-demo/a-lire/": "(supprimé)",
+   "agents/p-demo/agent.conf": "(supprimé)",
+   "agents/p-demo/espace.toml": "(supprimé)",
+   "agents/p-demo/heartbeat/": "(supprimé)",
+   "agents/p-demo/historique/": "(supprimé)",
+   "agents/p-demo/memory/<DATE>.md": "(supprimé)",
+   "agents/p-demo/pending/": "(supprimé)",
+   "agents/p-demo/skills-agent/": "(supprimé)",
+   "agents/p-demo/sorties/": "(supprimé)",
+   "agents/p-demo/taches/": "(supprimé)",
+   "copies/p-demo": "(supprimé)"
+  },
+  "herdr_et_lancements": [
+   "[\"pane\", \"get\", \"p3\"]",
+   "[\"pane\", \"send-keys\", \"p3\", \"ctrl+c\"]",
+   "[\"pane\", \"send-keys\", \"p3\", \"ctrl+c\"]",
+   "[\"agent\", \"list\"]",
+   "[\"pane\", \"close\", \"p3\"]",
+   "[\"tab\", \"close\", \"t1\"]"
+  ]
+ },
+ {
+  "scenario": "projet ouvrir, équipe inconnue",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "équipe inconnue : inconnue (section [equipes.inconnue] de config.toml)",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet ouvrir, nom invalide",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "projet : 2 à 40 caractères, minuscules, chiffres et tirets",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet ouvrir par un non-membre (refusé)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "intrus n'est ni le chef de projet ni le coordinateur de l'équipe p : ouverture refusée",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet ouvrir, membres refusés",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "membres refusés : intrus — seuls le chef de projet, le coordinateur et les développeurs de l'équipe p : chef, coord, p-ancien",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet ouvrir, aucun membre",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "membres refusés : (aucun membre) — seuls le chef de projet, le coordinateur et les développeurs de l'équipe p : chef, coord, p-ancien",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet ouvrir (dossier, registre, régénère)",
+  "code": 0,
+  "stdout": "projet p/demo ouvert : <T>/bibliotheque/equipes/p/projets/demo — membres : chef, coord, p-ancien ; droits pris en compte au prochain démarrage de chaque membre (berger relancer <agent>)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/chef/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/chef/agent.conf)\",\n      \"Edit(~/agents/chef/espace.toml)\",\n      \"Edit(~/agents/chef/.reseau-claude.json)\",\n      \"Edit(~/agents/chef/.reglages-claude.json)\",\n      \"Edit(~/agents/chef/.mcp.json)\",\n      \"Write(~/agents/chef/.mcp.json)\",\n      \"Edit(~/agents/chef/.claude/settings.json)\",\n      \"Write(~/agents/chef/.claude/settings.json)\",\n      \"Edit(~/agents/chef/.claude/settings.local.json)\",\n      \"Write(~/agents/chef/.claude/settings.local.json)\",\n      \"Edit(~/agents/chef/.codex/**)\",\n      \"Write(~/agents/chef/.codex/**)\",\n      \"Edit(~/agents/chef/.mcp-berger.json)\",\n      \"Write(~/agents/chef/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ],\n    \"additionalDirectories\": [\n      \"<T>/bibliotheque/equipes/p/projets/demo\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline chef\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [],\n      \"deniedDomains\": [\n        \"*\"\n      ]\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/chef/agent.conf\",\n        \"<T>/agents/chef/espace.toml\",\n        \"<T>/agents/chef/.reseau-claude.json\",\n        \"<T>/agents/chef/.reglages-claude.json\",\n        \"<T>/agents/chef/.mcp.json\",\n        \"<T>/agents/chef/.claude/settings.json\",\n        \"<T>/agents/chef/.claude/settings.local.json\",\n        \"<T>/agents/chef/.codex\",\n        \"<T>/agents/chef/.mcp-berger.json\"\n      ],\n      \"allowWrite\": [\n        \"<T>/bibliotheque/equipes/p/projets/demo\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/5ecc077ed454\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/f59ac0828b9a\"\n  }\n}\n"
+   ],
+   "agents/chef/AGENTS.md": [
+    "sha256:8e25779a89f4205c"
+   ],
+   "agents/chef/memory/<DATE>.md": [
+    "- <HEURE> — go inscrit pour p/demo : validation n° ?, spec docs/plans/demo-spec.md\n- <HEURE> — projet p/demo ouvert — membres : chef, coord, p-ancien\n"
+   ],
+   "agents/coord/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/coord/agent.conf)\",\n      \"Edit(~/agents/coord/espace.toml)\",\n      \"Edit(~/agents/coord/.reseau-claude.json)\",\n      \"Edit(~/agents/coord/.reglages-claude.json)\",\n      \"Edit(~/agents/coord/.mcp.json)\",\n      \"Write(~/agents/coord/.mcp.json)\",\n      \"Edit(~/agents/coord/.claude/settings.json)\",\n      \"Write(~/agents/coord/.claude/settings.json)\",\n      \"Edit(~/agents/coord/.claude/settings.local.json)\",\n      \"Write(~/agents/coord/.claude/settings.local.json)\",\n      \"Edit(~/agents/coord/.codex/**)\",\n      \"Write(~/agents/coord/.codex/**)\",\n      \"Edit(~/agents/coord/.mcp-berger.json)\",\n      \"Write(~/agents/coord/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ],\n    \"additionalDirectories\": [\n      \"<T>/bibliotheque/equipes/p/projets/demo\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline coord\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [\n        \"autre.org\"\n      ],\n      \"strictAllowlist\": true\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/coord/agent.conf\",\n        \"<T>/agents/coord/espace.toml\",\n        \"<T>/agents/coord/.reseau-claude.json\",\n        \"<T>/agents/coord/.reglages-claude.json\",\n        \"<T>/agents/coord/.mcp.json\",\n        \"<T>/agents/coord/.claude/settings.json\",\n        \"<T>/agents/coord/.claude/settings.local.json\",\n        \"<T>/agents/coord/.codex\",\n        \"<T>/agents/coord/.mcp-berger.json\"\n      ],\n      \"allowWrite\": [\n        \"<T>/bibliotheque/equipes/p/projets/demo\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/5ecc077ed454\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/e23f0a6462d0\"\n  }\n}\n"
+   ],
+   "agents/coord/AGENTS.md": [
+    "sha256:efcac037ba47a324"
+   ],
+   "agents/intrus/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(~/bibliotheque/equipes/p/projets/demo/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/intrus/agent.conf)\",\n      \"Edit(~/agents/intrus/espace.toml)\",\n      \"Edit(~/agents/intrus/.reseau-claude.json)\",\n      \"Edit(~/agents/intrus/.reglages-claude.json)\",\n      \"Edit(~/agents/intrus/.mcp.json)\",\n      \"Write(~/agents/intrus/.mcp.json)\",\n      \"Edit(~/agents/intrus/.claude/settings.json)\",\n      \"Write(~/agents/intrus/.claude/settings.json)\",\n      \"Edit(~/agents/intrus/.claude/settings.local.json)\",\n      \"Write(~/agents/intrus/.claude/settings.local.json)\",\n      \"Edit(~/agents/intrus/.codex/**)\",\n      \"Write(~/agents/intrus/.codex/**)\",\n      \"Edit(~/agents/intrus/.mcp-berger.json)\",\n      \"Write(~/agents/intrus/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline intrus\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [],\n      \"deniedDomains\": [\n        \"*\"\n      ]\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/intrus/agent.conf\",\n        \"<T>/agents/intrus/espace.toml\",\n        \"<T>/agents/intrus/.reseau-claude.json\",\n        \"<T>/agents/intrus/.reglages-claude.json\",\n        \"<T>/agents/intrus/.mcp.json\",\n        \"<T>/agents/intrus/.claude/settings.json\",\n        \"<T>/agents/intrus/.claude/settings.local.json\",\n        \"<T>/agents/intrus/.codex\",\n        \"<T>/agents/intrus/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/5ecc077ed454\"\n  }\n}\n"
+   ],
+   "agents/p-ancien/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/p-ancien/agent.conf)\",\n      \"Edit(~/agents/p-ancien/espace.toml)\",\n      \"Edit(~/agents/p-ancien/.reseau-claude.json)\",\n      \"Edit(~/agents/p-ancien/.reglages-claude.json)\",\n      \"Edit(~/agents/p-ancien/.mcp.json)\",\n      \"Write(~/agents/p-ancien/.mcp.json)\",\n      \"Edit(~/agents/p-ancien/.claude/settings.json)\",\n      \"Write(~/agents/p-ancien/.claude/settings.json)\",\n      \"Edit(~/agents/p-ancien/.claude/settings.local.json)\",\n      \"Write(~/agents/p-ancien/.claude/settings.local.json)\",\n      \"Edit(~/agents/p-ancien/.codex/**)\",\n      \"Write(~/agents/p-ancien/.codex/**)\",\n      \"Edit(~/agents/p-ancien/.mcp-berger.json)\",\n      \"Write(~/agents/p-ancien/.mcp-berger.json)\",\n      \"Edit(~/depot/**)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\"\n    ],\n    \"additionalDirectories\": [\n      \"<T>/bibliotheque/equipes/p/projets/demo\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline p-ancien\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [\n        \"autre.org\"\n      ],\n      \"strictAllowlist\": true\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/p-ancien/agent.conf\",\n        \"<T>/agents/p-ancien/espace.toml\",\n        \"<T>/agents/p-ancien/.reseau-claude.json\",\n        \"<T>/agents/p-ancien/.reglages-claude.json\",\n        \"<T>/agents/p-ancien/.mcp.json\",\n        \"<T>/agents/p-ancien/.claude/settings.json\",\n        \"<T>/agents/p-ancien/.claude/settings.local.json\",\n        \"<T>/agents/p-ancien/.codex\",\n        \"<T>/agents/p-ancien/.mcp-berger.json\",\n        \"<T>/depot\"\n      ],\n      \"allowWrite\": [\n        \"<T>/bibliotheque/equipes/p/projets/demo\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/5ecc077ed454\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Edit|Write\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"<T>/bin/berger crochet-equipe p-ancien\",\n            \"timeout\": 10\n          }\n        ]\n      }\n    ],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/21c19756b3a3\"\n  }\n}\n"
+   ],
+   "agents/p-ancien/AGENTS.md": [
+    "sha256:11a4f7426304a96e"
+   ],
+   "equipes/p/projets.json": [
+    "{\n \"demo\": {\n  \"membres\": [\n   \"chef\",\n   \"coord\",\n   \"p-ancien\"\n  ],\n  \"ouvert\": \"<DATE-HEURE>\",\n  \"par\": \"chef\"\n }\n}"
+   ],
+   "bibliotheque/equipes/p/projets/demo/": [
+    "<dossier>"
+   ]
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet ouvrir, déjà ouvert",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "le projet demo est déjà ouvert (berger projet fermer p demo)",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet liste",
+  "code": 0,
+  "stdout": "{\n \"p\": {\n  \"demo\": {\n   \"membres\": [\n    \"chef\",\n    \"coord\",\n    \"p-ancien\"\n   ],\n   \"ouvert\": \"<DATE-HEURE>\",\n   \"par\": \"chef\"\n  }\n },\n \"inst\": {}\n}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet liste d'une équipe",
+  "code": 0,
+  "stdout": "{\n \"p\": {\n  \"demo\": {\n   \"membres\": [\n    \"chef\",\n    \"coord\",\n    \"p-ancien\"\n   ],\n   \"ouvert\": \"<DATE-HEURE>\",\n   \"par\": \"chef\"\n  }\n }\n}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet fermer par un non-membre (refusé)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "intrus n'est ni le chef de projet ni le coordinateur de l'équipe p : fermeture refusée",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet fermer, pas ouvert",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "pas de projet ouvert p/autre",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet fermer (archivé, droits retirés)",
+  "code": 0,
+  "stdout": "projet p/demo fermé — archivé dans <T>/bibliotheque/equipes/p/archives/demo-<DATE-HEURE> (rien supprimé) ; droits retirés à : chef, coord, p-ancien\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/chef/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(~/bibliotheque/equipes/p/archives/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/chef/agent.conf)\",\n      \"Edit(~/agents/chef/espace.toml)\",\n      \"Edit(~/agents/chef/.reseau-claude.json)\",\n      \"Edit(~/agents/chef/.reglages-claude.json)\",\n      \"Edit(~/agents/chef/.mcp.json)\",\n      \"Write(~/agents/chef/.mcp.json)\",\n      \"Edit(~/agents/chef/.claude/settings.json)\",\n      \"Write(~/agents/chef/.claude/settings.json)\",\n      \"Edit(~/agents/chef/.claude/settings.local.json)\",\n      \"Write(~/agents/chef/.claude/settings.local.json)\",\n      \"Edit(~/agents/chef/.codex/**)\",\n      \"Write(~/agents/chef/.codex/**)\",\n      \"Edit(~/agents/chef/.mcp-berger.json)\",\n      \"Write(~/agents/chef/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline chef\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [],\n      \"deniedDomains\": [\n        \"*\"\n      ]\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/chef/agent.conf\",\n        \"<T>/agents/chef/espace.toml\",\n        \"<T>/agents/chef/.reseau-claude.json\",\n        \"<T>/agents/chef/.reglages-claude.json\",\n        \"<T>/agents/chef/.mcp.json\",\n        \"<T>/agents/chef/.claude/settings.json\",\n        \"<T>/agents/chef/.claude/settings.local.json\",\n        \"<T>/agents/chef/.codex\",\n        \"<T>/agents/chef/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/5ecc077ed454\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/f59ac0828b9a\"\n  }\n}\n"
+   ],
+   "agents/chef/AGENTS.md": [
+    "sha256:2b27b111148e2906"
+   ],
+   "agents/coord/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(~/bibliotheque/equipes/p/archives/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/coord/agent.conf)\",\n      \"Edit(~/agents/coord/espace.toml)\",\n      \"Edit(~/agents/coord/.reseau-claude.json)\",\n      \"Edit(~/agents/coord/.reglages-claude.json)\",\n      \"Edit(~/agents/coord/.mcp.json)\",\n      \"Write(~/agents/coord/.mcp.json)\",\n      \"Edit(~/agents/coord/.claude/settings.json)\",\n      \"Write(~/agents/coord/.claude/settings.json)\",\n      \"Edit(~/agents/coord/.claude/settings.local.json)\",\n      \"Write(~/agents/coord/.claude/settings.local.json)\",\n      \"Edit(~/agents/coord/.codex/**)\",\n      \"Write(~/agents/coord/.codex/**)\",\n      \"Edit(~/agents/coord/.mcp-berger.json)\",\n      \"Write(~/agents/coord/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline coord\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [\n        \"autre.org\"\n      ],\n      \"strictAllowlist\": true\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/coord/agent.conf\",\n        \"<T>/agents/coord/espace.toml\",\n        \"<T>/agents/coord/.reseau-claude.json\",\n        \"<T>/agents/coord/.reglages-claude.json\",\n        \"<T>/agents/coord/.mcp.json\",\n        \"<T>/agents/coord/.claude/settings.json\",\n        \"<T>/agents/coord/.claude/settings.local.json\",\n        \"<T>/agents/coord/.codex\",\n        \"<T>/agents/coord/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/5ecc077ed454\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/e23f0a6462d0\"\n  }\n}\n"
+   ],
+   "agents/coord/AGENTS.md": [
+    "sha256:e818cd3ff4d567d3"
+   ],
+   "agents/coord/memory/<DATE>.md": [
+    "- <HEURE> — site exemple.org ajouté au projet p\n- <HEURE> — site exemple.org retiré du projet p\n- <HEURE> — projet p/demo fermé — archivé dans <T>/bibliotheque/equipes/p/archives/demo-<DATE-HEURE>\n"
+   ],
+   "agents/intrus/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(~/bibliotheque/equipes/p/archives/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/intrus/agent.conf)\",\n      \"Edit(~/agents/intrus/espace.toml)\",\n      \"Edit(~/agents/intrus/.reseau-claude.json)\",\n      \"Edit(~/agents/intrus/.reglages-claude.json)\",\n      \"Edit(~/agents/intrus/.mcp.json)\",\n      \"Write(~/agents/intrus/.mcp.json)\",\n      \"Edit(~/agents/intrus/.claude/settings.json)\",\n      \"Write(~/agents/intrus/.claude/settings.json)\",\n      \"Edit(~/agents/intrus/.claude/settings.local.json)\",\n      \"Write(~/agents/intrus/.claude/settings.local.json)\",\n      \"Edit(~/agents/intrus/.codex/**)\",\n      \"Write(~/agents/intrus/.codex/**)\",\n      \"Edit(~/agents/intrus/.mcp-berger.json)\",\n      \"Write(~/agents/intrus/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline intrus\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [],\n      \"deniedDomains\": [\n        \"*\"\n      ]\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/intrus/agent.conf\",\n        \"<T>/agents/intrus/espace.toml\",\n        \"<T>/agents/intrus/.reseau-claude.json\",\n        \"<T>/agents/intrus/.reglages-claude.json\",\n        \"<T>/agents/intrus/.mcp.json\",\n        \"<T>/agents/intrus/.claude/settings.json\",\n        \"<T>/agents/intrus/.claude/settings.local.json\",\n        \"<T>/agents/intrus/.codex\",\n        \"<T>/agents/intrus/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/5ecc077ed454\"\n  }\n}\n"
+   ],
+   "agents/p-ancien/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/bibliotheque/equipes/p/archives/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/p-ancien/agent.conf)\",\n      \"Edit(~/agents/p-ancien/espace.toml)\",\n      \"Edit(~/agents/p-ancien/.reseau-claude.json)\",\n      \"Edit(~/agents/p-ancien/.reglages-claude.json)\",\n      \"Edit(~/agents/p-ancien/.mcp.json)\",\n      \"Write(~/agents/p-ancien/.mcp.json)\",\n      \"Edit(~/agents/p-ancien/.claude/settings.json)\",\n      \"Write(~/agents/p-ancien/.claude/settings.json)\",\n      \"Edit(~/agents/p-ancien/.claude/settings.local.json)\",\n      \"Write(~/agents/p-ancien/.claude/settings.local.json)\",\n      \"Edit(~/agents/p-ancien/.codex/**)\",\n      \"Write(~/agents/p-ancien/.codex/**)\",\n      \"Edit(~/agents/p-ancien/.mcp-berger.json)\",\n      \"Write(~/agents/p-ancien/.mcp-berger.json)\",\n      \"Edit(~/depot/**)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline p-ancien\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [\n        \"autre.org\"\n      ],\n      \"strictAllowlist\": true\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/p-ancien/agent.conf\",\n        \"<T>/agents/p-ancien/espace.toml\",\n        \"<T>/agents/p-ancien/.reseau-claude.json\",\n        \"<T>/agents/p-ancien/.reglages-claude.json\",\n        \"<T>/agents/p-ancien/.mcp.json\",\n        \"<T>/agents/p-ancien/.claude/settings.json\",\n        \"<T>/agents/p-ancien/.claude/settings.local.json\",\n        \"<T>/agents/p-ancien/.codex\",\n        \"<T>/agents/p-ancien/.mcp-berger.json\",\n        \"<T>/depot\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/5ecc077ed454\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Edit|Write\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"<T>/bin/berger crochet-equipe p-ancien\",\n            \"timeout\": 10\n          }\n        ]\n      }\n    ],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/21c19756b3a3\"\n  }\n}\n"
+   ],
+   "agents/p-ancien/AGENTS.md": [
+    "sha256:275aa0d56791f864"
+   ],
+   "equipes/p/projets.json": [
+    "{}"
+   ],
+   "bibliotheque/equipes/p/archives/demo-<DATE-HEURE>/": [
+    "<dossier>"
+   ],
+   "bibliotheque/equipes/p/projets/": [
+    "<dossier>"
+   ],
+   "bibliotheque/equipes/p/projets/demo/": "(supprimé)"
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet ouvrir de nouveau (même nom)",
+  "code": 0,
+  "stdout": "projet p/demo ouvert : <T>/bibliotheque/equipes/p/projets/demo — membres : chef ; droits pris en compte au prochain démarrage de chaque membre (berger relancer <agent>)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/chef/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(~/bibliotheque/equipes/p/archives/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/chef/agent.conf)\",\n      \"Edit(~/agents/chef/espace.toml)\",\n      \"Edit(~/agents/chef/.reseau-claude.json)\",\n      \"Edit(~/agents/chef/.reglages-claude.json)\",\n      \"Edit(~/agents/chef/.mcp.json)\",\n      \"Write(~/agents/chef/.mcp.json)\",\n      \"Edit(~/agents/chef/.claude/settings.json)\",\n      \"Write(~/agents/chef/.claude/settings.json)\",\n      \"Edit(~/agents/chef/.claude/settings.local.json)\",\n      \"Write(~/agents/chef/.claude/settings.local.json)\",\n      \"Edit(~/agents/chef/.codex/**)\",\n      \"Write(~/agents/chef/.codex/**)\",\n      \"Edit(~/agents/chef/.mcp-berger.json)\",\n      \"Write(~/agents/chef/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ],\n    \"additionalDirectories\": [\n      \"<T>/bibliotheque/equipes/p/projets/demo\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline chef\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [],\n      \"deniedDomains\": [\n        \"*\"\n      ]\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/chef/agent.conf\",\n        \"<T>/agents/chef/espace.toml\",\n        \"<T>/agents/chef/.reseau-claude.json\",\n        \"<T>/agents/chef/.reglages-claude.json\",\n        \"<T>/agents/chef/.mcp.json\",\n        \"<T>/agents/chef/.claude/settings.json\",\n        \"<T>/agents/chef/.claude/settings.local.json\",\n        \"<T>/agents/chef/.codex\",\n        \"<T>/agents/chef/.mcp-berger.json\"\n      ],\n      \"allowWrite\": [\n        \"<T>/bibliotheque/equipes/p/projets/demo\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/5ecc077ed454\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/f59ac0828b9a\"\n  }\n}\n"
+   ],
+   "agents/chef/AGENTS.md": [
+    "sha256:8e25779a89f4205c"
+   ],
+   "agents/chef/memory/<DATE>.md": [
+    "- <HEURE> — go inscrit pour p/demo : validation n° ?, spec docs/plans/demo-spec.md\n- <HEURE> — projet p/demo ouvert — membres : chef, coord, p-ancien\n- <HEURE> — projet p/demo ouvert — membres : chef\n"
+   ],
+   "agents/coord/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(~/bibliotheque/equipes/p/projets/demo/**)\",\n      \"Read(~/bibliotheque/equipes/p/archives/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/coord/agent.conf)\",\n      \"Edit(~/agents/coord/espace.toml)\",\n      \"Edit(~/agents/coord/.reseau-claude.json)\",\n      \"Edit(~/agents/coord/.reglages-claude.json)\",\n      \"Edit(~/agents/coord/.mcp.json)\",\n      \"Write(~/agents/coord/.mcp.json)\",\n      \"Edit(~/agents/coord/.claude/settings.json)\",\n      \"Write(~/agents/coord/.claude/settings.json)\",\n      \"Edit(~/agents/coord/.claude/settings.local.json)\",\n      \"Write(~/agents/coord/.claude/settings.local.json)\",\n      \"Edit(~/agents/coord/.codex/**)\",\n      \"Write(~/agents/coord/.codex/**)\",\n      \"Edit(~/agents/coord/.mcp-berger.json)\",\n      \"Write(~/agents/coord/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline coord\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [\n        \"autre.org\"\n      ],\n      \"strictAllowlist\": true\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/coord/agent.conf\",\n        \"<T>/agents/coord/espace.toml\",\n        \"<T>/agents/coord/.reseau-claude.json\",\n        \"<T>/agents/coord/.reglages-claude.json\",\n        \"<T>/agents/coord/.mcp.json\",\n        \"<T>/agents/coord/.claude/settings.json\",\n        \"<T>/agents/coord/.claude/settings.local.json\",\n        \"<T>/agents/coord/.codex\",\n        \"<T>/agents/coord/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/5ecc077ed454\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/e23f0a6462d0\"\n  }\n}\n"
+   ],
+   "agents/intrus/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(~/bibliotheque/equipes/p/projets/demo/**)\",\n      \"Read(~/bibliotheque/equipes/p/archives/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/intrus/agent.conf)\",\n      \"Edit(~/agents/intrus/espace.toml)\",\n      \"Edit(~/agents/intrus/.reseau-claude.json)\",\n      \"Edit(~/agents/intrus/.reglages-claude.json)\",\n      \"Edit(~/agents/intrus/.mcp.json)\",\n      \"Write(~/agents/intrus/.mcp.json)\",\n      \"Edit(~/agents/intrus/.claude/settings.json)\",\n      \"Write(~/agents/intrus/.claude/settings.json)\",\n      \"Edit(~/agents/intrus/.claude/settings.local.json)\",\n      \"Write(~/agents/intrus/.claude/settings.local.json)\",\n      \"Edit(~/agents/intrus/.codex/**)\",\n      \"Write(~/agents/intrus/.codex/**)\",\n      \"Edit(~/agents/intrus/.mcp-berger.json)\",\n      \"Write(~/agents/intrus/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline intrus\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [],\n      \"deniedDomains\": [\n        \"*\"\n      ]\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/intrus/agent.conf\",\n        \"<T>/agents/intrus/espace.toml\",\n        \"<T>/agents/intrus/.reseau-claude.json\",\n        \"<T>/agents/intrus/.reglages-claude.json\",\n        \"<T>/agents/intrus/.mcp.json\",\n        \"<T>/agents/intrus/.claude/settings.json\",\n        \"<T>/agents/intrus/.claude/settings.local.json\",\n        \"<T>/agents/intrus/.codex\",\n        \"<T>/agents/intrus/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/5ecc077ed454\"\n  }\n}\n"
+   ],
+   "agents/p-ancien/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/bibliotheque/equipes/p/projets/demo/**)\",\n      \"Read(~/bibliotheque/equipes/p/archives/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/p-ancien/agent.conf)\",\n      \"Edit(~/agents/p-ancien/espace.toml)\",\n      \"Edit(~/agents/p-ancien/.reseau-claude.json)\",\n      \"Edit(~/agents/p-ancien/.reglages-claude.json)\",\n      \"Edit(~/agents/p-ancien/.mcp.json)\",\n      \"Write(~/agents/p-ancien/.mcp.json)\",\n      \"Edit(~/agents/p-ancien/.claude/settings.json)\",\n      \"Write(~/agents/p-ancien/.claude/settings.json)\",\n      \"Edit(~/agents/p-ancien/.claude/settings.local.json)\",\n      \"Write(~/agents/p-ancien/.claude/settings.local.json)\",\n      \"Edit(~/agents/p-ancien/.codex/**)\",\n      \"Write(~/agents/p-ancien/.codex/**)\",\n      \"Edit(~/agents/p-ancien/.mcp-berger.json)\",\n      \"Write(~/agents/p-ancien/.mcp-berger.json)\",\n      \"Edit(~/depot/**)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline p-ancien\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [\n        \"autre.org\"\n      ],\n      \"strictAllowlist\": true\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/p-ancien/agent.conf\",\n        \"<T>/agents/p-ancien/espace.toml\",\n        \"<T>/agents/p-ancien/.reseau-claude.json\",\n        \"<T>/agents/p-ancien/.reglages-claude.json\",\n        \"<T>/agents/p-ancien/.mcp.json\",\n        \"<T>/agents/p-ancien/.claude/settings.json\",\n        \"<T>/agents/p-ancien/.claude/settings.local.json\",\n        \"<T>/agents/p-ancien/.codex\",\n        \"<T>/agents/p-ancien/.mcp-berger.json\",\n        \"<T>/depot\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/5ecc077ed454\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Edit|Write\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"<T>/bin/berger crochet-equipe p-ancien\",\n            \"timeout\": 10\n          }\n        ]\n      }\n    ],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/21c19756b3a3\"\n  }\n}\n"
+   ],
+   "equipes/p/projets.json": [
+    "{\n \"demo\": {\n  \"membres\": [\n   \"chef\"\n  ],\n  \"ouvert\": \"<DATE-HEURE>\",\n  \"par\": \"chef\"\n }\n}"
+   ],
+   "bibliotheque/equipes/p/projets/demo/": [
+    "<dossier>"
+   ],
+   "bibliotheque/equipes/p/projets/": "(supprimé)"
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet fermer de nouveau (seconde archive)",
+  "code": 0,
+  "stdout": "projet p/demo fermé — archivé dans <T>/bibliotheque/equipes/p/archives/demo-<DATE-HEURE> (rien supprimé) ; droits retirés à : chef\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/chef/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(~/bibliotheque/equipes/p/archives/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/chef/agent.conf)\",\n      \"Edit(~/agents/chef/espace.toml)\",\n      \"Edit(~/agents/chef/.reseau-claude.json)\",\n      \"Edit(~/agents/chef/.reglages-claude.json)\",\n      \"Edit(~/agents/chef/.mcp.json)\",\n      \"Write(~/agents/chef/.mcp.json)\",\n      \"Edit(~/agents/chef/.claude/settings.json)\",\n      \"Write(~/agents/chef/.claude/settings.json)\",\n      \"Edit(~/agents/chef/.claude/settings.local.json)\",\n      \"Write(~/agents/chef/.claude/settings.local.json)\",\n      \"Edit(~/agents/chef/.codex/**)\",\n      \"Write(~/agents/chef/.codex/**)\",\n      \"Edit(~/agents/chef/.mcp-berger.json)\",\n      \"Write(~/agents/chef/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline chef\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [],\n      \"deniedDomains\": [\n        \"*\"\n      ]\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/chef/agent.conf\",\n        \"<T>/agents/chef/espace.toml\",\n        \"<T>/agents/chef/.reseau-claude.json\",\n        \"<T>/agents/chef/.reglages-claude.json\",\n        \"<T>/agents/chef/.mcp.json\",\n        \"<T>/agents/chef/.claude/settings.json\",\n        \"<T>/agents/chef/.claude/settings.local.json\",\n        \"<T>/agents/chef/.codex\",\n        \"<T>/agents/chef/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/5ecc077ed454\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/f59ac0828b9a\"\n  }\n}\n"
+   ],
+   "agents/chef/AGENTS.md": [
+    "sha256:2b27b111148e2906"
+   ],
+   "agents/coord/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(~/bibliotheque/equipes/p/archives/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/coord/agent.conf)\",\n      \"Edit(~/agents/coord/espace.toml)\",\n      \"Edit(~/agents/coord/.reseau-claude.json)\",\n      \"Edit(~/agents/coord/.reglages-claude.json)\",\n      \"Edit(~/agents/coord/.mcp.json)\",\n      \"Write(~/agents/coord/.mcp.json)\",\n      \"Edit(~/agents/coord/.claude/settings.json)\",\n      \"Write(~/agents/coord/.claude/settings.json)\",\n      \"Edit(~/agents/coord/.claude/settings.local.json)\",\n      \"Write(~/agents/coord/.claude/settings.local.json)\",\n      \"Edit(~/agents/coord/.codex/**)\",\n      \"Write(~/agents/coord/.codex/**)\",\n      \"Edit(~/agents/coord/.mcp-berger.json)\",\n      \"Write(~/agents/coord/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline coord\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [\n        \"autre.org\"\n      ],\n      \"strictAllowlist\": true\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/coord/agent.conf\",\n        \"<T>/agents/coord/espace.toml\",\n        \"<T>/agents/coord/.reseau-claude.json\",\n        \"<T>/agents/coord/.reglages-claude.json\",\n        \"<T>/agents/coord/.mcp.json\",\n        \"<T>/agents/coord/.claude/settings.json\",\n        \"<T>/agents/coord/.claude/settings.local.json\",\n        \"<T>/agents/coord/.codex\",\n        \"<T>/agents/coord/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/5ecc077ed454\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/e23f0a6462d0\"\n  }\n}\n"
+   ],
+   "agents/intrus/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/p-ancien/**)\",\n      \"Read(~/bibliotheque/equipes/p/archives/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/p-ancien/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/intrus/agent.conf)\",\n      \"Edit(~/agents/intrus/espace.toml)\",\n      \"Edit(~/agents/intrus/.reseau-claude.json)\",\n      \"Edit(~/agents/intrus/.reglages-claude.json)\",\n      \"Edit(~/agents/intrus/.mcp.json)\",\n      \"Write(~/agents/intrus/.mcp.json)\",\n      \"Edit(~/agents/intrus/.claude/settings.json)\",\n      \"Write(~/agents/intrus/.claude/settings.json)\",\n      \"Edit(~/agents/intrus/.claude/settings.local.json)\",\n      \"Write(~/agents/intrus/.claude/settings.local.json)\",\n      \"Edit(~/agents/intrus/.codex/**)\",\n      \"Write(~/agents/intrus/.codex/**)\",\n      \"Edit(~/agents/intrus/.mcp-berger.json)\",\n      \"Write(~/agents/intrus/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/21c19756b3a3/**)\",\n      \"Edit(/<T>/tmp-agents/21c19756b3a3/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline intrus\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [],\n      \"deniedDomains\": [\n        \"*\"\n      ]\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/intrus/agent.conf\",\n        \"<T>/agents/intrus/espace.toml\",\n        \"<T>/agents/intrus/.reseau-claude.json\",\n        \"<T>/agents/intrus/.reglages-claude.json\",\n        \"<T>/agents/intrus/.mcp.json\",\n        \"<T>/agents/intrus/.claude/settings.json\",\n        \"<T>/agents/intrus/.claude/settings.local.json\",\n        \"<T>/agents/intrus/.codex\",\n        \"<T>/agents/intrus/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/21c19756b3a3\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/5ecc077ed454\"\n  }\n}\n"
+   ],
+   "agents/p-ancien/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/coord/**)\",\n      \"Read(~/agents/intrus/**)\",\n      \"Read(~/bibliotheque/equipes/p/archives/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/coord/**)\",\n      \"Edit(~/agents/intrus/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/p-ancien/agent.conf)\",\n      \"Edit(~/agents/p-ancien/espace.toml)\",\n      \"Edit(~/agents/p-ancien/.reseau-claude.json)\",\n      \"Edit(~/agents/p-ancien/.reglages-claude.json)\",\n      \"Edit(~/agents/p-ancien/.mcp.json)\",\n      \"Write(~/agents/p-ancien/.mcp.json)\",\n      \"Edit(~/agents/p-ancien/.claude/settings.json)\",\n      \"Write(~/agents/p-ancien/.claude/settings.json)\",\n      \"Edit(~/agents/p-ancien/.claude/settings.local.json)\",\n      \"Write(~/agents/p-ancien/.claude/settings.local.json)\",\n      \"Edit(~/agents/p-ancien/.codex/**)\",\n      \"Write(~/agents/p-ancien/.codex/**)\",\n      \"Edit(~/agents/p-ancien/.mcp-berger.json)\",\n      \"Write(~/agents/p-ancien/.mcp-berger.json)\",\n      \"Edit(~/depot/**)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Edit(/<T>/tmp-agents/f59ac0828b9a/**)\",\n      \"Read(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Edit(/<T>/tmp-agents/e23f0a6462d0/**)\",\n      \"Read(/<T>/tmp-agents/5ecc077ed454/**)\",\n      \"Edit(/<T>/tmp-agents/5ecc077ed454/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline p-ancien\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [\n        \"autre.org\"\n      ],\n      \"strictAllowlist\": true\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/p-ancien/agent.conf\",\n        \"<T>/agents/p-ancien/espace.toml\",\n        \"<T>/agents/p-ancien/.reseau-claude.json\",\n        \"<T>/agents/p-ancien/.reglages-claude.json\",\n        \"<T>/agents/p-ancien/.mcp.json\",\n        \"<T>/agents/p-ancien/.claude/settings.json\",\n        \"<T>/agents/p-ancien/.claude/settings.local.json\",\n        \"<T>/agents/p-ancien/.codex\",\n        \"<T>/agents/p-ancien/.mcp-berger.json\",\n        \"<T>/depot\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/f59ac0828b9a\",\n        \"<T>/tmp-agents/e23f0a6462d0\",\n        \"<T>/tmp-agents/5ecc077ed454\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Edit|Write\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"<T>/bin/berger crochet-equipe p-ancien\",\n            \"timeout\": 10\n          }\n        ]\n      }\n    ],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/21c19756b3a3\"\n  }\n}\n"
+   ],
+   "equipes/p/projets.json": [
+    "{}"
+   ],
+   "bibliotheque/equipes/p/archives/demo-<DATE-HEURE>/demo/": [
+    "<dossier>"
+   ],
+   "bibliotheque/equipes/p/projets/": [
+    "<dossier>"
+   ],
+   "bibliotheque/equipes/p/archives/demo-<DATE-HEURE>/": "(supprimé)",
+   "bibliotheque/equipes/p/projets/demo/": "(supprimé)"
+  },
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet, forme inconnue",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "berger projet ouvrir <équipe> <projet> <membre,membre…> | fermer <équipe> <projet> | liste [<équipe>]",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "projet fermer, arguments manquants",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "berger projet ouvrir <équipe> <projet> <membre,membre…> | fermer <équipe> <projet> | liste [<équipe>]",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "crochet-equipe sans agent",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "IndexError: list index out of range",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "crochet-equipe, agent qui n'est pas développeur",
+  "code": 0,
+  "stdout": "{\"suppressOutput\":true}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "crochet-equipe, fichier de sa copie ramené au dépôt",
+  "code": 0,
+  "stdout": "{\"vu\": \"<T>/depot/src/a.py\", \"cwd\": \"<T>/depot\"}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "crochet-equipe, fichier hors de sa copie",
+  "code": 0,
+  "stdout": "{\"vu\": \"/etc/hosts\", \"cwd\": \"<T>/depot\"}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "crochet-equipe, entrée vide",
+  "code": 0,
+  "stdout": "{\"vu\": null, \"cwd\": \"<T>/depot\"}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "crochet-equipe, JSON invalide",
+  "code": 0,
+  "stdout": "{\"suppressOutput\":true}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "crochet-equipe, entier de 5 000 chiffres",
+  "code": 0,
+  "stdout": "{\"suppressOutput\":true}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "crochet-equipe, imbrication trop profonde",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "RecursionError: Stack overflow (used <N> kB) while decoding a JSON array from a unicode string",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "crochet-equipe, entrée non UTF-8",
+  "code": 0,
+  "stdout": "{\"suppressOutput\":true}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "courtier : non-membre, liste refusée",
+  "code": 0,
+  "stdout": "{\"erreur\": \"intrus n'est ni le chef de projet ni le coordinateur de l'équipe p\", \"ok\": false}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "courtier : projet inconnu",
+  "code": 0,
+  "stdout": "{\"erreur\": \"projet d'équipe inconnu : inconnu\", \"ok\": false}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "courtier : coordinateur, ouvrir refusé (le chef seul)",
+  "code": 0,
+  "stdout": "{\"erreur\": \"seul le chef de projet (chef) ouvre et ferme les développeurs de p : confie-lui le sujet (berger-outil mission confier --stdin (tableau JSON : chef, spec et go))\", \"ok\": false}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "courtier : chef, fermer un sujet inconnu refusé",
+  "code": 0,
+  "stdout": "{\"erreur\": \"« inexistant » n'est pas un développeur ouvert de p : rien n'est fermé (la copie et la branche du chef ne se ferment jamais)\", \"ok\": false}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "courtier : coordinateur, liste",
+  "code": 0,
+  "stdout": "{\"donnees\": [{\"agent\": \"p-ancien\", \"bloque\": \"une question\", \"branche\": \"p/ancien\", \"checklist\": \"1/2\", \"demande_de_fusion\": \"renvoyée\", \"mission\": true, \"port\": \"0\", \"portes\": \"verify : vert ; pret : rouge\", \"renvois\": 1, \"sujet\": \"ancien\"}, {\"avertissement\": \"intrus déclare equipe:p sans être le coordinateur déclaré : ignoré, à retirer de son agent.conf\"}], \"ok\": true}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "courtier : chef, domaines refusé (le coordinateur seul)",
+  "code": 0,
+  "stdout": "{\"erreur\": \"les sites permis de p se demandent par le coordinateur\", \"ok\": false}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "courtier : coordinateur, domaines",
+  "code": 0,
+  "stdout": "{\"donnees\": [\"autre.org\"], \"ok\": true}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "courtier : coordinateur, domaine ajouter (validation demandée)",
+  "code": 0,
+  "stdout": "{\"en_attente\": 1, \"message\": \"Demande n° 1 envoyée à Proprio pour validation : ajouter le site nouveau.org au projet p → sites permis : autre.org, nouveau.org ; mur de : coord, p-ancien (Claude ; Codex reste sans réseau). RIEN n'est ouvert tant qu'il n'a pas validé ; le résultat sera noté dans ton journal.\", \"ok\": true}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "courtier/echanges.jsonl": "{\"quand\": \"<DATE-HEURE>\", \"de\": \"coord\", \"a\": \"Proprio\", \"genre\": \"validation demandée\", \"texte\": \"n° 1 : ajouter le site nouveau.org au projet p → sites permis : autre.org, nouveau.org ; mur de : coord, p-ancien (Claude ; Codex reste sans réseau)\"}\n",
+   "courtier/validations/1.json": [
+    "{\n \"n\": 1,\n \"agent\": \"coord\",\n \"outil\": \"equipe\",\n \"verbe\": \"domaine\",\n \"args\": [\n  \"p\",\n  \"ajouter\",\n  \"nouveau.org\"\n ],\n \"apercu\": \"ajouter le site nouveau.org au projet p → sites permis : autre.org, nouveau.org ; mur de : coord, p-ancien (Claude ; Codex reste sans réseau)\",\n \"valideur\": null,\n \"demande\": \"<DATE-HEURE>\"\n}"
+   ]
+  },
+  "herdr_et_lancements": [
+   "[\"notification\", \"show\", \"Berger\", \"--body\", \"Une information est disponible dans le panneau Berger.\", \"--sound\", \"request\"]"
+  ]
+ },
+ {
+  "scenario": "courtier : chef, go (validation demandée)",
+  "code": 0,
+  "stdout": "{\"en_attente\": 2, \"message\": \"Demande n° 2 envoyée à Proprio pour validation : GO du propriétaire pour p/trois (règle de go, cas 2) sur la spec docs/plans/demo-spec.md (origin/main) « Demo : un bouton », empreinte 9f62cf64e332 — début :\\n# Demo : un bouton\\n\\nConstat. Comportement. Tests.. RIEN n'est inscrit tant qu'il n'a pas validé ; le résultat sera noté dans ton journal.\", \"ok\": true}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "equipes/p/go/trois.json": [
+    "{\n \"sujet\": \"trois\",\n \"etat\": \"demandé\",\n \"cas\": \"2\",\n \"spec\": \"docs/plans/demo-spec.md\",\n \"empreinte\": \"9f62cf64e332ec6390059fc75f0f47974b1ef4af7f29320c96a444ebe17a3e37\",\n \"demande\": \"<DATE-HEURE>\",\n \"demande_par\": \"chef\"\n}"
+   ],
+   "courtier/echanges.jsonl": "{\"quand\": \"<DATE-HEURE>\", \"de\": \"chef\", \"a\": \"Proprio\", \"genre\": \"validation demandée\", \"texte\": \"n° 2 : GO du propriétaire pour p/trois (règle de go, cas 2) sur la spec docs/plans/demo-spec.md (origin/main) « Demo : un bouton », empreinte 9f62cf64e332 — début : # Demo : un bouton Constat. Comportement. Tests.\"}\n",
+   "courtier/validations/2.json": [
+    "{\n \"n\": 2,\n \"agent\": \"chef\",\n \"outil\": \"equipe\",\n \"verbe\": \"go\",\n \"args\": [\n  \"p\",\n  \"trois\",\n  \"2\",\n  \"docs/plans/demo-spec.md\"\n ],\n \"apercu\": \"GO du propriétaire pour p/trois (règle de go, cas 2) sur la spec docs/plans/demo-spec.md (origin/main) « Demo : un bouton », empreinte 9f62cf64e332 — début :\\n# Demo : un bouton\\n\\nConstat. Comportement. Tests.\",\n \"valideur\": null,\n \"demande\": \"<DATE-HEURE>\"\n}"
+   ]
+  },
+  "herdr_et_lancements": [
+   "[\"notification\", \"show\", \"Berger\", \"--body\", \"Une information est disponible dans le panneau Berger.\", \"--sound\", \"request\"]"
+  ]
+ },
+ {
+  "scenario": "courtier : chef, verbe inconnu",
+  "code": 0,
+  "stdout": "{\"erreur\": \"equipe ouvrir <projet> <sujet> \\\"<mission>\\\" [claude|codex] [modèle] | fermer <projet> <sujet> | liste <projet> | domaine <projet> ajouter|retirer <nom> | domaines <projet> | go <projet> <sujet> <cas> <spec>\", \"ok\": false}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ },
+ {
+  "scenario": "courtier : chef, ouvrir (plafond, refus de berger)",
+  "code": 0,
+  "stdout": "{\"erreur\": \"sujet de la règle de go (go demandé pour ce sujet) sans go inscrit du propriétaire : rien n'est ouvert — demande le go (berger-outil equipe go --fichier .transport/requete.json, JSON : p trois <cas> <spec>), puis rouvre\", \"ok\": false}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr_et_lancements": []
+ }
+]

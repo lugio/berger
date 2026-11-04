@@ -1,0 +1,370 @@
+{
+ "moteur": "codex",
+ "version": "0.165.0",
+ "mesure": "2026-11-01, codex-sous-agents : requêtes RÉELLES de codex exec 0.165.0 (modèle par défaut gpt-6.1-sol, mode code) à un faux fournisseur local qui JOUE le modèle (tests/_mesure_sous_agents.py, appel direct de collaboration.spawn_agent puis wait_agent ; l'enfant lance exec_command avec login false) ; réglages d'un strict (-c features.multi_agent=false -c features.sleep_tool=false -c web_search=\"disabled\"), --sandbox danger-full-access SEULEMENT pour voir la sortie de l'enfant (le bac à sable de Codex ne s'imbrique pas dans celui du poste de mesure). Les événements --json de la même exécution ne portent qu'un collab_tool_call « wait » sans receveur : ni spawn, ni enfant, ni sortie.",
+ "nettoyage": "métadonnées (en-tête x-codex-turn-metadata) réduites aux champs d'identité, sans identifiant d'installation ; messages réduits à type et role, additional_tools à son type ; function_call, function_call_output et agent_message gardés entiers ; dossier jetable remplacé par /tmp/mesure.",
+ "requetes": [
+  {
+   "meta": {
+    "session_id": "01a19680-ee38-7900-b5bc-6c457d9e4794",
+    "thread_id": "01a19680-ee38-7900-b5bc-6c457d9e4794",
+    "agent_name": "/root",
+    "thread_source": "user",
+    "request_kind": "turn",
+    "sandbox": "none",
+    "sandbox_mode": "danger-full-access",
+    "turn_trigger": "exec",
+    "model": "gpt-6.1-sol"
+   },
+   "input": [
+    {
+     "type": "additional_tools"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "user"
+    },
+    {
+     "type": "message",
+     "role": "user"
+    }
+   ],
+   "reponse_du_faux_modele": [
+    {
+     "type": "function_call",
+     "id": "fc_1",
+     "call_id": "call_1",
+     "name": "spawn_agent",
+     "namespace": "collaboration",
+     "arguments": "{\"task_name\": \"mesure_enfant\", \"message\": \"TACHE-ENFANT-MESURE : lance exactement la commande /usr/bin/python3 -I -c \\\"import os; print('SOUS-AGENT-MESURE', 'jeton-97b6b5a2fb143db4'[::-1], 'cle-visible' if 'BERGER_MESURE_CLE' in os.environ else 'cle-absente')\\\" puis rends sa sortie.\", \"fork_turns\": \"none\"}"
+    }
+   ]
+  },
+  {
+   "meta": {
+    "session_id": "01a19680-ee38-7900-b5bc-6c457d9e4794",
+    "thread_id": "01a19680-ee38-7900-b5bc-6c457d9e4794",
+    "agent_name": "/root",
+    "thread_source": "user",
+    "request_kind": "turn",
+    "sandbox": "none",
+    "sandbox_mode": "danger-full-access",
+    "turn_trigger": "exec",
+    "model": "gpt-6.1-sol"
+   },
+   "input": [
+    {
+     "type": "additional_tools"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "user"
+    },
+    {
+     "type": "message",
+     "role": "user"
+    },
+    {
+     "type": "function_call",
+     "id": "fc_1",
+     "name": "spawn_agent",
+     "namespace": "collaboration",
+     "arguments": "{\"task_name\": \"mesure_enfant\", \"message\": \"TACHE-ENFANT-MESURE : lance exactement la commande /usr/bin/python3 -I -c \\\"import os; print('SOUS-AGENT-MESURE', 'jeton-97b6b5a2fb143db4'[::-1], 'cle-visible' if 'BERGER_MESURE_CLE' in os.environ else 'cle-absente')\\\" puis rends sa sortie.\", \"fork_turns\": \"none\"}",
+     "call_id": "call_1"
+    },
+    {
+     "type": "function_call_output",
+     "id": "fco_01a19680-ee93-7941-89a5-7011058cdbad",
+     "call_id": "call_1",
+     "output": "{\"task_name\":\"/root/mesure_enfant\"}"
+    }
+   ],
+   "reponse_du_faux_modele": [
+    {
+     "type": "function_call",
+     "id": "fc_2",
+     "call_id": "call_2",
+     "name": "wait_agent",
+     "namespace": "collaboration",
+     "arguments": "{\"timeout_ms\": 60000}"
+    }
+   ]
+  },
+  {
+   "meta": {
+    "session_id": "01a19680-ee38-7900-b5bc-6c457d9e4794",
+    "thread_id": "01a19680-ee8d-75e0-9f1d-82409baecf15",
+    "agent_name": "/root/mesure_enfant",
+    "thread_source": "subagent",
+    "parent_thread_id": "01a19680-ee38-7900-b5bc-6c457d9e4794",
+    "parent_turn_id": "01a19680-ee6b-7e10-b67d-91750dbde289",
+    "subagent_kind": "thread_spawn",
+    "request_kind": "turn",
+    "sandbox": "none",
+    "sandbox_mode": "danger-full-access",
+    "turn_trigger": "exec",
+    "model": "gpt-6.1-sol"
+   },
+   "input": [
+    {
+     "type": "additional_tools"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "user"
+    },
+    {
+     "type": "agent_message",
+     "id": "amsg_01a19680-ee9d-7991-b243-b20440b4c6ab",
+     "author": "/root",
+     "recipient": "/root/mesure_enfant",
+     "content": [
+      {
+       "type": "input_text",
+       "text": "Message Type: NEW_TASK\nTask name: /root/mesure_enfant\nSender: /root\nPayload:\n"
+      },
+      {
+       "type": "encrypted_content",
+       "encrypted_content": "TACHE-ENFANT-MESURE : lance exactement la commande /usr/bin/python3 -I -c \"import os; print('SOUS-AGENT-MESURE', 'jeton-97b6b5a2fb143db4'[::-1], 'cle-visible' if 'BERGER_MESURE_CLE' in os.environ else 'cle-absente')\" puis rends sa sortie."
+      }
+     ]
+    }
+   ],
+   "reponse_du_faux_modele": [
+    {
+     "type": "function_call",
+     "id": "fc_3",
+     "call_id": "call_3",
+     "name": "exec_command",
+     "arguments": "{\"cmd\": \"/usr/bin/python3 -I -c \\\"import os; print('SOUS-AGENT-MESURE', 'jeton-97b6b5a2fb143db4'[::-1], 'cle-visible' if 'BERGER_MESURE_CLE' in os.environ else 'cle-absente')\\\"\", \"login\": false}"
+    }
+   ]
+  },
+  {
+   "meta": {
+    "session_id": "01a19680-ee38-7900-b5bc-6c457d9e4794",
+    "thread_id": "01a19680-ee8d-75e0-9f1d-82409baecf15",
+    "agent_name": "/root/mesure_enfant",
+    "thread_source": "subagent",
+    "parent_thread_id": "01a19680-ee38-7900-b5bc-6c457d9e4794",
+    "parent_turn_id": "01a19680-ee6b-7e10-b67d-91750dbde289",
+    "subagent_kind": "thread_spawn",
+    "request_kind": "turn",
+    "sandbox": "none",
+    "sandbox_mode": "danger-full-access",
+    "turn_trigger": "exec",
+    "model": "gpt-6.1-sol"
+   },
+   "input": [
+    {
+     "type": "additional_tools"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "user"
+    },
+    {
+     "type": "agent_message",
+     "id": "amsg_01a19680-ee9d-7991-b243-b20440b4c6ab",
+     "author": "/root",
+     "recipient": "/root/mesure_enfant",
+     "content": [
+      {
+       "type": "input_text",
+       "text": "Message Type: NEW_TASK\nTask name: /root/mesure_enfant\nSender: /root\nPayload:\n"
+      },
+      {
+       "type": "encrypted_content",
+       "encrypted_content": "TACHE-ENFANT-MESURE : lance exactement la commande /usr/bin/python3 -I -c \"import os; print('SOUS-AGENT-MESURE', 'jeton-97b6b5a2fb143db4'[::-1], 'cle-visible' if 'BERGER_MESURE_CLE' in os.environ else 'cle-absente')\" puis rends sa sortie."
+      }
+     ]
+    },
+    {
+     "type": "function_call",
+     "id": "fc_3",
+     "name": "exec_command",
+     "arguments": "{\"cmd\": \"/usr/bin/python3 -I -c \\\"import os; print('SOUS-AGENT-MESURE', 'jeton-97b6b5a2fb143db4'[::-1], 'cle-visible' if 'BERGER_MESURE_CLE' in os.environ else 'cle-absente')\\\"\", \"login\": false}",
+     "call_id": "call_3"
+    },
+    {
+     "type": "function_call_output",
+     "id": "fco_01a19680-eefd-77c2-ab7d-ac4a00b107f3",
+     "call_id": "call_3",
+     "output": "Chunk ID: be6bce\nWall time: 0.0000 seconds\nProcess exited with code 0\nOriginal token count: 14\nOutput:\nSOUS-AGENT-MESURE 4bd341bf2a5b6b79-notej cle-visible\n"
+    }
+   ],
+   "reponse_du_faux_modele": [
+    {
+     "type": "message",
+     "role": "assistant",
+     "id": "msg_4",
+     "content": [
+      {
+       "type": "output_text",
+       "text": "ENFANT-FINI 'cle-visible' if 'BERGER_MESURE_CLE' in os.environ else 'cle-absente')\\\\\\\"\\\", \\\"login\\\": false}\", \"call_id\": \"call_3\"}, {\"type\": \"function_call_output\", \"id\": \"fco_01a19680-eefd-77c2-ab7d-ac4a00b107f3\", \"call_id\": \"call_3\", \"output\": \"Chunk ID: be6bce\\nWall time: 0.0000 seconds\\nProcess exited with code 0\\nOriginal token count: 14\\nOutput:\\nSOUS-AGENT-MESURE 4bd341bf2a5b6b79-notej cle-visible\\n\"}]"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "meta": {
+    "session_id": "01a19680-ee38-7900-b5bc-6c457d9e4794",
+    "thread_id": "01a19680-ee38-7900-b5bc-6c457d9e4794",
+    "agent_name": "/root",
+    "thread_source": "user",
+    "request_kind": "turn",
+    "sandbox": "none",
+    "sandbox_mode": "danger-full-access",
+    "turn_trigger": "exec",
+    "model": "gpt-6.1-sol"
+   },
+   "input": [
+    {
+     "type": "additional_tools"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "developer"
+    },
+    {
+     "type": "message",
+     "role": "user"
+    },
+    {
+     "type": "message",
+     "role": "user"
+    },
+    {
+     "type": "function_call",
+     "id": "fc_1",
+     "name": "spawn_agent",
+     "namespace": "collaboration",
+     "arguments": "{\"task_name\": \"mesure_enfant\", \"message\": \"TACHE-ENFANT-MESURE : lance exactement la commande /usr/bin/python3 -I -c \\\"import os; print('SOUS-AGENT-MESURE', 'jeton-97b6b5a2fb143db4'[::-1], 'cle-visible' if 'BERGER_MESURE_CLE' in os.environ else 'cle-absente')\\\" puis rends sa sortie.\", \"fork_turns\": \"none\"}",
+     "call_id": "call_1"
+    },
+    {
+     "type": "function_call_output",
+     "id": "fco_01a19680-ee93-7941-89a5-7011058cdbad",
+     "call_id": "call_1",
+     "output": "{\"task_name\":\"/root/mesure_enfant\"}"
+    },
+    {
+     "type": "function_call",
+     "id": "fc_2",
+     "name": "wait_agent",
+     "namespace": "collaboration",
+     "arguments": "{\"timeout_ms\": 60000}",
+     "call_id": "call_2"
+    },
+    {
+     "type": "function_call_output",
+     "id": "fco_01a19680-ef0f-7b71-8a7f-fcaf6e56e527",
+     "call_id": "call_2",
+     "output": "{\"message\":\"Wait completed.\",\"timed_out\":false}"
+    },
+    {
+     "type": "agent_message",
+     "id": "amsg_01a19680-ef0f-7b71-8a7f-fcbb819365f2",
+     "author": "/root/mesure_enfant",
+     "recipient": "/root",
+     "content": [
+      {
+       "type": "input_text",
+       "text": "Message Type: FINAL_ANSWER\nTask name: /root\nSender: /root/mesure_enfant\nPayload:\nENFANT-FINI 'cle-visible' if 'BERGER_MESURE_CLE' in os.environ else 'cle-absente')\\\\\\\"\\\", \\\"login\\\": false}\", \"call_id\": \"call_3\"}, {\"type\": \"function_call_output\", \"id\": \"fco_01a19680-eefd-77c2-ab7d-ac4a00b107f3\", \"call_id\": \"call_3\", \"output\": \"Chunk ID: be6bce\\nWall time: 0.0000 seconds\\nProcess exited with code 0\\nOriginal token count: 14\\nOutput:\\nSOUS-AGENT-MESURE 4bd341bf2a5b6b79-notej cle-visible\\n\"}]"
+      }
+     ]
+    }
+   ],
+   "reponse_du_faux_modele": [
+    {
+     "type": "message",
+     "role": "assistant",
+     "id": "msg_5",
+     "content": [
+      {
+       "type": "output_text",
+       "text": "PARENT-FINI"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

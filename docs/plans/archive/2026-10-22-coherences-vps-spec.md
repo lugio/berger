@@ -1,0 +1,14 @@
+# Cohérences VPS — spécification courte
+
+Périmètre : les quatre corrections confiées le 22 octobre, sans modification de production, des accès réels ni du contrôle des marques.
+
+1. **Délégation.** `courtier/courtier:deleguer` impose une réponse courte, sans écriture hors journal, avec un délai de 420 secondes, mais ne rappelle pas les accès propres de la cible. Rappeler que la cible utilise ses accès autorisés selon son mur, sans lever les interdictions de la délégation. Documenter question courte contre mission longue dans les manuels FR et EN disponibles. Tester la consigne effectivement transmise pour chaque type de mur et conserver le délai et les restrictions.
+2. **Refus des gardes.** `commun/REGLES.md` dit déjà qu'une demande refusée se signale et ne se contourne pas. Préciser que cela vaut également pour une lecture seule et pour le passage de la même commande par un fichier. Vérifier les modèles SOUL concernés et ajouter une preuve de présence. Aucun droit supplémentaire.
+3. **Auto-test nocturne.** `tests/tout.sh` exclut uniquement les agents à la demande sans mission. Exclure aussi les agents hors de leur plage horaire, en conservant les agents en mission. Reprendre la convention horaire existante de `reveil` (bornes incluses). Tester avant, pendant et après 8–19 h, un agent à la demande, et une mission hors plage, avec un faux Herdr ; aucun appel au vrai Herdr.
+4. **Fermeture après refus.** `fin_mission` impose une checklist finie hors propriétaire ; `equipe_fermer` y passe. Permettre uniquement le cas d'une demande de fusion explicitement refusée par le propriétaire pour ce développeur et cette mission, après vérification de la source de décision existante. Tracer l'abandon. Garder les refus pour une demande absente, en attente, refusée par un autre acteur, étrangère ou périmée ; garder le refus de perte de travail non commité. Tester le refus actuel avant correction.
+
+Validation : tests de reproduction isolés, puis portes verify, tests, pret et contrôle des marques. Cause racine dans chaque commit fix. Intégrer main avant la demande de fusion pour absorber le chantier sans-marques ; ne pas modifier verifier_depot ni le lot accueil public.
+
+Autorisation clarifiée par le chef : les modifications du cœur nécessaires aux quatre points sont couvertes ; aucune autre modification ni pile locale du cœur en attente de fusion.
+
+Complément auto-test : transport JSON pour délégation et essai noter ; choisir une paire moteur Codex et mur strict, sinon INFO non testable. Le témoin négatif doit vérifier exactement le refus du courtier, jamais confondre une erreur de syntaxe avec une autorisation. Diagnostic des capacités uniquement : examiner le critère lexical et le chargement de SOUL sans moteur réel ni réseau. Le dépôt ne contient actuellement qu'un manuel français ; chercher le manuel anglais après intégration de main, sans modifier les README hors périmètre.

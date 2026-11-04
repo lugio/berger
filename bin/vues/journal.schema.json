@@ -1,0 +1,99 @@
+{
+ "$id": "journal.schema.json",
+ "x-version": 1,
+ "description": "Données de la vue « Journal de l'agent » : le journal du jour (heure, ou null pour une ligne sans heure), les 4 derniers réveils du jour, les 3 dernières sorties de tâches.",
+ "type": "object",
+ "properties": {
+  "agent": {
+   "x-libelle": "Agent",
+   "x-rendu": "agent",
+   "$ref": "communs.schema.json#/$defs/Agent"
+  },
+  "statuts": {
+   "x-libelle": "Statut",
+   "x-rendu": "statuts",
+   "type": "array",
+   "items": {
+    "$ref": "communs.schema.json#/$defs/Statut"
+   }
+  },
+  "jour": {
+   "x-libelle": "Jour",
+   "x-rendu": "quand",
+   "type": "string"
+  },
+  "lignes": {
+   "x-libelle": "Journal du jour",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "heure": {
+      "x-libelle": "Heure",
+      "x-rendu": "texte",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "texte": {
+      "x-libelle": "Fait",
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "required": [
+     "heure",
+     "texte"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "reveils": {
+   "x-libelle": "Réveils du jour",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "x-rendu": "texte",
+    "type": "string"
+   },
+   "maxItems": 4
+  },
+  "taches": {
+   "x-libelle": "Dernières tâches",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "tache": {
+      "x-libelle": "Tâche",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "sortie": {
+      "x-libelle": "Sortie",
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "required": [
+     "tache",
+     "sortie"
+    ],
+    "additionalProperties": false
+   },
+   "maxItems": 3
+  }
+ },
+ "required": [
+  "agent",
+  "statuts",
+  "jour",
+  "lignes",
+  "reveils",
+  "taches"
+ ],
+ "additionalProperties": false
+}

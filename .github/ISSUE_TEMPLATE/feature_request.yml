@@ -1,0 +1,22 @@
+name: Feature request
+description: Propose a concrete improvement to Berger.
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Describe the situation and who is affected, using fictional data.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Proposed behavior
+      description: Describe the expected result, boundaries, and cases that should be refused.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives and evidence
+      description: Explain existing workarounds and how the improvement could be verified.
