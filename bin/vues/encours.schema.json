@@ -1,0 +1,76 @@
+{
+ "$id": "encours.schema.json",
+ "x-version": 1,
+ "description": "Données de la vue « En cours » d'un agent : sa checklist, ses écritures en attente, sa liste à faire, les lignes horodatées du jour.",
+ "type": "object",
+ "properties": {
+  "agent": {
+   "x-libelle": "Agent",
+   "x-rendu": "agent",
+   "$ref": "communs.schema.json#/$defs/Agent"
+  },
+  "checklist": {
+   "x-libelle": "Travail en cours",
+   "x-rendu": "checklist",
+   "anyOf": [
+    {
+     "$ref": "communs.schema.json#/$defs/Checklist"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "validations": {
+   "x-libelle": "Attend une validation",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "x-rendu": "validation",
+    "$ref": "communs.schema.json#/$defs/Validation"
+   }
+  },
+  "a_faire": {
+   "x-libelle": "À faire",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "x-rendu": "texte",
+    "type": "string"
+   }
+  },
+  "aujourdhui": {
+   "x-libelle": "Aujourd'hui",
+   "x-rendu": "liste",
+   "type": "array",
+   "items": {
+    "type": "object",
+    "properties": {
+     "heure": {
+      "x-libelle": "Heure",
+      "x-rendu": "texte",
+      "type": "string"
+     },
+     "texte": {
+      "x-libelle": "Fait",
+      "x-rendu": "texte",
+      "type": "string"
+     }
+    },
+    "required": [
+     "heure",
+     "texte"
+    ],
+    "additionalProperties": false
+   }
+  }
+ },
+ "required": [
+  "agent",
+  "checklist",
+  "validations",
+  "a_faire",
+  "aujourdhui"
+ ],
+ "additionalProperties": false
+}

@@ -1,0 +1,51 @@
+name: Model-free checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify-and-tests:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      # `pret` (tests/pret.sh) is required of every contribution: it judges the diff of the pull request against its EXPLICIT target
+      # branch (full history was fetched above, the branch is refreshed here). Only on pull requests: a push has no target branch.
+      - name: Contribution readiness (pret) on the pull request diff
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git fetch --no-tags origin "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
+          BERGER_PRET_BASE="origin/${BASE_REF}" bash tests/pret.sh
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test prerequisites
+        run: sudo apt-get update && sudo apt-get install -y bubblewrap gnupg socat ffmpeg
+      # Web access proxy (courtier/_web.py) needs cryptography; socat links 127.0.0.1:3128 inside the sandbox (docs/manuel.md).
+      - name: Install Python test prerequisites
+        run: python3 -m pip install --disable-pip-version-check 'cryptography==43.0.3'
+      # Berger launches its helpers with the python3 found first in /usr/local/bin:/usr/bin:/bin (bin/berger, PATH_MISE).
+      # Ubuntu 22.04 ships python3 3.10 there, without tomllib: expose the Python 3.11 under test as that python3.
+      - name: Use Python 3.11 as the system python3
+        run: sudo ln -sf "$(python3 -c 'import os, sys; print(os.path.realpath(sys.executable))')" /usr/local/bin/python3 && /usr/local/bin/python3 --version
+      # Everything the broker launches (gates, commands, sandbox) runs courtier/python-systeme/python3, which executes /usr/bin/python3 and
+      # never falls back to the PATH (a deliberate choice on a real installation: it must not change). On this runner that file is the system 3.10
+      # (no tomllib, no cryptography): make it the Python 3.11 under test. Done AFTER the apt steps (apt hooks use the system Python) and
+      # BEFORE the fresh clone. The tool-cache interpreter is found through its real path, so its standard library and the pip packages stay found.
+      - name: Use Python 3.11 as /usr/bin/python3 (the broker's Python)
+        run: sudo ln -sf "$(python3 -c 'import os, sys; print(os.path.realpath(sys.executable))')" /usr/bin/python3
+      # Fails here, with its cause, instead of dozens of checks later: what the broker will really run, and ffprobe where the audio checks look.
+      - name: Check /usr/bin/python3 and /usr/bin/ffprobe
+        run: |
+          /usr/bin/python3 --version
+          /usr/bin/python3 -c 'import sys; assert sys.version_info >= (3, 11), sys.version'
+          /usr/bin/python3 -c 'import tomllib, cryptography; print("tomllib ok, cryptography", cryptography.__version__)'
+          /usr/bin/ffprobe -version | head -n 1
+      - name: Verify and test a fresh local clone without personal configuration
+        run: bash tests/clone-frais.sh

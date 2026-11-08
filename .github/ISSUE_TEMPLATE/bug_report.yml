@@ -1,0 +1,32 @@
+name: Bug report
+description: Report a reproducible behavior problem without private data.
+body:
+  - type: markdown
+    attributes:
+      value: For a vulnerability, contact the maintainer privately. Do not submit credentials, agent journals or personal configuration.
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Actual and expected behavior
+      description: Describe a concrete trigger and what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Provide minimal steps using fictional data.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Give the Berger commit, Linux distribution, Python version, and engine version if relevant. Do not include private paths or credentials.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Include sanitized error messages and checks already run.

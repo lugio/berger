@@ -1,0 +1,29 @@
+{
+ "$id": "reglages.schema.json", "x-version": 1,
+ "description": "Données de la vue « Réglages » (lecture seule) : config.toml par sections, dans l'ordre du fichier, une carte par entrée d'une famille ([outils.<nom>]) ou d'une section répétée ([[gardes]]), une phrase simple par réglage connu ; toute valeur sensible est DÉJÀ « [masqué] » (liste fermée de clés, mots entiers sensibles, formes de clé, adresses, marques privées) ; ce qui manque ou est invalide, avec sa conséquence. Le coffre n'est jamais lu.",
+ "type": "object",
+ "properties": {
+  "fichier": {"x-libelle": "Fichier", "x-rendu": "texte", "type": "string"},
+  "lisible": {"x-libelle": "Lisible", "x-rendu": "oui-non", "type": "boolean"},
+  "signalements": {"x-libelle": "À signaler", "x-rendu": "liste", "type": "array", "items": {"type": "object",
+   "properties": {"quoi": {"x-libelle": "Quoi", "x-rendu": "texte", "type": "string"},
+                  "consequence": {"x-libelle": "Conséquence", "x-rendu": "texte", "type": "string"},
+                  "ton": {"x-libelle": "Gravité", "x-rendu": "ton", "type": "string", "enum": ["jaune", "rouge"]}},
+   "required": ["quoi", "consequence", "ton"], "additionalProperties": false}},
+  "sections": {"x-libelle": "Sections", "x-rendu": "liste", "type": "array", "items": {"type": "object",
+   "properties": {"nom": {"x-libelle": "Nom", "x-rendu": "texte", "type": "string"},
+                  "titre": {"x-libelle": "Titre", "x-rendu": "texte", "type": "string"},
+                  "phrase": {"x-libelle": "En bref", "x-rendu": "texte", "type": ["string", "null"]},
+                  "cartes": {"x-libelle": "Entrées", "x-rendu": "liste", "type": "array", "items": {"type": "object",
+                   "properties": {"titre": {"x-libelle": "Entrée", "x-rendu": "texte", "type": ["string", "null"]},
+                                  "reglages": {"x-libelle": "Réglages", "x-rendu": "liste", "type": "array", "items": {"type": "object",
+                                   "properties": {"cle": {"x-libelle": "Clé", "x-rendu": "texte", "type": "string"},
+                                                  "valeur": {"x-libelle": "Valeur", "x-rendu": "texte", "type": "string"},
+                                                  "masque": {"x-libelle": "Masqué", "x-rendu": "oui-non", "type": "boolean"},
+                                                  "phrase": {"x-libelle": "Ce que c'est", "x-rendu": "texte", "type": "string"}},
+                                   "required": ["cle", "valeur", "masque", "phrase"], "additionalProperties": false}}},
+                   "required": ["titre", "reglages"], "additionalProperties": false}}},
+   "required": ["nom", "titre", "phrase", "cartes"], "additionalProperties": false}}
+ },
+ "required": ["fichier", "lisible", "signalements", "sections"], "additionalProperties": false
+}

@@ -1,0 +1,389 @@
+[
+ {
+  "scenario": "suivi sans agent",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "IndexError: list index out of range",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "suivi agent inconnu",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "agent inconnu : fantome (agents : autre, chef, cible, coord, dev, intrus, troisieme)",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "suivi sans mission",
+  "code": 0,
+  "stdout": "{\n \"agent\": \"cible\",\n \"nom\": \"Cible\",\n \"agent_ouvert\": false,\n \"ou\": \"son espace\",\n \"moteur\": null,\n \"modele\": null,\n \"niveau\": null,\n \"raison\": null,\n \"effort\": null,\n \"statut\": {},\n \"mission\": null,\n \"checklist\": null,\n \"journal\": [],\n \"validations_en_attente\": []\n}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "rapport-mission sans agent",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "IndexError: list index out of range",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "rapport-mission sans mission",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "Cible n'a pas de mission en cours",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "fin-mission sans agent",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "IndexError: list index out of range",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "fin-mission sans mission",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "Cible n'a pas de mission en cours",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "fin-mission agent inconnu",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "agent inconnu : fantome (agents : autre, chef, cible, coord, dev, intrus, troisieme)",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "mission en texte positionnel",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "usage : berger --stdin ; commande et paramètres dans un tableau JSON UTF-8, texte positionnel refusé",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "mission sans agent (--stdin)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "IndexError: list index out of range",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "mission agent inconnu (--stdin)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "agent inconnu : fantome (agents : autre, chef, cible, coord, dev, intrus, troisieme)",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "mission moteur inconnu (--stdin)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "moteur inconnu : inexistant (claude ou codex)",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "mission modèle non permis (--stdin)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "modèle non permis pour claude : pas-permis (permis : aucun) — rien n'a été créé",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "mission vide (--stdin)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "mission vide",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "transport : JSON invalide",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "ValueError: commande JSON invalide",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "transport : pas un tableau de textes",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "ValueError: commande privée : tableau de textes requis",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "transport : --stdin imbriqué",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "ValueError: commande privée : tableau de textes requis",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "transport : UTF-8 requis",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "ValueError: commande JSON invalide",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "transport : plus d'un Mio",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "ValueError: commande JSON invalide",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "transport : verbe privé imbriqué",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "ValueError: commande privée : tableau de textes requis",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "mission par le propriétaire (espace)",
+  "code": 0,
+  "stdout": "mission confiée à Cible\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "cible/.herdr.json": "{\"workspace\": \"ws-cible\", \"agents\": {\"claude\": \"pe-cible\"}}",
+   "cible/MISSION.md": "# Mission confiée par Proprio — <DATE-HEURE>\nmoteur : claude\n\nFais x. Deux lignes.\n",
+   "cible/memory/<DATE>.md": "- <HEURE> — mission reçue de Proprio (claude) : Fais x. Deux lignes.\n",
+   "courtier/echanges.jsonl": "{\"quand\": \"<DATE-HEURE>\", \"de\": \"Proprio\", \"a\": \"cible\", \"genre\": \"mission\", \"texte\": \"Fais x. Deux lignes.\"}\n"
+  },
+  "herdr": [
+   "[\"@\", \"espace\", \"cible\"]",
+   "[\"@\", \"parler\", \"cible\", \"None\", \"False\", \"Nouvelle mission de Proprio : lis MISSION.md dans ton dossier et fais-la. Tiens CHECKLIST.md \\u00e0 jour (une \\u00e9tape = une case), note chaque \\u00e9tape avec berger noter, rends ton rapport dans a-lire/AAAA-MM-JJ_<sujet>.md (\\u00ab # Titre \\u00bb en premi\\u00e8re ligne), et termine la checklist par \\u00ab Termin\\u00e9 \\u00bb quand c'est fini.\"]"
+  ]
+ },
+ {
+  "scenario": "mission déjà en cours",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "Cible a déjà une mission en cours (MISSION.md) : la terminer d'abord",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "mission par le chef (onglet Missions, lancement strict)",
+  "code": 0,
+  "stdout": "mission confiée à Dev\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "chef/.herdr.json": "{\n  \"workspace\": \"ws-chef\",\n  \"agents\": {\n    \"claude\": \"pe-chef\"\n  },\n  \"missions\": {\n    \"tab\": \"t1\",\n    \"suivi\": \"p2\",\n    \"agents\": {\n      \"dev\": \"p3\"\n    }\n  }\n}\n",
+   "dev/.herdr.json": "{\n  \"agents\": {\n    \"claude\": \"p3\"\n  },\n  \"mission\": {\n    \"hote\": \"chef\",\n    \"tab\": \"t1\"\n  }\n}\n",
+   "dev/MISSION.md": "# Mission confiée par chef — <DATE-HEURE>\nmoteur : claude\n\nFais y.\n",
+   "dev/memory/<DATE>.md": "- <HEURE> — mission reçue de chef (claude) : Fais y.\n",
+   "courtier/echanges.jsonl": "{\"quand\": \"<DATE-HEURE>\", \"de\": \"Proprio\", \"a\": \"cible\", \"genre\": \"mission\", \"texte\": \"Fais x. Deux lignes.\"}\n{\"quand\": \"<DATE-HEURE>\", \"de\": \"chef\", \"a\": \"dev\", \"genre\": \"mission\", \"texte\": \"Fais y.\"}\n"
+  },
+  "herdr": [
+   "[\"workspace\", \"list\"]",
+   "[\"tab\", \"create\", \"--workspace\", \"ws-chef\", \"--cwd\", \"<T>/agents/chef\", \"--label\", \"\\u2042 \\u00c9quipe\", \"--no-focus\"]",
+   "[\"pane\", \"rename\", \"p2\", \"missions-chef\"]",
+   "[\"pane\", \"run\", \"p2\", \"clear; <T>/bin/berger panneau missions chef\"]",
+   "[\"pane\", \"split\", \"--pane\", \"p2\", \"--direction\", \"down\", \"--ratio\", \"0.22\", \"--cwd\", \"<T>/agents/dev\", \"--no-focus\"]",
+   "[\"@\", \"demarrer\", \"dev\", \"claude\", \"p3\", \"[\\\"--setting-sources\\\", \\\"project,local\\\", \\\"--dangerously-skip-permissions\\\", \\\"--strict-mcp-config\\\"]\"]",
+   "[\"@\", \"parler\", \"dev\", \"None\", \"False\", \"Nouvelle mission de chef : lis MISSION.md dans ton dossier et fais-la. Tiens CHECKLIST.md \\u00e0 jour (une \\u00e9tape = une case), note chaque \\u00e9tape avec berger noter, rends ton rapport dans a-lire/AAAA-MM-JJ_<sujet>.md (\\u00ab # Titre \\u00bb en premi\\u00e8re ligne), et termine la checklist par \\u00ab Termin\\u00e9 \\u00bb quand c'est fini.\"]"
+  ]
+ },
+ {
+  "scenario": "plafond : troisième mission refusée",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "déjà 2 missions en cours (cible, dev) : maximum 2, en terminer une d'abord",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "chef de projet hors plafond, déjà ouvert",
+  "code": 0,
+  "stdout": "mission confiée à Chef\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "chef/MISSION.md": "# Mission confiée par coord — <DATE-HEURE>\nmoteur : claude\n\nPilote.\n",
+   "chef/memory/<DATE>.md": "- <HEURE> — mission reçue de coord (claude) : Pilote.\n",
+   "courtier/echanges.jsonl": "{\"quand\": \"<DATE-HEURE>\", \"de\": \"Proprio\", \"a\": \"cible\", \"genre\": \"mission\", \"texte\": \"Fais x. Deux lignes.\"}\n{\"quand\": \"<DATE-HEURE>\", \"de\": \"chef\", \"a\": \"dev\", \"genre\": \"mission\", \"texte\": \"Fais y.\"}\n{\"quand\": \"<DATE-HEURE>\", \"de\": \"coord\", \"a\": \"chef\", \"genre\": \"mission\", \"texte\": \"Pilote.\"}\n"
+  },
+  "herdr": [
+   "[\"workspace\", \"list\"]",
+   "[\"pane\", \"get\", \"pe-chef\"]",
+   "[\"@\", \"parler\", \"chef\", \"None\", \"False\", \"Nouvelle mission de coord : lis MISSION.md dans ton dossier et fais-la. Tiens CHECKLIST.md \\u00e0 jour (une \\u00e9tape = une case), note chaque \\u00e9tape avec berger noter, rends ton rapport dans a-lire/AAAA-MM-JJ_<sujet>.md (\\u00ab # Titre \\u00bb en premi\\u00e8re ligne), et termine la checklist par \\u00ab Termin\\u00e9 \\u00bb quand c'est fini.\"]"
+  ]
+ },
+ {
+  "scenario": "suivi d'une mission (espace)",
+  "code": 0,
+  "stdout": "{\n \"agent\": \"cible\",\n \"nom\": \"Cible\",\n \"agent_ouvert\": false,\n \"ou\": \"son espace\",\n \"moteur\": \"claude\",\n \"modele\": null,\n \"niveau\": null,\n \"raison\": null,\n \"effort\": null,\n \"statut\": {},\n \"mission\": \"# Mission confiée par Proprio — <DATE-HEURE>\\nmoteur : claude\\n\\nFais x. Deux lignes.\",\n \"checklist\": null,\n \"journal\": [\n  \"<HEURE> — mission reçue de Proprio (claude) : Fais x. Deux lignes.\"\n ],\n \"validations_en_attente\": []\n}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr": [
+   "[\"pane\", \"get\", \"pe-cible\"]"
+  ]
+ },
+ {
+  "scenario": "suivi d'une mission (onglet Missions)",
+  "code": 0,
+  "stdout": "{\n \"agent\": \"dev\",\n \"nom\": \"Dev\",\n \"agent_ouvert\": true,\n \"ou\": \"onglet Missions de chef\",\n \"moteur\": \"claude\",\n \"modele\": null,\n \"niveau\": null,\n \"raison\": null,\n \"effort\": null,\n \"statut\": {\n  \"claude\": \"idle\"\n },\n \"mission\": \"# Mission confiée par chef — <DATE-HEURE>\\nmoteur : claude\\n\\nFais y.\",\n \"checklist\": null,\n \"journal\": [\n  \"<HEURE> — mission reçue de chef (claude) : Fais y.\"\n ],\n \"validations_en_attente\": []\n}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr": [
+   "[\"pane\", \"get\", \"p3\"]",
+   "[\"pane\", \"get\", \"p3\"]"
+  ]
+ },
+ {
+  "scenario": "rapport-mission avec un document",
+  "code": 0,
+  "stdout": "{\n \"agent\": \"cible\",\n \"nom\": \"Cible\",\n \"documents\": [\n  {\n   \"fichier\": \"rapport.md\",\n   \"texte\": \"# Rapport\\nfait\\n\",\n   \"tronque\": false\n  }\n ]\n}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "cible/a-lire/rapport.md": "# Rapport\nfait\n"
+  },
+  "herdr": []
+ },
+ {
+  "scenario": "fin-mission refusée : checklist non finie",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "mission de Cible NON terminée : sa CHECKLIST.md ne finit pas par « Terminé … » ou « Abandonné : … ». Terminer une mission ne lève pas une garde : si Cible est bloqué, le blocage se signale au propriétaire (⚠ Bloqué dans sa checklist, ou berger-outil ecrire).",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "fin-mission : checklist finie (espace fermé)",
+  "code": 0,
+  "stdout": "mission de Cible terminée\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "cible/.herdr.json": "{\n  \"workspace\": \"ws-cible\",\n  \"agents\": {}\n}\n",
+   "cible/CHECKLIST.md": "# Travail\n- [x] fait\nTerminé <DATE-HEURE>\n",
+   "cible/historique/mission-<DATE-HEURE>.md": "# Mission confiée par Proprio — <DATE-HEURE>\nmoteur : claude\n\nFais x. Deux lignes.\n",
+   "cible/memory/<DATE>.md": "- <HEURE> — mission reçue de Proprio (claude) : Fais x. Deux lignes.\n- <HEURE> — mission terminée par chef : agent arrêté, son panneau fermé\n",
+   "courtier/echanges.jsonl": "{\"quand\": \"<DATE-HEURE>\", \"de\": \"Proprio\", \"a\": \"cible\", \"genre\": \"mission\", \"texte\": \"Fais x. Deux lignes.\"}\n{\"quand\": \"<DATE-HEURE>\", \"de\": \"chef\", \"a\": \"dev\", \"genre\": \"mission\", \"texte\": \"Fais y.\"}\n{\"quand\": \"<DATE-HEURE>\", \"de\": \"coord\", \"a\": \"chef\", \"genre\": \"mission\", \"texte\": \"Pilote.\"}\n{\"quand\": \"<DATE-HEURE>\", \"de\": \"chef\", \"a\": \"cible\", \"genre\": \"fin de mission\", \"texte\": \"mission terminée : agent arrêté, son panneau fermé\"}\n",
+   "cible/MISSION.md": "(supprimé)"
+  },
+  "herdr": [
+   "[\"pane\", \"get\", \"pe-cible\"]",
+   "[\"workspace\", \"list\"]"
+  ]
+ },
+ {
+  "scenario": "fin-mission par le propriétaire, sans checklist (motif)",
+  "code": 0,
+  "stdout": "mission de Dev terminée\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "chef/.herdr.json": "{\n  \"workspace\": \"ws-chef\",\n  \"agents\": {\n    \"claude\": \"pe-chef\"\n  }\n}\n",
+   "dev/.herdr.json": "{\n  \"agents\": {}\n}\n",
+   "dev/historique/mission-<DATE-HEURE>.md": "# Mission confiée par chef — <DATE-HEURE>\nmoteur : claude\n\nFais y.\n",
+   "dev/memory/<DATE>.md": "- <HEURE> — mission reçue de chef (claude) : Fais y.\n- <HEURE> — mission terminée par Proprio SANS checklist finie — motif : essai\n- <HEURE> — mission terminée par Proprio : agent arrêté, son panneau fermé\n",
+   "courtier/echanges.jsonl": "{\"quand\": \"<DATE-HEURE>\", \"de\": \"Proprio\", \"a\": \"cible\", \"genre\": \"mission\", \"texte\": \"Fais x. Deux lignes.\"}\n{\"quand\": \"<DATE-HEURE>\", \"de\": \"chef\", \"a\": \"dev\", \"genre\": \"mission\", \"texte\": \"Fais y.\"}\n{\"quand\": \"<DATE-HEURE>\", \"de\": \"coord\", \"a\": \"chef\", \"genre\": \"mission\", \"texte\": \"Pilote.\"}\n{\"quand\": \"<DATE-HEURE>\", \"de\": \"chef\", \"a\": \"cible\", \"genre\": \"fin de mission\", \"texte\": \"mission terminée : agent arrêté, son panneau fermé\"}\n{\"quand\": \"<DATE-HEURE>\", \"de\": \"Proprio\", \"a\": \"dev\", \"genre\": \"fin de mission\", \"texte\": \"mission terminée : agent arrêté, son panneau fermé\"}\n",
+   "dev/MISSION.md": "(supprimé)"
+  },
+  "herdr": [
+   "[\"pane\", \"get\", \"p3\"]",
+   "[\"pane\", \"send-keys\", \"p3\", \"ctrl+c\"]",
+   "[\"pane\", \"send-keys\", \"p3\", \"ctrl+c\"]",
+   "[\"agent\", \"list\"]",
+   "[\"pane\", \"close\", \"p3\"]",
+   "[\"tab\", \"close\", \"t1\"]"
+  ]
+ },
+ {
+  "scenario": "fin-mission d'un chef de projet (espace gardé)",
+  "code": 0,
+  "stdout": "mission de Chef terminée (chef de projet : son espace reste ouvert)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "chef/CHECKLIST.md": "# Pilote\n- [x] fait\nTerminé <DATE-HEURE>\n",
+   "chef/historique/mission-<DATE-HEURE>.md": "# Mission confiée par coord — <DATE-HEURE>\nmoteur : claude\n\nPilote.\n",
+   "chef/memory/<DATE>.md": "- <HEURE> — mission reçue de coord (claude) : Pilote.\n- <HEURE> — mission terminée par coord : rangée dans historique/, ton espace reste ouvert\n",
+   "courtier/echanges.jsonl": "{\"quand\": \"<DATE-HEURE>\", \"de\": \"Proprio\", \"a\": \"cible\", \"genre\": \"mission\", \"texte\": \"Fais x. Deux lignes.\"}\n{\"quand\": \"<DATE-HEURE>\", \"de\": \"chef\", \"a\": \"dev\", \"genre\": \"mission\", \"texte\": \"Fais y.\"}\n{\"quand\": \"<DATE-HEURE>\", \"de\": \"coord\", \"a\": \"chef\", \"genre\": \"mission\", \"texte\": \"Pilote.\"}\n{\"quand\": \"<DATE-HEURE>\", \"de\": \"chef\", \"a\": \"cible\", \"genre\": \"fin de mission\", \"texte\": \"mission terminée : agent arrêté, son panneau fermé\"}\n{\"quand\": \"<DATE-HEURE>\", \"de\": \"Proprio\", \"a\": \"dev\", \"genre\": \"fin de mission\", \"texte\": \"mission terminée : agent arrêté, son panneau fermé\"}\n{\"quand\": \"<DATE-HEURE>\", \"de\": \"coord\", \"a\": \"chef\", \"genre\": \"fin de mission\", \"texte\": \"mission terminée : rangée, l'espace du chef de projet reste ouvert\"}\n",
+   "chef/MISSION.md": "(supprimé)"
+  },
+  "herdr": []
+ },
+ {
+  "scenario": "courtier : sans droit",
+  "code": 0,
+  "stdout": "{\"erreur\": \"intrus n'a pas le droit de confier des missions à « cible »\", \"ok\": false}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "courtier : coordinateur vers un développeur (refusé)",
+  "code": 0,
+  "stdout": "{\"erreur\": \"coord n'a pas le droit de confier des missions à « dev »\", \"ok\": false}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "courtier : verbe inconnu",
+  "code": 0,
+  "stdout": "{\"erreur\": \"verbes : confier <agent> \\\"<texte>\\\" [claude|codex] [modèle] | suivi <agent> | rapport <agent> | terminer <agent>\", \"ok\": false}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "courtier : chef, suivi de son développeur",
+  "code": 0,
+  "stdout": "{\"donnees\": {\"agent\": \"dev\", \"agent_ouvert\": false, \"checklist\": null, \"effort\": null, \"journal\": [\"<HEURE> — mission reçue de chef (claude) : Fais y.\", \"<HEURE> — mission terminée par Proprio SANS checklist finie — motif : essai\", \"<HEURE> — mission terminée par Proprio : agent arrêté, son panneau fermé\"], \"mission\": null, \"modele\": null, \"moteur\": null, \"niveau\": null, \"nom\": \"Dev\", \"ou\": \"son espace\", \"raison\": null, \"statut\": {}, \"validations_en_attente\": []}, \"ok\": true}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "courtier : chef, rapport sans mission",
+  "code": 0,
+  "stdout": "{\"erreur\": \"Dev n'a pas de mission en cours\", \"ok\": false}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "courtier : chef, terminer sans mission",
+  "code": 0,
+  "stdout": "{\"erreur\": \"Dev n'a pas de mission en cours\", \"ok\": false}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "courtier : droit déclaré (mission:cible), moteur refusé",
+  "code": 0,
+  "stdout": "{\"erreur\": \"moteur inconnu : inexistant (claude ou codex)\", \"ok\": false}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr": []
+ },
+ {
+  "scenario": "courtier : coordinateur, modèle refusé pour son chef",
+  "code": 0,
+  "stdout": "{\"erreur\": \"modèle non permis pour claude : pas-permis (permis : aucun) — rien n'a été créé\", \"ok\": false}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "herdr": []
+ }
+]

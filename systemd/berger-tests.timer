@@ -1,0 +1,11 @@
+[Unit]
+Description=Berger — auto-test complet chaque nuit (tests/tout.sh)
+
+[Timer]
+# 05:00 heure de Paris : après la sauvegarde nocturne (02 h), avant la journée. Pas de rattrapage au démarrage :
+# la reprise des agents passe d'abord, le passage suivant a lieu la nuit d'après (la Synthèse crie au-delà de 26 h).
+OnCalendar=*-*-* 05:00:00 Europe/Paris
+Persistent=false
+
+[Install]
+WantedBy=timers.target

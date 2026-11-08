@@ -1,0 +1,623 @@
+[
+ {
+  "scenario": "valider sans numéro",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "IndexError: list index out of range",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "valider, aucune demande (validation absente)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "pas de demande n° 99 en attente (voir : berger validations)",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "valider, déjà faite",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "n° 4 : déjà faite (faite) — aucune nouvelle décision possible",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "refuser --duree (valider seulement)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "--duree ne vaut que pour valider",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "valider --duree hors accès web",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "--duree ne vaut que pour un accès web (n° 1 : essai ecrire)",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "valider --duree invalide (accès web)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "--duree 99h : durée de plus de 24 h refusée",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "valider --duree sans valeur",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "IndexError: list index out of range",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "valider, file tenue (installation en attente)",
+  "code": 0,
+  "stdout": "décision enregistrée ; file tenue : installation en attente de redémarrage depuis <HEURE> — ta décision sera traitée après le redémarrage du courtier (courtier/installations.log)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "courtier/file-tenue.json": [
+    "{\"depuis\": <TS>}"
+   ],
+   "courtier/validations/1.decision": [
+    "valider\n"
+   ]
+  },
+  "appels": []
+ },
+ {
+  "scenario": "refuser, file tenue (redémarrage en cours)",
+  "code": 0,
+  "stdout": "décision enregistrée ; file tenue : redémarrage du courtier en cours depuis <HEURE> — ta décision sera traitée juste après\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "courtier/fermeture": [
+    "{\"jusqu\": <SHA10>, \"depuis\": <TS>}"
+   ],
+   "courtier/validations/2.decision": [
+    "refuser\n"
+   ],
+   "courtier/file-tenue.json": "(supprimé)",
+   "courtier/validations/1.decision": "(supprimé)"
+  },
+  "appels": []
+ },
+ {
+  "scenario": "valider (le courtier ne tourne pas)",
+  "code": 0,
+  "stdout": "décision enregistrée ; le courtier la traitera dès qu'il tourne (systemctl --user status berger-courtier)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "courtier/validations/1.decision": [
+    "valider\n"
+   ],
+   "courtier/fermeture": "(supprimé)",
+   "courtier/validations/2.decision": "(supprimé)"
+  },
+  "appels": []
+ },
+ {
+  "scenario": "refuser par la voie privée",
+  "code": 0,
+  "stdout": "décision enregistrée ; le courtier la traitera dès qu'il tourne (systemctl --user status berger-courtier)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "courtier/validations/2.decision": [
+    "refuser\n"
+   ]
+  },
+  "appels": []
+ },
+ {
+  "scenario": "valider --duree 8h (accès web)",
+  "code": 0,
+  "stdout": "décision enregistrée ; le courtier la traitera dès qu'il tourne (systemctl --user status berger-courtier)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "courtier/validations/3.decision": [
+    "valider\nduree=8h\n"
+   ]
+  },
+  "appels": []
+ },
+ {
+  "scenario": "valider --empreinte fausse (demande modifiée)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "n° 5 : demande modifiée depuis l'aperçu (empreinte) — rien n'est décidé",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "refuser --empreinte fausse (demande modifiée)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "n° 5 : demande modifiée depuis l'aperçu (empreinte) — rien n'est décidé",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "refuser --empreinte sans valeur",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "IndexError: list index out of range",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "valider --empreinte juste",
+  "code": 0,
+  "stdout": "décision enregistrée ; le courtier la traitera dès qu'il tourne (systemctl --user status berger-courtier)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "courtier/validations/5.decision": [
+    "valider\n"
+   ]
+  },
+  "appels": []
+ },
+ {
+  "scenario": "refuser, déjà décidée (une décision n'est jamais remplacée)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "n° 5 : déjà décidée (en attente du courtier) — une décision n'est jamais remplacée",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "courtier sans sous-commande",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "commande inconnue : courtier",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "courtier, sous-commande inconnue",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "commande inconnue : courtier",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "courtier redemarrer (rien en cours)",
+  "code": 0,
+  "stdout": "courtier redémarré\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "appels": [
+   "[\"systemctl\", \"--user\", \"restart\", \"berger-courtier\"]"
+  ]
+ },
+ {
+  "scenario": "courtier redemarrer --essai illisible",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "ValueError: invalid literal for int() with base 10: 'x'",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "courtier redemarrer --essai sans valeur",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "IndexError: list index out of range",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "courtier redemarrer --controle court",
+  "code": 2,
+  "stdout": "--controle <commit complet d'avant l'installation>\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "courtier redemarrer --controle (actif, contrôlé)",
+  "code": 0,
+  "stdout": "courtier redémarré, actif (contrôlé)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "courtier/installations.log": [
+    "<DATE-HEURE>\t<SHA10>\t<SHA10>\tcourtier redémarré\tactif après le redémarrage (contrôlé)\n"
+   ]
+  },
+  "appels": [
+   "[\"systemctl\", \"--user\", \"restart\", \"berger-courtier\"]",
+   "[\"systemctl\", \"--user\", \"is-active\", \"berger-courtier\"]",
+   "[\"systemctl\", \"--user\", \"is-active\", \"berger-courtier\"]",
+   "[\"systemctl\", \"--user\", \"is-active\", \"berger-courtier\"]",
+   "[\"systemctl\", \"--user\", \"try-restart\", \"berger-interface\"]"
+  ]
+ },
+ {
+  "scenario": "courtier redemarrer --controle (inactif : retour arrière)",
+  "code": 1,
+  "stdout": "courtier inactif après le redémarrage sur <SHA10> — retour arrière fait : HEAD = <SHA10> (vérifié), regenerer refait ; courtier redémarré sur l'ancien code : TOUJOURS INACTIF\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/chef/.agents/skills/": [
+    "<dossier>"
+   ],
+   "agents/chef/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/cx/**)\",\n      \"Read(~/agents/ouv/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/cx/**)\",\n      \"Edit(~/agents/ouv/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/chef/agent.conf)\",\n      \"Edit(~/agents/chef/espace.toml)\",\n      \"Edit(~/agents/chef/.reseau-claude.json)\",\n      \"Edit(~/agents/chef/.reglages-claude.json)\",\n      \"Edit(~/agents/chef/.mcp.json)\",\n      \"Write(~/agents/chef/.mcp.json)\",\n      \"Edit(~/agents/chef/.claude/settings.json)\",\n      \"Write(~/agents/chef/.claude/settings.json)\",\n      \"Edit(~/agents/chef/.claude/settings.local.json)\",\n      \"Write(~/agents/chef/.claude/settings.local.json)\",\n      \"Edit(~/agents/chef/.codex/**)\",\n      \"Write(~/agents/chef/.codex/**)\",\n      \"Edit(~/agents/chef/.mcp-berger.json)\",\n      \"Write(~/agents/chef/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/<H>/**)\",\n      \"Edit(/<T>/tmp-agents/<H>/**)\",\n      \"Read(/<T>/tmp-agents/<H>/**)\",\n      \"Edit(/<T>/tmp-agents/<H>/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline chef\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [],\n      \"deniedDomains\": [\n        \"*\"\n      ]\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/chef/agent.conf\",\n        \"<T>/agents/chef/espace.toml\",\n        \"<T>/agents/chef/.reseau-claude.json\",\n        \"<T>/agents/chef/.reglages-claude.json\",\n        \"<T>/agents/chef/.mcp.json\",\n        \"<T>/agents/chef/.claude/settings.json\",\n        \"<T>/agents/chef/.claude/settings.local.json\",\n        \"<T>/agents/chef/.codex\",\n        \"<T>/agents/chef/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/<H>\",\n        \"<T>/tmp-agents/<H>\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/<H>\"\n  }\n}\n"
+   ],
+   "agents/chef/.claude/settings.local.json": [
+    "{\n  \"skipDangerousModePermissionPrompt\": true\n}\n"
+   ],
+   "agents/chef/.claude/skills/": [
+    "<dossier>"
+   ],
+   "agents/chef/AGENTS.md": [
+    "sha256:8569870284384738"
+   ],
+   "agents/chef/CLAUDE.md": [
+    "sha256:336cc4fbf19beaad"
+   ],
+   "agents/chef/a-lire/": [
+    "<dossier>"
+   ],
+   "agents/chef/espace.toml": [
+    "# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n"
+   ],
+   "agents/cx/.agents/skills/": [
+    "<dossier>"
+   ],
+   "agents/cx/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\",\n    \"deny\": [\n      \"Read(~/agents/chef/**)\",\n      \"Read(~/agents/ouv/**)\",\n      \"Read(/<T>/**)\",\n      \"Read(~/courtier/panneaux/**)\",\n      \"Read(~/courtier/mcp/**)\",\n      \"Read(~/.claude/.credentials.json)\",\n      \"Edit(~/agents/chef/**)\",\n      \"Edit(~/agents/ouv/**)\",\n      \"Edit(~/commun/**)\",\n      \"Edit(~/bin/**)\",\n      \"Edit(~/config.toml)\",\n      \"Edit(~/agents/cx/agent.conf)\",\n      \"Edit(~/agents/cx/espace.toml)\",\n      \"Edit(~/agents/cx/.reseau-claude.json)\",\n      \"Edit(~/agents/cx/.reglages-claude.json)\",\n      \"Edit(~/agents/cx/.mcp.json)\",\n      \"Write(~/agents/cx/.mcp.json)\",\n      \"Edit(~/agents/cx/.claude/settings.json)\",\n      \"Write(~/agents/cx/.claude/settings.json)\",\n      \"Edit(~/agents/cx/.claude/settings.local.json)\",\n      \"Write(~/agents/cx/.claude/settings.local.json)\",\n      \"Edit(~/agents/cx/.codex/**)\",\n      \"Write(~/agents/cx/.codex/**)\",\n      \"Edit(~/agents/cx/.mcp-berger.json)\",\n      \"Write(~/agents/cx/.mcp-berger.json)\",\n      \"WebFetch\",\n      \"WebSearch\",\n      \"RemoteTrigger\",\n      \"PushNotification\",\n      \"DesignSync\",\n      \"SendMessage\",\n      \"ListAgents\",\n      \"Workflow\",\n      \"CronCreate\",\n      \"CronDelete\",\n      \"CronList\",\n      \"ScheduleWakeup\",\n      \"Read(//tmp/claude-<UID>/**)\",\n      \"Edit(//tmp/claude-<UID>/**)\",\n      \"Read(/<T>/tmp-agents/<H>/**)\",\n      \"Edit(/<T>/tmp-agents/<H>/**)\",\n      \"Read(/<T>/tmp-agents/<H>/**)\",\n      \"Edit(/<T>/tmp-agents/<H>/**)\"\n    ]\n  },\n  \"statusLine\": {\n    \"type\": \"command\",\n    \"command\": \"<T>/bin/berger statusline cx\"\n  },\n  \"claudeMdExcludes\": [\n    \"<T>/.claude/CLAUDE.md\",\n    \"<T>/.claude/SOUL.md\",\n    \"<T>/AGENTS.md\"\n  ],\n  \"sandbox\": {\n    \"enabled\": true,\n    \"failIfUnavailable\": true,\n    \"allowUnsandboxedCommands\": false,\n    \"autoAllowBashIfSandboxed\": true,\n    \"network\": {\n      \"allowedDomains\": [],\n      \"deniedDomains\": [\n        \"*\"\n      ]\n    },\n    \"filesystem\": {\n      \"denyWrite\": [\n        \"<T>/agents/cx/agent.conf\",\n        \"<T>/agents/cx/espace.toml\",\n        \"<T>/agents/cx/.reseau-claude.json\",\n        \"<T>/agents/cx/.reglages-claude.json\",\n        \"<T>/agents/cx/.mcp.json\",\n        \"<T>/agents/cx/.claude/settings.json\",\n        \"<T>/agents/cx/.claude/settings.local.json\",\n        \"<T>/agents/cx/.codex\",\n        \"<T>/agents/cx/.mcp-berger.json\"\n      ],\n      \"denyRead\": [\n        \"/tmp/claude-<UID>\",\n        \"<T>/tmp-agents/<H>\",\n        \"<T>/tmp-agents/<H>\"\n      ]\n    }\n  },\n  \"hooks\": {\n    \"PreToolUse\": [],\n    \"PostToolUse\": []\n  },\n  \"env\": {\n    \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/<H>\"\n  }\n}\n"
+   ],
+   "agents/cx/.claude/settings.local.json": [
+    "{\n  \"skipDangerousModePermissionPrompt\": true\n}\n"
+   ],
+   "agents/cx/.claude/skills/": [
+    "<dossier>"
+   ],
+   "agents/cx/AGENTS.md": [
+    "sha256:e58edf43781f49ea"
+   ],
+   "agents/cx/CLAUDE.md": [
+    "sha256:336cc4fbf19beaad"
+   ],
+   "agents/cx/a-lire/": [
+    "<dossier>"
+   ],
+   "agents/cx/espace.toml": [
+    "# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n"
+   ],
+   "agents/ouv/.claude/settings.json": [
+    "{\n  \"permissions\": {\n    \"defaultMode\": \"bypassPermissions\"\n  }\n}\n"
+   ],
+   "agents/ouv/.claude/settings.local.json": [
+    "{\n  \"skipDangerousModePermissionPrompt\": true\n}\n"
+   ],
+   "agents/ouv/AGENTS.md": [
+    "sha256:71342c6355264c88"
+   ],
+   "agents/ouv/CLAUDE.md": [
+    "sha256:336cc4fbf19beaad"
+   ],
+   "agents/ouv/a-lire/": [
+    "<dossier>"
+   ],
+   "agents/ouv/espace.toml": [
+    "# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n"
+   ],
+   "courtier/installations.log": "<DATE-HEURE>\t<SHA10>\t<SHA10>\tÉCHEC, À REPRENDRE\tcourtier inactif après le redémarrage sur <SHA10> — retour arrière fait : HEAD = <SHA10> (vérifié), regenerer refait ; courtier redémarré sur l'ancien code : TOUJOURS INACTIF\n",
+   "courtier/notifications.log": [
+    "<DATE-HEURE>\tURGENT\tBerger · installation en échec\tcourtier inactif après le redémarrage sur <SHA10> — retour arrière fait : HEAD = <SHA10> (vérifié), regenerer refait ; courtier redémarré sur l'ancien code : TOUJOURS INACTIF\n"
+   ]
+  },
+  "appels": [
+   "[\"systemctl\", \"--user\", \"restart\", \"berger-courtier\"]",
+   "[\"systemctl\", \"--user\", \"is-active\", \"berger-courtier\"]",
+   "[\"systemctl\", \"--user\", \"restart\", \"berger-courtier\"]",
+   "[\"systemctl\", \"--user\", \"try-restart\", \"berger-interface\"]",
+   "[\"systemctl\", \"--user\", \"is-active\", \"berger-courtier\"]",
+   "[\"herdr\", \"notification\", \"show\", \"Berger\", \"--body\", \"Une information est disponible dans le panneau Berger.\", \"--sound\", \"request\"]"
+  ]
+ },
+ {
+  "scenario": "courtier redemarrer, demande en cours (abandon, nouvel essai)",
+  "code": 1,
+  "stdout": "redémarrage NON fait — essai 2/3 : 1 demande(s) encore en cours après 0 min (chef) ; nouvel essai dans 1 min (3/3)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "courtier/installations.log": "<DATE-HEURE>\t<SHA10>\t<SHA10>\tredémarrage NON fait\tessai 2/3 : 1 demande(s) encore en cours après 0 min (chef) ; nouvel essai dans 1 min (3/3)\n",
+   "courtier/notifications.log": "<DATE-HEURE>\tURGENT\tBerger · redémarrage du courtier NON fait\tessai 2/3 : 1 demande(s) encore en cours après 0 min (chef) ; nouvel essai dans 1 min (3/3)\n"
+  },
+  "appels": [
+   "[\"systemd-run\", \"--user\", \"--collect\", \"--on-active=60\", \"<T>/bin/berger\", \"courtier\", \"redemarrer\", \"--essai\", \"3\"]",
+   "[\"herdr\", \"notification\", \"show\", \"Berger\", \"--body\", \"Une information est disponible dans le panneau Berger.\", \"--sound\", \"request\"]"
+  ]
+ },
+ {
+  "scenario": "courtier redemarrer, dernier essai abandonné",
+  "code": 1,
+  "stdout": "redémarrage NON fait — essai 3/3 : 1 demande(s) encore en cours après 0 min (chef) ; dernier essai : relance-le toi-même (berger courtier redemarrer)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "courtier/installations.log": "<DATE-HEURE>\t<SHA10>\t<SHA10>\tredémarrage NON fait\tessai 3/3 : 1 demande(s) encore en cours après 0 min (chef) ; dernier essai : relance-le toi-même (berger courtier redemarrer)\n",
+   "courtier/notifications.log": "<DATE-HEURE>\tURGENT\tBerger · redémarrage du courtier NON fait\tessai 3/3 : 1 demande(s) encore en cours après 0 min (chef) ; dernier essai : relance-le toi-même (berger courtier redemarrer)\n"
+  },
+  "appels": [
+   "[\"herdr\", \"notification\", \"show\", \"Berger\", \"--body\", \"Une information est disponible dans le panneau Berger.\", \"--sound\", \"request\"]"
+  ]
+ },
+ {
+  "scenario": "lancer sans agent",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "IndexError: list index out of range",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "lancer, agent inconnu",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "FileNotFoundError: [Errno 2] No such file or directory: '<T>/agents/inconnu/agent.conf'",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "lancer, mur strict sans bac à sable",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "Chef est en mur STRICT mais le bac à sable ne démarre pas sur cette machine (bwrap: échec simulé du bac à sable). Agent NON lancé. Voir README › Prérequis (bubblewrap, profil AppArmor sur Ubuntu 24.04+).",
+  "fichiers_ecrits": {
+   "courtier/notifications.log": "<DATE-HEURE>\tURGENT\tBerger · Chef\tChef est en mur STRICT mais le bac à sable ne démarre pas sur cette machine (bwrap: échec simulé du bac à sable). Agent NON lancé. Voir README › Prérequis (bubblewrap, profil AppArmor sur Ubuntu 24.04+).\n"
+  },
+  "appels": [
+   "[\"herdr\", \"notification\", \"show\", \"Berger\", \"--body\", \"Une information est disponible dans le panneau Berger.\", \"--sound\", \"request\"]"
+  ]
+ },
+ {
+  "scenario": "lancer, dossier temporaire trop long (refusé)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "Chef : dossier temporaire refusé (<T>/tmp-agents/<H>/claude-<UID> fait <N> octets (> 44) : Claude retomberait en silence sur /tmp/claude-<UID>). Agent NON lancé.",
+  "fichiers_ecrits": {
+   "courtier/notifications.log": "<DATE-HEURE>\tURGENT\tBerger · Chef\tChef : dossier temporaire refusé (<T>/tmp-agents/<H>/claude-<UID> fait <N> octets (> 44) : Claude retomberait en silence sur /tmp/claude-<UID>). Agent NON lancé.\n"
+  },
+  "appels": [
+   "[\"herdr\", \"notification\", \"show\", \"Berger\", \"--body\", \"Une information est disponible dans le panneau Berger.\", \"--sound\", \"request\"]"
+  ]
+ },
+ {
+  "scenario": "lancer (claude admis)",
+  "code": 0,
+  "stdout": "{\"moteur\": \"claude\", \"args\": [\"--setting-sources\", \"project,local\", \"--dangerously-skip-permissions\", \"--strict-mcp-config\"], \"variables\": {\"BERGER_AGENT\": \"chef\", \"BERGER_DIR\": \"<T>\", \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/<H>\", \"ENABLE_CLAUDEAI_MCP_SERVERS\": \"false\", \"TMPDIR\": \"<T>/tmp\"}}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "tmp-agents/<H>/": [
+    "<dossier>"
+   ]
+  },
+  "appels": [
+   "[\"moteur\", \"claude\", [\"--setting-sources\", \"project,local\", \"--dangerously-skip-permissions\", \"--strict-mcp-config\"], \"<T>/agents/chef\"]"
+  ]
+ },
+ {
+  "scenario": "lancer sous codex jamais vu (bascule sur claude)",
+  "code": 0,
+  "stdout": "{\"moteur\": \"claude\", \"args\": [\"--setting-sources\", \"project,local\", \"--dangerously-skip-permissions\", \"--strict-mcp-config\"], \"variables\": {\"BERGER_AGENT\": \"chef\", \"BERGER_DIR\": \"<T>\", \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/<H>\", \"ENABLE_CLAUDEAI_MCP_SERVERS\": \"false\", \"TMPDIR\": \"<T>/tmp\"}}\n",
+  "stderr_fin": "⚠ codex 9.9.9 non admis : contrat impossible à jouer (tests/contrat-moteur.sh) : Chef lancé sous claude",
+  "fichiers_ecrits": {
+   "agents/chef/memory/<DATE>.md": [
+    "- <HEURE> — codex 9.9.9 non admis : contrat impossible à jouer (tests/contrat-moteur.sh) : bascule sur claude\n"
+   ],
+   "agents/chef/memory/": "(supprimé)"
+  },
+  "appels": [
+   "[\"moteur\", \"claude\", [\"--setting-sources\", \"project,local\", \"--dangerously-skip-permissions\", \"--strict-mcp-config\"], \"<T>/agents/chef\"]"
+  ]
+ },
+ {
+  "scenario": "lancer, agent codex (bascule sur claude)",
+  "code": 0,
+  "stdout": "{\"moteur\": \"claude\", \"args\": [\"--setting-sources\", \"project,local\", \"--dangerously-skip-permissions\", \"--strict-mcp-config\"], \"variables\": {\"BERGER_AGENT\": \"cx\", \"BERGER_DIR\": \"<T>\", \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/<H>\", \"ENABLE_CLAUDEAI_MCP_SERVERS\": \"false\", \"TMPDIR\": \"<T>/tmp\"}}\n",
+  "stderr_fin": "⚠ codex 9.9.9 non admis : contrat impossible à jouer (tests/contrat-moteur.sh) : Cx lancé sous claude",
+  "fichiers_ecrits": {
+   "agents/cx/memory/<DATE>.md": [
+    "- <HEURE> — codex 9.9.9 non admis : contrat impossible à jouer (tests/contrat-moteur.sh) : bascule sur claude\n"
+   ],
+   "tmp-agents/<H>/": [
+    "<dossier>",
+    "<dossier>"
+   ],
+   "agents/cx/memory/": "(supprimé)"
+  },
+  "appels": [
+   "[\"moteur\", \"claude\", [\"--setting-sources\", \"project,local\", \"--dangerously-skip-permissions\", \"--strict-mcp-config\"], \"<T>/agents/cx\"]"
+  ]
+ },
+ {
+  "scenario": "lancer, aucun moteur admis",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "Chef NON lancé : aucun moteur admis pour un agent strict — claude 9.9.9 non admis : outil vu hors du bac (tests/contrats/claude-9.9.9.txt) ; codex 9.9.9 non admis : contrat impossible à jouer (tests/contrat-moteur.sh)",
+  "fichiers_ecrits": {
+   "tests/contrats/claude-9.9.9.notifie": [
+    "outil vu hors du bac (tests/contrats/claude-9.9.9.txt)\n"
+   ],
+   "tests/contrats/claude-9.9.9.txt": [
+    "NON ADMIS\n✗ outil vu hors du bac\n"
+   ],
+   "courtier/notifications.log": "<DATE-HEURE>\tURGENT\tBerger · claude non admis\tclaude 9.9.9 n'a pas passé le contrat d'admission : les agents strict basculent sur l'autre moteur. outil vu hors du bac (tests/contrats/claude-9.9.9.txt)\n<DATE-HEURE>\tURGENT\tBerger · Chef\taucun moteur admis pour un agent strict — claude 9.9.9 non admis : outil vu hors du bac (tests/contrats/claude-9.9.9.txt) ; codex 9.9.9 non admis : contrat impossible à jouer (tests/contrat-moteur.sh)\n"
+  },
+  "appels": [
+   "[\"herdr\", \"notification\", \"show\", \"Berger\", \"--body\", \"Une information est disponible dans le panneau Berger.\", \"--sound\", \"request\"]",
+   "[\"herdr\", \"notification\", \"show\", \"Berger\", \"--body\", \"Une information est disponible dans le panneau Berger.\", \"--sound\", \"request\"]"
+  ]
+ },
+ {
+  "scenario": "lancer, mur ouvert (admission hors sujet)",
+  "code": 0,
+  "stdout": "{\"moteur\": \"claude\", \"args\": [\"--dangerously-skip-permissions\"], \"variables\": {\"BERGER_AGENT\": \"ouv\", \"BERGER_DIR\": \"<T>\", \"TMPDIR\": \"<T>/tmp\"}}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "appels": [
+   "[\"moteur\", \"claude\", [\"--dangerously-skip-permissions\"], \"<T>/agents/ouv\"]"
+  ]
+ },
+ {
+  "scenario": "lancer, moteur inconnu",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "moteur inconnu : autre (codex ou claude)",
+  "fichiers_ecrits": {
+   "tests/contrats/claude-9.9.9.txt": [
+    "ADMIS\n✓ témoin (12) : sans le refus de Berger, Claude voit ses outils web (init)\n✓ (12) liste fermée : outils de l'agent strict (init), tous connus et non web\n"
+   ]
+  },
+  "appels": []
+ },
+ {
+  "scenario": "moteur sans argument",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "IndexError: list index out of range",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "moteur, moteur manquant",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "IndexError: list index out of range",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "moteur, tourne déjà",
+  "code": 0,
+  "stdout": "chef tourne déjà sous claude (pe-chef)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "appels": [
+   "[\"herdr\", \"pane\", \"get\", \"pe-chef\"]"
+  ]
+ },
+ {
+  "scenario": "moteur, un moteur de plus",
+  "code": 0,
+  "stdout": "chef-codex ouvert dans p-neuf\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/chef/.herdr.json": [
+    "{\n  \"workspace\": \"ws-chef\",\n  \"agents\": {\n    \"claude\": \"pe-chef\",\n    \"codex\": \"p-neuf\"\n  }\n}\n"
+   ]
+  },
+  "appels": [
+   "[\"herdr\", \"pane\", \"split\", \"--pane\", \"pe-chef\", \"--direction\", \"right\", \"--cwd\", \"<T>/agents/chef\", \"--no-focus\"]",
+   "[\"@\", \"demarrer\", \"chef\", \"codex\", \"p-neuf\", \"[\\\"-C\\\", \\\"<T>/agents/chef\\\", \\\"-p\\\", \\\"chef\\\", \\\"-c\\\", \\\"web_search=\\\\\\\"disabled\\\\\\\"\\\", \\\"-c\\\", \\\"features.multi_agent=false\\\", \\\"-c\\\", \\\"features.sleep_tool=false\\\"]\"]"
+  ]
+ },
+ {
+  "scenario": "moteur, agent inconnu",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "agent inconnu : inconnu (agents : chef, cx, ouv)",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "args sans argument",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "IndexError: list index out of range",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "args, moteur manquant",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "IndexError: list index out of range",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "args, mur strict sans bac à sable",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "Chef est en mur STRICT mais le bac à sable ne démarre pas sur cette machine (bwrap: échec simulé du bac à sable). Agent NON lancé. Voir README › Prérequis (bubblewrap, profil AppArmor sur Ubuntu 24.04+).",
+  "fichiers_ecrits": {
+   "courtier/notifications.log": "<DATE-HEURE>\tURGENT\tBerger · Chef\tChef est en mur STRICT mais le bac à sable ne démarre pas sur cette machine (bwrap: échec simulé du bac à sable). Agent NON lancé. Voir README › Prérequis (bubblewrap, profil AppArmor sur Ubuntu 24.04+).\n"
+  },
+  "appels": [
+   "[\"herdr\", \"notification\", \"show\", \"Berger\", \"--body\", \"Une information est disponible dans le panneau Berger.\", \"--sound\", \"request\"]"
+  ]
+ },
+ {
+  "scenario": "args (claude, interactif)",
+  "code": 0,
+  "stdout": "{\"cwd\": \"<T>/agents/chef\", \"args\": [\"--setting-sources\", \"project,local\", \"--dangerously-skip-permissions\", \"--strict-mcp-config\"], \"env\": {\"BERGER_AGENT\": \"chef\", \"BERGER_DIR\": \"<T>\", \"DISABLE_AUTOUPDATER\": \"1\", \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/<H>\", \"ENABLE_CLAUDEAI_MCP_SERVERS\": \"false\"}}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "args (claude, non interactif)",
+  "code": 0,
+  "stdout": "{\"cwd\": \"<T>/agents/chef\", \"args\": [\"--setting-sources\", \"project,local\", \"--dangerously-skip-permissions\", \"--strict-mcp-config\"], \"env\": {\"BERGER_AGENT\": \"chef\", \"BERGER_DIR\": \"<T>\", \"DISABLE_AUTOUPDATER\": \"1\", \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/<H>\", \"ENABLE_CLAUDEAI_MCP_SERVERS\": \"false\"}}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "args, codex jamais vu (refusé)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "Cx : codex 9.9.9 non admis : contrat impossible à jouer (tests/contrat-moteur.sh)",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "args --contrat (admission non jouée)",
+  "code": 0,
+  "stdout": "{\"cwd\": \"<T>/agents/cx\", \"args\": [\"-C\", \"<T>/agents/cx\", \"-p\", \"cx\", \"-c\", \"web_search=\\\"disabled\\\"\", \"-c\", \"features.multi_agent=false\", \"-c\", \"features.sleep_tool=false\"], \"env\": {\"BERGER_AGENT\": \"cx\", \"BERGER_DIR\": \"<T>\", \"CLAUDE_CODE_TMPDIR\": \"<T>/tmp-agents/<H>\", \"ENABLE_CLAUDEAI_MCP_SERVERS\": \"false\", \"TMPDIR\": \"<T>/tmp-agents/<H>\", \"CODEX_HOME\": \"<T>/.codex\"}}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "args, mur ouvert",
+  "code": 0,
+  "stdout": "{\"cwd\": \"<T>/agents/ouv\", \"args\": [\"-C\", \"<T>/agents/ouv\", \"--dangerously-bypass-approvals-and-sandbox\", \"-p\", \"ouvert-ouv\"], \"env\": {\"BERGER_AGENT\": \"ouv\", \"BERGER_DIR\": \"<T>\", \"CODEX_HOME\": \"<T>/.codex\"}}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "args, agent inconnu",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "FileNotFoundError: [Errno 2] No such file or directory: '<T>/agents/inconnu/agent.conf'",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "args par la voie privée",
+  "code": 0,
+  "stdout": "{\"cwd\": \"<T>/agents/ouv\", \"args\": [\"--dangerously-skip-permissions\"], \"env\": {\"BERGER_AGENT\": \"ouv\", \"BERGER_DIR\": \"<T>\", \"DISABLE_AUTOUPDATER\": \"1\"}}\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "args, voie privée : texte positionnel en plus",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "commande inconnue : --stdin",
+  "fichiers_ecrits": {},
+  "appels": []
+ }
+]

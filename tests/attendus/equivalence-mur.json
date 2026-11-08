@@ -1,0 +1,838 @@
+[
+ {
+  "scenario": "regenerer (premier passage)",
+  "code": 0,
+  "stdout": "⚠ cx : espace.toml : clé « inconnue » ignorée (a_cote, onglets)\n⚠ chef : proteges « docs » absent : non protégé\n⚠ ouv : proteges « docs » absent : non protégé\n⚠ hooks.json de Codex modifié : à RE-APPROUVER (ouvrir un agent sous Codex → « Trust all »).\nregénéré : chef, coord, cx, ext, gardien, intrus, ouv\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   ".codex/chef.config.toml": [
+    "# GÉNÉRÉ par berger regenerer\ndefault_permissions = \"chef\"\napproval_policy = \"never\"\n\n[features]\napps = false\nplugins = false\nremote_plugin = false\nskill_mcp_dependency_install = false\ntool_suggest = false\n"
+   ],
+   ".codex/config.toml": [
+    "sha256:3473c94dbdfec651"
+   ],
+   ".codex/coord.config.toml": [
+    "# GÉNÉRÉ par berger regenerer\ndefault_permissions = \"coord\"\napproval_policy = \"never\"\n\n[features]\napps = false\nplugins = false\nremote_plugin = false\nskill_mcp_dependency_install = false\ntool_suggest = false\n"
+   ],
+   ".codex/cx.config.toml": [
+    "# GÉNÉRÉ par berger regenerer\ndefault_permissions = \"cx\"\napproval_policy = \"never\"\n\n[features]\napps = false\nplugins = false\nremote_plugin = false\nskill_mcp_dependency_install = false\ntool_suggest = false\n"
+   ],
+   ".codex/ext.config.toml": [
+    "# GÉNÉRÉ par berger regenerer\ndefault_permissions = \"ext\"\napproval_policy = \"never\"\n\n[features]\napps = false\nplugins = false\nremote_plugin = false\nskill_mcp_dependency_install = false\ntool_suggest = false\n"
+   ],
+   ".codex/gardien.config.toml": [
+    "# GÉNÉRÉ par berger regenerer\ndefault_permissions = \"gardien\"\napproval_policy = \"never\"\n\n[features]\napps = false\nplugins = false\nremote_plugin = false\nskill_mcp_dependency_install = false\ntool_suggest = false\n"
+   ],
+   ".codex/hooks.json": [
+    "sha256:78922a784ee78e9e"
+   ],
+   ".codex/intrus.config.toml": [
+    "# GÉNÉRÉ par berger regenerer\ndefault_permissions = \"intrus\"\napproval_policy = \"never\"\n\n[features]\napps = false\nplugins = false\nremote_plugin = false\nskill_mcp_dependency_install = false\ntool_suggest = false\n"
+   ],
+   ".codex/ouv.config.toml": [
+    "# GÉNÉRÉ par berger regenerer\ndefault_permissions = \"ouv\"\n"
+   ],
+   "agents/chef/.agents/skills/": [
+    "<dossier>"
+   ],
+   "agents/chef/.claude/settings.json": [
+    "sha256:3f58f06f89c770ed"
+   ],
+   "agents/chef/.claude/settings.local.json": [
+    "{\n  \"skipDangerousModePermissionPrompt\": true\n}\n"
+   ],
+   "agents/chef/.claude/skills/": [
+    "<dossier>"
+   ],
+   "agents/chef/AGENTS.md": [
+    "sha256:e0b70a956963c269"
+   ],
+   "agents/chef/CLAUDE.md": [
+    "sha256:336cc4fbf19beaad"
+   ],
+   "agents/chef/a-lire/": [
+    "<dossier>"
+   ],
+   "agents/chef/espace.toml": [
+    "# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n"
+   ],
+   "agents/coord/.agents/skills/": [
+    "<dossier>"
+   ],
+   "agents/coord/.claude/settings.json": [
+    "sha256:74844634ea54a6b0"
+   ],
+   "agents/coord/.claude/settings.local.json": [
+    "{\n  \"skipDangerousModePermissionPrompt\": true\n}\n"
+   ],
+   "agents/coord/.claude/skills/": [
+    "<dossier>"
+   ],
+   "agents/coord/.reseau-claude.json": [
+    "{\n  \"sandbox\": {\n    \"network\": {\n      \"allowedDomains\": [\n        \"exemple.org\"\n      ],\n      \"strictAllowlist\": true\n    }\n  }\n}\n"
+   ],
+   "agents/coord/AGENTS.md": [
+    "sha256:ea66f55413419f51"
+   ],
+   "agents/coord/CLAUDE.md": [
+    "sha256:336cc4fbf19beaad"
+   ],
+   "agents/coord/a-lire/": [
+    "<dossier>"
+   ],
+   "agents/coord/espace.toml": [
+    "# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n"
+   ],
+   "agents/cx/.agents/skills/": [
+    "<dossier>"
+   ],
+   "agents/cx/.claude/settings.json": [
+    "sha256:3165c328e5893539"
+   ],
+   "agents/cx/.claude/settings.local.json": [
+    "{\n  \"skipDangerousModePermissionPrompt\": true\n}\n"
+   ],
+   "agents/cx/.claude/skills/": [
+    "<dossier>"
+   ],
+   "agents/cx/AGENTS.md": [
+    "sha256:e58edf43781f49ea"
+   ],
+   "agents/cx/CLAUDE.md": [
+    "sha256:336cc4fbf19beaad"
+   ],
+   "agents/cx/a-lire/": [
+    "<dossier>"
+   ],
+   "agents/ext/.consignes/systeme.md": [
+    "sha256:d1d507ba30036d49"
+   ],
+   "agents/ext/.reglages-claude.json": [
+    "sha256:80c0c9ada2f1794a"
+   ],
+   "agents/ext/BERGER.md": [
+    "sha256:fd16316cb0b1107e"
+   ],
+   "agents/ext/espace.toml": [
+    "# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n"
+   ],
+   "agents/gardien/.agents/skills/": [
+    "<dossier>"
+   ],
+   "agents/gardien/.claude/settings.json": [
+    "sha256:fd2f141e5053269e"
+   ],
+   "agents/gardien/.claude/settings.local.json": [
+    "{\n  \"skipDangerousModePermissionPrompt\": true\n}\n"
+   ],
+   "agents/gardien/.claude/skills/": [
+    "<dossier>"
+   ],
+   "agents/gardien/AGENTS.md": [
+    "sha256:7ab5c4da610508f7"
+   ],
+   "agents/gardien/CLAUDE.md": [
+    "sha256:336cc4fbf19beaad"
+   ],
+   "agents/gardien/a-lire/": [
+    "<dossier>"
+   ],
+   "agents/gardien/espace.toml": [
+    "# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n"
+   ],
+   "agents/intrus/.agents/skills/": [
+    "<dossier>"
+   ],
+   "agents/intrus/.claude/settings.json": [
+    "sha256:ec896040f5dd3912"
+   ],
+   "agents/intrus/.claude/settings.local.json": [
+    "{\n  \"skipDangerousModePermissionPrompt\": true\n}\n"
+   ],
+   "agents/intrus/.claude/skills/": [
+    "<dossier>"
+   ],
+   "agents/intrus/AGENTS.md": [
+    "sha256:05dbc37d636a7ce5"
+   ],
+   "agents/intrus/CLAUDE.md": [
+    "sha256:336cc4fbf19beaad"
+   ],
+   "agents/intrus/a-lire/": [
+    "<dossier>"
+   ],
+   "agents/intrus/espace.toml": [
+    "# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n"
+   ],
+   "agents/ouv/.claude/settings.json": [
+    "sha256:6d083d404f610b50"
+   ],
+   "agents/ouv/.claude/settings.local.json": [
+    "{\n  \"skipDangerousModePermissionPrompt\": true\n}\n"
+   ],
+   "agents/ouv/AGENTS.md": [
+    "sha256:71342c6355264c88"
+   ],
+   "agents/ouv/CLAUDE.md": [
+    "sha256:336cc4fbf19beaad"
+   ],
+   "agents/ouv/a-lire/": [
+    "<dossier>"
+   ],
+   "agents/ouv/espace.toml": [
+    "# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n"
+   ],
+   "bibliotheque/agents/chef/travail/": [
+    "<dossier>"
+   ],
+   "bibliotheque/commun/": [
+    "<dossier>"
+   ],
+   "bibliotheque/equipes/p/projets/demo/": [
+    "<dossier>"
+   ],
+   "courtier/mcp/": [
+    "<dossier>"
+   ],
+   "courtier/panneaux/": [
+    "<dossier>"
+   ],
+   "tmp-agents/<H>/": [
+    "<dossier>",
+    "<dossier>",
+    "<dossier>",
+    "<dossier>",
+    "<dossier>",
+    "<dossier>"
+   ],
+   "tmp-agents/": "(supprimé)"
+  },
+  "appels": []
+ },
+ {
+  "scenario": "regenerer (second passage, rien ne change)",
+  "code": 0,
+  "stdout": "⚠ cx : espace.toml : clé « inconnue » ignorée (a_cote, onglets)\n⚠ chef : proteges « docs » absent : non protégé\n⚠ ouv : proteges « docs » absent : non protégé\nregénéré : chef, coord, cx, ext, gardien, intrus, ouv\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "regenerer, argument ignoré",
+  "code": 0,
+  "stdout": "⚠ cx : espace.toml : clé « inconnue » ignorée (a_cote, onglets)\n⚠ chef : proteges « docs » absent : non protégé\n⚠ ouv : proteges « docs » absent : non protégé\nregénéré : chef, coord, cx, ext, gardien, intrus, ouv\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "regenerer, espace.toml illisible (signalé)",
+  "code": 0,
+  "stdout": "⚠ chef : espace.toml illisible (Invalid initial character for a key part (at line <N>, column 3)) : la disposition de config.toml s'applique\n⚠ cx : espace.toml : clé « inconnue » ignorée (a_cote, onglets)\n⚠ chef : proteges « docs » absent : non protégé\n⚠ ouv : proteges « docs » absent : non protégé\nregénéré : chef, coord, cx, ext, gardien, intrus, ouv\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/chef/espace.toml": [
+    "[[[\n"
+   ]
+  },
+  "appels": []
+ },
+ {
+  "scenario": "nouveau sans argument",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "IndexError: list index out of range",
+  "fichiers_ecrits": {
+   "agents/chef/espace.toml": [
+    ""
+   ]
+  },
+  "appels": []
+ },
+ {
+  "scenario": "nouveau, nom trop long pour Herdr",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "nom d'agent trop long : Herdr accepte 32 caractères au plus pour « <agent>-<moteur> » (38 ici)",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "nouveau, agent existant",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "existe déjà : <T>/agents/chef",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "nouveau (nom donné)",
+  "code": 0,
+  "stdout": "⚠ cx : espace.toml : clé « inconnue » ignorée (a_cote, onglets)\n⚠ chef : proteges « docs » absent : non protégé\n⚠ ouv : proteges « docs » absent : non protégé\nregénéré : chef, coord, cx, ext, gardien, intrus, neuf, ouv\nagent créé : <T>/agents/neuf\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   ".codex/config.toml": [
+    "sha256:2006929b9d82b6ca"
+   ],
+   ".codex/neuf.config.toml": [
+    "# GÉNÉRÉ par berger regenerer\ndefault_permissions = \"neuf\"\napproval_policy = \"never\"\n\n[features]\napps = false\nplugins = false\nremote_plugin = false\nskill_mcp_dependency_install = false\ntool_suggest = false\n"
+   ],
+   "agents/chef/.claude/settings.json": [
+    "sha256:9e22df5e7a55e86e"
+   ],
+   "agents/coord/.claude/settings.json": [
+    "sha256:2585e11ee868222f"
+   ],
+   "agents/cx/.claude/settings.json": [
+    "sha256:82b096de5730b7e8"
+   ],
+   "agents/ext/.reglages-claude.json": [
+    "sha256:a7f9527a2ec177ca"
+   ],
+   "agents/gardien/.claude/settings.json": [
+    "sha256:ebd147883144b5d6"
+   ],
+   "agents/intrus/.claude/settings.json": [
+    "sha256:d4f55bc649c5e643"
+   ],
+   "agents/neuf/.agents/skills/": [
+    "<dossier>"
+   ],
+   "agents/neuf/.claude/settings.json": [
+    "sha256:16594d308b1df3f2"
+   ],
+   "agents/neuf/.claude/settings.local.json": [
+    "{\n  \"skipDangerousModePermissionPrompt\": true\n}\n"
+   ],
+   "agents/neuf/.claude/skills/": [
+    "<dossier>"
+   ],
+   "agents/neuf/AGENTS.md": [
+    "sha256:e227df97a22e5240"
+   ],
+   "agents/neuf/CLAUDE.md": [
+    "sha256:336cc4fbf19beaad"
+   ],
+   "agents/neuf/HEARTBEAT.md": [
+    "# Battement de cœur — ce que tu vérifies à chaque réveil\n\nTu es réveillé automatiquement, sans que Proprio soit là. Fais ces vérifications, rien d'autre.\nNe déduis aucune tâche des anciennes conversations : seule cette liste compte.\n\n1. **Points ouverts** : dans le journal d'aujourd'hui et d'hier (`memory/`), une ligne « à faire » ou\n   « point ouvert » sans suite ? Rappelle-la en une ligne.\n2. **Travail bloqué** : `CHECKLIST.md` contient-il une ligne « ⚠ Bloqué » ? Rappelle-la.\n3. **Mémoire pleine** : `MEMORY.md` dépasse-t-il 2 400 caractères (80 %) ? Dis-le.\n\n## Pas de rabâchage\n\n`heartbeat/AAAA-MM-JJ.md` liste ce que tu as déjà signalé aujourd'hui : ne le signale pas une seconde fois.\n\n## Comment répondre\n\n- Rien de NOUVEAU à signaler : exactement `RAS`, seul, sans explication ni autre langue que le français.\n- Sinon : trois lignes au maximum, en français simple. Tu n'agis pas : tu signales, Proprio décide.\n"
+   ],
+   "agents/neuf/MEMORY.md": [
+    "# Mémoire longue\n\n<!-- - [AAAA-MM-JJ] … — 3 000 caractères max. -->\n"
+   ],
+   "agents/neuf/SOUL.md": [
+    "# Qui tu es\n\nTu es **Le Neuf**. À compléter par Proprio.\n\n## Ce que tu sais faire\n\n- …\n\n## Tes limites\n\n- …\n"
+   ],
+   "agents/neuf/TODO.md": [
+    "# À faire\n\n"
+   ],
+   "agents/neuf/a-lire/": [
+    "<dossier>"
+   ],
+   "agents/neuf/agent.conf": [
+    "nom = Le Neuf\nmoteur = codex      # moteur par défaut\npanneaux = codex    # moteurs ouverts dans l'onglet Agent (codex, claude)\nheures = 8-19       # battement de cœur : chaque heure pile, dans cette plage\n# couleur = 44;97   # badge du pied de page Claude (codes ANSI fond;texte ; défaut : une couleur par agent)\n"
+   ],
+   "agents/neuf/espace.toml": [
+    "# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n"
+   ],
+   "agents/neuf/heartbeat/": [
+    "<dossier>"
+   ],
+   "agents/neuf/historique/": [
+    "<dossier>"
+   ],
+   "agents/neuf/memory/": [
+    "<dossier>"
+   ],
+   "agents/neuf/pending/": [
+    "<dossier>"
+   ],
+   "agents/neuf/skills-agent/": [
+    "<dossier>"
+   ],
+   "agents/neuf/sorties/": [
+    "<dossier>"
+   ],
+   "agents/neuf/taches/rangement.md": [
+    "quand: lundi <HEURE>\nmoteur: defaut\nnotifier: oui\n---\nRangement hebdomadaire de ta mémoire. Tu n'écris RIEN dans MEMORY.md.\n\n1. Relis les journaux `memory/` des 7 derniers jours et `MEMORY.md`.\n2. Ce qui s'est répété ou servira encore dans un mois (préférence, décision, piège) et n'est pas déjà dans\n   `MEMORY.md` : au plus 3 éléments.\n3. Ce qui est périmé ou en double dans `MEMORY.md` : au plus 3 éléments.\n4. Une proposition dans `pending/` par élément, au format des règles communes.\n5. Réponds par la liste des propositions écrites, une ligne chacune ; aucune : `[RIEN]`.\n"
+   ],
+   "tmp-agents/<H>/": [
+    "<dossier>",
+    "<dossier>",
+    "<dossier>",
+    "<dossier>",
+    "<dossier>",
+    "<dossier>",
+    "<dossier>"
+   ]
+  },
+  "appels": []
+ },
+ {
+  "scenario": "nouveau (modèle d'un rôle : master)",
+  "code": 0,
+  "stdout": "⚠ cx : espace.toml : clé « inconnue » ignorée (a_cote, onglets)\n⚠ chef : proteges « docs » absent : non protégé\n⚠ ouv : proteges « docs » absent : non protégé\nregénéré : chef, coord, cx, ext, gardien, intrus, master, neuf, ouv\nagent créé : <T>/agents/master\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   ".codex/config.toml": [
+    "sha256:06db0f569f129718"
+   ],
+   ".codex/master.config.toml": [
+    "# GÉNÉRÉ par berger regenerer\ndefault_permissions = \"master\"\napproval_policy = \"never\"\n\n[features]\napps = false\nplugins = false\nremote_plugin = false\nskill_mcp_dependency_install = false\ntool_suggest = false\n"
+   ],
+   "agents/chef/.claude/settings.json": [
+    "sha256:19766005a51fa759"
+   ],
+   "agents/coord/.claude/settings.json": [
+    "sha256:03957d9f496d6a0d"
+   ],
+   "agents/cx/.claude/settings.json": [
+    "sha256:3009e6d72b863d25"
+   ],
+   "agents/ext/.reglages-claude.json": [
+    "sha256:28c40a9d7e00f5f0"
+   ],
+   "agents/gardien/.claude/settings.json": [
+    "sha256:10667a0152f8ad44"
+   ],
+   "agents/intrus/.claude/settings.json": [
+    "sha256:c2c97853acf3defa"
+   ],
+   "agents/master/.agents/skills/": [
+    "<dossier>"
+   ],
+   "agents/master/.claude/settings.json": [
+    "sha256:cf243b6f42b1320b"
+   ],
+   "agents/master/.claude/settings.local.json": [
+    "{\n  \"skipDangerousModePermissionPrompt\": true\n}\n"
+   ],
+   "agents/master/.claude/skills/": [
+    "<dossier>"
+   ],
+   "agents/master/AGENTS.md": [
+    "sha256:e1c0ccfabfd2d963"
+   ],
+   "agents/master/CLAUDE.md": [
+    "sha256:336cc4fbf19beaad"
+   ],
+   "agents/master/HEARTBEAT.md": [
+    "# Battement de cœur — ce que tu vérifies à chaque réveil\n\nTu es réveillé automatiquement, sans que Proprio soit là. Fais ces vérifications, rien d'autre.\nNe déduis aucune tâche des anciennes conversations : seule cette liste compte.\n\n1. **Points ouverts** : dans le journal d'aujourd'hui et d'hier (`memory/`), une ligne « à faire » ou\n   « point ouvert » sans suite ? Rappelle-la en une ligne.\n2. **Travail bloqué** : `CHECKLIST.md` contient-il une ligne « ⚠ Bloqué » ? Rappelle-la.\n3. **Mémoire pleine** : `MEMORY.md` dépasse-t-il 2 400 caractères (80 %) ? Dis-le.\n\n## Pas de rabâchage\n\n`heartbeat/AAAA-MM-JJ.md` liste ce que tu as déjà signalé aujourd'hui : ne le signale pas une seconde fois.\n\n## Comment répondre\n\n- Rien de NOUVEAU à signaler : exactement `RAS`, seul, sans explication ni autre langue que le français.\n- Sinon : trois lignes au maximum, en français simple. Tu n'agis pas : tu signales, Proprio décide.\n"
+   ],
+   "agents/master/MEMORY.md": [
+    "# Mémoire longue\n\n<!-- - [AAAA-MM-JJ] … — 3 000 caractères max. -->\n"
+   ],
+   "agents/master/SOUL.md": [
+    "# Qui tu es\n\nTu es **Master**, le gardien de Berger. Tu connais Berger (méthode `berger`, en lecture seule), tu surveilles l'installation et les autres agents, et tu proposes les corrections. Tu n'as **pas les pleins pouvoirs** : tu es l'agent qui lit le plus de contenus étrangers (journaux, rapports, sorties d'outils), donc chaque geste passe par le propriétaire.\n\n## Ce que tu sais faire\n\n- **Tout lire** (superviseur) : les autres agents (SOUL, consignes, skills liées, mémoire, journaux), la bibliothèque, les projets, le code et la config de Berger, les journaux du courtier.\n- **Diagnostiquer** avec `berger-admin` en lecture : `etat`, `services`, `journal-courtier`, `journal-planificateur`, `validations`, `audit-secrets`, `equipe <projet>`, `projets`, `suivi <agent>`, `depot`, `agent-apercu <agent>`.\n- **Vérifier que chaque agent est complet** : SOUL rempli (pas le modèle « À compléter »), skills demandées dans son agent.conf réellement liées et à jour par rapport au catalogue, outils déclarés, espace Herdr ouvert.\n- **Relancer un agent AU REPOS** (`berger-admin relancer <agent>`) ; jamais un agent qui travaille.\n- **Proposer la modification d'un agent** : écrire `propositions/<agent>.md`, montrer l'aperçu (`agent-apercu`), puis demander `agent-appliquer <agent>.<empreinte>` — validé par le propriétaire.\n- **Corriger le code de Berger** avec l'équipe `berger` (forge locale `~/projets/berger.git`) : un développeur par sujet, tests, demande de fusion ; la fusion et l'installation sont validées par le propriétaire.\n- **Proposer le reste** (catalogue de skills à recopier, outils du courtier, `config.toml`, gardes) par une note claire dans `a-lire/`.\n\n## Tes limites\n\n- Un blocage de garde-fou se SIGNALE au propriétaire, même en lecture seule : jamais de commande refusée passée par un fichier ou un autre chemin pour éviter le refus. Le propriétaire tranche.\n- Jamais lire le coffre, une clé ou les sources des outils.\n- Jamais écrire chez un autre agent, dans `bin/`, `courtier/`, `commun/`, `config.toml`.\n- Jamais toucher tes propres réglages, ni accepter ta propre demande.\n- Jamais pousser en ligne sans validation, ni en forçant.\n- Pas d'Internet.\n- Le propriétaire décide : tu constates, tu expliques simplement, en français, et tu proposes.\n"
+   ],
+   "agents/master/TODO.md": [
+    "# À faire\n\n"
+   ],
+   "agents/master/a-lire/": [
+    "<dossier>"
+   ],
+   "agents/master/agent.conf": [
+    "nom = Master\nmoteur = codex      # moteur par défaut\npanneaux = codex    # moteurs ouverts dans l'onglet Agent (codex, claude)\nheures = 8-19       # battement de cœur : chaque heure pile, dans cette plage\n# couleur = 44;97   # badge du pied de page Claude (codes ANSI fond;texte ; défaut : une couleur par agent)\n"
+   ],
+   "agents/master/espace.toml": [
+    "# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n"
+   ],
+   "agents/master/heartbeat/": [
+    "<dossier>"
+   ],
+   "agents/master/historique/": [
+    "<dossier>"
+   ],
+   "agents/master/memory/": [
+    "<dossier>"
+   ],
+   "agents/master/pending/": [
+    "<dossier>"
+   ],
+   "agents/master/skills-agent/": [
+    "<dossier>"
+   ],
+   "agents/master/sorties/": [
+    "<dossier>"
+   ],
+   "agents/master/taches/rangement.md": [
+    "quand: lundi <HEURE>\nmoteur: defaut\nnotifier: oui\n---\nRangement hebdomadaire de ta mémoire. Tu n'écris RIEN dans MEMORY.md.\n\n1. Relis les journaux `memory/` des 7 derniers jours et `MEMORY.md`.\n2. Ce qui s'est répété ou servira encore dans un mois (préférence, décision, piège) et n'est pas déjà dans\n   `MEMORY.md` : au plus 3 éléments.\n3. Ce qui est périmé ou en double dans `MEMORY.md` : au plus 3 éléments.\n4. Une proposition dans `pending/` par élément, au format des règles communes.\n5. Réponds par la liste des propositions écrites, une ligne chacune ; aucune : `[RIEN]`.\n"
+   ],
+   "agents/neuf/.claude/settings.json": [
+    "sha256:27b884b6dfb3bb07"
+   ],
+   "tmp-agents/<H>/": [
+    "<dossier>",
+    "<dossier>",
+    "<dossier>",
+    "<dossier>",
+    "<dossier>",
+    "<dossier>",
+    "<dossier>",
+    "<dossier>"
+   ]
+  },
+  "appels": []
+ },
+ {
+  "scenario": "agent sans sous-commande",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "commande inconnue : agent",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "agent apercu, arguments manquants",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "commande inconnue : agent",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "agent apercu, proposition introuvable",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "proposition introuvable : <T>/agents/gardien/propositions/aide.md",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "agent apercu, proposition refusée (clé interdite, mur ouvert, outil, mcp, méthode, fichier, coffre)",
+  "code": 1,
+  "stdout": "CRÉATION de l'agent « aide », proposée par gardien (aide.md)\n\nDROITS (avant → après) :\n  mur : (défaut) → ouvert\n  outils : +ecrire:gardien  +inconnu\n  mcp : +absent\n  skills : +absente\n\n=== SOUL.md : nouveau\n--- avant\n+++ après\n@@ -0,0 +1,2 @@\n+# Aide\n+Le coffre : <T>/coffre.json ; «valeur du coffre masquée»\n\n=== agent.conf : nouveau\n--- avant\n+++ après\n@@ -0,0 +1,6 @@\n+nom = Aide\n+superviseur = oui\n+mur = ouvert\n+outils = inconnu, ecrire:gardien\n+mcp = absent\n+skills = absente\n\n=== secret.txt : nouveau\n--- avant\n+++ après\n@@ -0,0 +1 @@\n+x\n\nREFUSÉ :\n  ✗ fichier « secret.txt » : seuls agent.conf, SOUL.md, HEARTBEAT.md, espace.toml, taches/<nom>.md\n  ✗ clé « superviseur » : la supervision ne se donne qu'à la main\n  ✗ mur : seul « strict » se propose (un mur ouvert se pose à la main)\n  ✗ outil « inconnu » : non déclaré dans config.toml (un outil du courtier s'ajoute à la main)\n  ✗ outil « ecrire:gardien » : un agent ne se donne pas de pouvoir sur lui-même par un autre\n  ✗ mcp « absent » : non déclaré dans config.toml (un serveur MCP se déclare à la main, [mcp.absent])\n  ✗ méthode « absente » : absente du catalogue\n  ✗ cite le coffre\n  ✗ contient une valeur du coffre\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/gardien/propositions/aide.md": [
+    "=== agent.conf\nnom = Aide\nsuperviseur = oui\nmur = ouvert\noutils = inconnu, ecrire:gardien\nmcp = absent\nskills = absente\n=== SOUL.md\n# Aide\nLe coffre : <T>/coffre.json ; JetonFacticeDuTestMur\n=== secret.txt\nx\n"
+   ]
+  },
+  "appels": []
+ },
+ {
+  "scenario": "agent appliquer, proposition refusée",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "REFUSÉ : fichier « secret.txt » : seuls agent.conf, SOUL.md, HEARTBEAT.md, espace.toml, taches/<nom>.md ; clé « superviseur » : la supervision ne se donne qu'à la main ; mur : seul « strict » se propose (un mur ouvert se pose à la main) ; outil « inconnu » : non déclaré dans config.toml (un outil du courtier s'ajoute à la main) ; outil « ecrire:gardien » : un agent ne se donne pas de pouvoir sur lui-même par un autre ; mcp « absent » : non déclaré dans config.toml (un serveur MCP se déclare à la main, [mcp.absent]) ; méthode « absente » : absente du catalogue ; cite le coffre ; contient une valeur du coffre",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "agent apercu, un agent qui se propose lui-même",
+  "code": 1,
+  "stdout": "MODIFICATION de l'agent « gardien », proposée par gardien (gardien.md)\n\nDROITS (avant → après) :\n  moteur : claude → (défaut)\n  heures : aucune → (défaut)\n  outils : +mission:chef\n\n=== agent.conf : modifié\n--- avant\n+++ après\n@@ -1,5 +1,2 @@\n nom = Gardien\n-heures = aucune\n-moteur = claude\n-superviseur = oui\n-outils = berger-admin\n+outils = berger-admin, mission:chef\n\nREFUSÉ :\n  ✗ un agent ne propose pas ses propres réglages (ses murs) : le propriétaire seul, à la main\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/gardien/propositions/gardien.md": [
+    "=== agent.conf\nnom = Gardien\noutils = berger-admin, mission:chef\n"
+   ]
+  },
+  "appels": []
+ },
+ {
+  "scenario": "agent apercu, création sans SOUL.md",
+  "code": 1,
+  "stdout": "CRÉATION de l'agent « aide », proposée par gardien (aide.md)\n\nDROITS (avant → après) :\n  moteur : (défaut) → claude\n  heures : (défaut) → aucune\n\n=== agent.conf : nouveau\n--- avant\n+++ après\n@@ -0,0 +1,3 @@\n+nom = Aide\n+moteur = claude\n+heures = aucune\n\nREFUSÉ :\n  ✗ création : agent.conf et SOUL.md sont obligatoires\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/gardien/propositions/aide.md": [
+    "=== agent.conf\nnom = Aide\nmoteur = claude\nheures = aucune\n"
+   ]
+  },
+  "appels": []
+ },
+ {
+  "scenario": "agent apercu, création applicable",
+  "code": 0,
+  "stdout": "CRÉATION de l'agent « aide », proposée par gardien (aide.md)\n\nDROITS (avant → après) :\n  moteur : (défaut) → claude\n  heures : (défaut) → aucune\n  outils : +ecrire:chef\n\n=== SOUL.md : nouveau\n--- avant\n+++ après\n@@ -0,0 +1,3 @@\n+# Aide\n+\n+Aide le chef.\n\n=== agent.conf : nouveau\n--- avant\n+++ après\n@@ -0,0 +1,4 @@\n+nom = Aide\n+moteur = claude\n+heures = aucune\n+outils = ecrire:chef\n\n=== taches/revue.md : nouveau\n--- avant\n+++ après\n@@ -0,0 +1 @@\n+# Revue\n\nApplicable. Empreinte : 15946484be46\n→ berger-outil berger-admin agent-appliquer --fichier .transport/requete.json (JSON : aide.15946484be46)   (validé par le propriétaire)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/gardien/propositions/aide.md": [
+    "=== agent.conf\nnom = Aide\nmoteur = claude\nheures = aucune\noutils = ecrire:chef\n=== SOUL.md\n# Aide\n\nAide le chef.\n=== taches/revue.md\n# Revue\n"
+   ]
+  },
+  "appels": []
+ },
+ {
+  "scenario": "agent appliquer, usage (sans empreinte)",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "usage : berger agent appliquer <demandeur> <agent>.<empreinte> (voir berger agent apercu)",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "agent appliquer, empreinte changée",
+  "code": 1,
+  "stdout": "",
+  "stderr_fin": "REFUSÉ : la proposition ou l'agent a changé depuis l'aperçu (empreinte différente) — refaire berger agent apercu",
+  "fichiers_ecrits": {},
+  "appels": []
+ },
+ {
+  "scenario": "agent appliquer, création (nouveau, regenerer, journaux)",
+  "code": 0,
+  "stdout": "⚠ cx : espace.toml : clé « inconnue » ignorée (a_cote, onglets)\n⚠ chef : proteges « docs » absent : non protégé\n⚠ ouv : proteges « docs » absent : non protégé\nregénéré : aide, chef, coord, cx, ext, gardien, intrus, master, neuf, ouv\nagent créé : <T>/agents/aide\n⚠ cx : espace.toml : clé « inconnue » ignorée (a_cote, onglets)\n⚠ chef : proteges « docs » absent : non protégé\n⚠ ouv : proteges « docs » absent : non protégé\nregénéré : aide, chef, coord, cx, ext, gardien, intrus, master, neuf, ouv\naide : agent créé sur proposition de gardien (SOUL.md, agent.conf, taches/revue.md). Son espace Herdr : berger espace aide\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   ".codex/aide.config.toml": [
+    "# GÉNÉRÉ par berger regenerer\ndefault_permissions = \"aide\"\napproval_policy = \"never\"\n\n[features]\napps = false\nplugins = false\nremote_plugin = false\nskill_mcp_dependency_install = false\ntool_suggest = false\n"
+   ],
+   ".codex/config.toml": [
+    "sha256:61bd92e68ff88245"
+   ],
+   "agents/aide/.agents/skills/": [
+    "<dossier>"
+   ],
+   "agents/aide/.claude/settings.json": [
+    "sha256:1f0e38446fe6f0c8"
+   ],
+   "agents/aide/.claude/settings.local.json": [
+    "{\n  \"skipDangerousModePermissionPrompt\": true\n}\n"
+   ],
+   "agents/aide/.claude/skills/": [
+    "<dossier>"
+   ],
+   "agents/aide/AGENTS.md": [
+    "sha256:b514394e07b9096c"
+   ],
+   "agents/aide/CLAUDE.md": [
+    "sha256:336cc4fbf19beaad"
+   ],
+   "agents/aide/HEARTBEAT.md": [
+    "# Battement de cœur — ce que tu vérifies à chaque réveil\n\nTu es réveillé automatiquement, sans que Proprio soit là. Fais ces vérifications, rien d'autre.\nNe déduis aucune tâche des anciennes conversations : seule cette liste compte.\n\n1. **Points ouverts** : dans le journal d'aujourd'hui et d'hier (`memory/`), une ligne « à faire » ou\n   « point ouvert » sans suite ? Rappelle-la en une ligne.\n2. **Travail bloqué** : `CHECKLIST.md` contient-il une ligne « ⚠ Bloqué » ? Rappelle-la.\n3. **Mémoire pleine** : `MEMORY.md` dépasse-t-il 2 400 caractères (80 %) ? Dis-le.\n\n## Pas de rabâchage\n\n`heartbeat/AAAA-MM-JJ.md` liste ce que tu as déjà signalé aujourd'hui : ne le signale pas une seconde fois.\n\n## Comment répondre\n\n- Rien de NOUVEAU à signaler : exactement `RAS`, seul, sans explication ni autre langue que le français.\n- Sinon : trois lignes au maximum, en français simple. Tu n'agis pas : tu signales, Proprio décide.\n"
+   ],
+   "agents/aide/MEMORY.md": [
+    "# Mémoire longue\n\n<!-- - [AAAA-MM-JJ] … — 3 000 caractères max. -->\n"
+   ],
+   "agents/aide/SOUL.md": [
+    "# Aide\n\nAide le chef.\n"
+   ],
+   "agents/aide/TODO.md": [
+    "# À faire\n\n"
+   ],
+   "agents/aide/a-lire/": [
+    "<dossier>"
+   ],
+   "agents/aide/agent.conf": [
+    "nom = Aide\nmoteur = claude\nheures = aucune\noutils = ecrire:chef\n"
+   ],
+   "agents/aide/espace.toml": [
+    "# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n"
+   ],
+   "agents/aide/heartbeat/": [
+    "<dossier>"
+   ],
+   "agents/aide/historique/": [
+    "<dossier>"
+   ],
+   "agents/aide/memory/<DATE>.md": [
+    "- <HEURE> — agent créé sur proposition de gardien (SOUL.md, agent.conf, taches/revue.md)\n"
+   ],
+   "agents/aide/pending/": [
+    "<dossier>"
+   ],
+   "agents/aide/skills-agent/": [
+    "<dossier>"
+   ],
+   "agents/aide/sorties/": [
+    "<dossier>"
+   ],
+   "agents/aide/taches/rangement.md": [
+    "quand: lundi <HEURE>\nmoteur: defaut\nnotifier: oui\n---\nRangement hebdomadaire de ta mémoire. Tu n'écris RIEN dans MEMORY.md.\n\n1. Relis les journaux `memory/` des 7 derniers jours et `MEMORY.md`.\n2. Ce qui s'est répété ou servira encore dans un mois (préférence, décision, piège) et n'est pas déjà dans\n   `MEMORY.md` : au plus 3 éléments.\n3. Ce qui est périmé ou en double dans `MEMORY.md` : au plus 3 éléments.\n4. Une proposition dans `pending/` par élément, au format des règles communes.\n5. Réponds par la liste des propositions écrites, une ligne chacune ; aucune : `[RIEN]`.\n"
+   ],
+   "agents/aide/taches/revue.md": [
+    "# Revue\n"
+   ],
+   "agents/chef/.claude/settings.json": [
+    "sha256:d2c783b2d21456a8"
+   ],
+   "agents/coord/.claude/settings.json": [
+    "sha256:ea197f5e58a7f279"
+   ],
+   "agents/cx/.claude/settings.json": [
+    "sha256:55b31134fe18eab6"
+   ],
+   "agents/ext/.reglages-claude.json": [
+    "sha256:0a5ba692051b075f"
+   ],
+   "agents/gardien/.claude/settings.json": [
+    "sha256:2cfd51acaf500953"
+   ],
+   "agents/gardien/memory/<DATE>.md": [
+    "- <HEURE> — aide : agent créé sur proposition de gardien (SOUL.md, agent.conf, taches/revue.md)\n"
+   ],
+   "agents/gardien/propositions/aide.applique-<AVANT>.md": [
+    "=== agent.conf\nnom = Aide\nmoteur = claude\nheures = aucune\noutils = ecrire:chef\n=== SOUL.md\n# Aide\n\nAide le chef.\n=== taches/revue.md\n# Revue\n"
+   ],
+   "agents/intrus/.claude/settings.json": [
+    "sha256:324fb8477c5603af"
+   ],
+   "agents/master/.claude/settings.json": [
+    "sha256:a260ae927e2384d3"
+   ],
+   "agents/neuf/.claude/settings.json": [
+    "sha256:18589683735d492f"
+   ],
+   "tmp-agents/<H>/": [
+    "<dossier>",
+    "<dossier>",
+    "<dossier>",
+    "<dossier>",
+    "<dossier>",
+    "<dossier>",
+    "<dossier>",
+    "<dossier>",
+    "<dossier>"
+   ],
+   "agents/gardien/memory/": "(supprimé)",
+   "agents/gardien/propositions/aide.md": "(supprimé)"
+  },
+  "appels": []
+ },
+ {
+  "scenario": "agent apercu, modification (droits avant → après)",
+  "code": 0,
+  "stdout": "MODIFICATION de l'agent « cx », proposée par gardien (cx.md)\n\nDROITS (avant → après) :\n  heures : aucune → 8-19\n  outils : +ecrire:chef\n\n=== SOUL.md : modifié\n--- avant\n+++ après\n@@ -1 +1 @@\n-# cx\n+# cx, revu\n\n=== agent.conf : modifié\n--- avant\n+++ après\n@@ -1,3 +1,4 @@\n nom = Cx\n-heures = aucune\n+heures = 8-19\n moteur = codex\n+outils = ecrire:chef\n\nApplicable. Empreinte : 03fd7bc52312\n→ berger-outil berger-admin agent-appliquer --fichier .transport/requete.json (JSON : cx.03fd7bc52312)   (validé par le propriétaire)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/gardien/propositions/cx.md": [
+    "=== agent.conf\nnom = Cx\nheures = 8-19\nmoteur = codex\noutils = ecrire:chef\n=== SOUL.md\n# cx, revu\n"
+   ]
+  },
+  "appels": []
+ },
+ {
+  "scenario": "agent appliquer, modification (sauvegardes .avant, relance)",
+  "code": 0,
+  "stdout": "⚠ cx : espace.toml : clé « inconnue » ignorée (a_cote, onglets)\n⚠ chef : proteges « docs » absent : non protégé\n⚠ ouv : proteges « docs » absent : non protégé\nregénéré : aide, chef, coord, cx, ext, gardien, intrus, master, neuf, ouv\ncx : agent modifié sur proposition de gardien (SOUL.md, agent.conf). cx n'a pas d'agent ouvert dans Herdr : il lira la nouvelle version à sa prochaine ouverture.\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/cx/SOUL.md": [
+    "# cx, revu\n"
+   ],
+   "agents/cx/SOUL.md.avant-<AVANT>": [
+    "# cx\n"
+   ],
+   "agents/cx/agent.conf": [
+    "nom = Cx\nheures = 8-19\nmoteur = codex\noutils = ecrire:chef\n"
+   ],
+   "agents/cx/agent.conf.avant-<AVANT>": [
+    "nom = Cx\nheures = aucune\nmoteur = codex\n"
+   ],
+   "agents/cx/memory/<DATE>.md": [
+    "- <HEURE> — agent modifié sur proposition de gardien (SOUL.md, agent.conf) ; sauvegardes .avant-<AVANT> : agent.conf, SOUL.md\n"
+   ],
+   "agents/gardien/memory/<DATE>.md": [
+    "- <HEURE> — aide : agent créé sur proposition de gardien (SOUL.md, agent.conf, taches/revue.md)\n- <HEURE> — cx : agent modifié sur proposition de gardien (SOUL.md, agent.conf)\n"
+   ],
+   "agents/gardien/propositions/cx.applique-<AVANT>.md": [
+    "=== agent.conf\nnom = Cx\nheures = 8-19\nmoteur = codex\noutils = ecrire:chef\n=== SOUL.md\n# cx, revu\n"
+   ],
+   "agents/cx/memory/": "(supprimé)",
+   "agents/gardien/propositions/cx.md": "(supprimé)"
+  },
+  "appels": []
+ },
+ {
+  "scenario": "agent apercu, disposition seule (espace.toml)",
+  "code": 0,
+  "stdout": "MODIFICATION de l'agent « ouv », proposée par gardien (ouv.md)\n\nDROITS (avant → après) :\n  aucun changement de droits\n\nDISPOSITION (avant → après) :\n avant (agent.conf) :\n  (aucune : panneaux du « domaine » d'agent.conf)\n après (agents/ouv/espace.toml) :\n  à côté : fichiers\n\n=== espace.toml : modifié\n--- avant\n+++ après\n@@ -1,2 +1 @@\n-# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n-# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n+a_cote = [\"fichiers\"]\n\nApplicable. Empreinte : baabf7092a93\n→ berger-outil berger-admin agent-appliquer --fichier .transport/requete.json (JSON : ouv.baabf7092a93)   (validé par le propriétaire)\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/gardien/propositions/ouv.md": [
+    "=== espace.toml\na_cote = [\"fichiers\"]\n"
+   ]
+  },
+  "appels": []
+ },
+ {
+  "scenario": "agent appliquer, disposition seule (espace auto)",
+  "code": 0,
+  "stdout": "⚠ cx : espace.toml : clé « inconnue » ignorée (a_cote, onglets)\n⚠ chef : proteges « docs » absent : non protégé\n⚠ ouv : proteges « docs » absent : non protégé\nregénéré : aide, chef, coord, cx, ext, gardien, intrus, master, neuf, ouv\nouv : agent modifié sur proposition de gardien (espace.toml). Sa disposition sera appliquée par le planificateur dans la minute (espace auto, chaque geste noté à son journal), sans le relancer.\n",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/gardien/memory/<DATE>.md": [
+    "- <HEURE> — aide : agent créé sur proposition de gardien (SOUL.md, agent.conf, taches/revue.md)\n- <HEURE> — cx : agent modifié sur proposition de gardien (SOUL.md, agent.conf)\n- <HEURE> — ouv : agent modifié sur proposition de gardien (espace.toml)\n"
+   ],
+   "agents/gardien/propositions/ouv.applique-<AVANT>.md": [
+    "=== espace.toml\na_cote = [\"fichiers\"]\n"
+   ],
+   "agents/ouv/espace.toml": [
+    "a_cote = [\"fichiers\"]\n"
+   ],
+   "agents/ouv/espace.toml.avant-<AVANT>": [
+    "# Disposition sur mesure de l'espace Herdr de cet agent : mêmes clés que [espaces.<agent>] de config.toml\n# (a_cote, onglets). Sans clé : celle de config.toml. Se change par une proposition d'agent (=== espace.toml).\n"
+   ],
+   "agents/ouv/memory/<DATE>.md": [
+    "- <HEURE> — agent modifié sur proposition de gardien (espace.toml) ; sauvegardes .avant-<AVANT> : espace.toml\n"
+   ],
+   "agents/gardien/propositions/ouv.md": "(supprimé)",
+   "agents/ouv/memory/": "(supprimé)"
+  },
+  "appels": []
+ },
+ {
+  "scenario": "courtier : agent sans l'outil, aperçu refusé",
+  "code": 0,
+  "stdout": "{\"erreur\": \"intrus n'a pas le droit d'utiliser l'outil « berger-admin »\", \"ok\": false}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "agents/gardien/propositions/aide.md": [
+    "=== SOUL.md\n# Aide\n\nAide le chef et le coordinateur.\n"
+   ],
+   "courtier/appels.log": [
+    "<DATE-HEURE>\tintrus\tberger-admin\tagent-apercu\taide\tREFUSÉ\tpas le droit\n"
+   ]
+  },
+  "appels": []
+ },
+ {
+  "scenario": "courtier : aperçu par le gardien (lecture)",
+  "code": 0,
+  "stdout": "{\"donnees\": {\"code\": 0, \"coupe\": false, \"sortie\": \"MODIFICATION de l'agent « aide », proposée par gardien (aide.md)\\n\\nDROITS (avant → après) :\\n  aucun changement de droits\\n\\n=== SOUL.md : modifié\\n--- avant\\n+++ après\\n@@ -2,2 +2,2 @@\\n \\n-Aide le chef.\\n+Aide le chef et le coordinateur.\\n\\nApplicable. Empreinte : 248c580767d8\\n→ berger-outil berger-admin agent-appliquer --fichier .transport/requete.json (JSON : aide.248c580767d8)   (validé par le propriétaire)\\n\"}, \"ok\": true}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "courtier/appels.log": "<DATE-HEURE>\tgardien\tberger-admin\tagent-apercu\taide\taccepté\t1 résultat(s)\n"
+  },
+  "appels": []
+ },
+ {
+  "scenario": "courtier : application demandée (validation)",
+  "code": 0,
+  "stdout": "{\"en_attente\": 1, \"message\": \"Demande n° 1 envoyée à Proprio pour validation : dans <T> : bin/berger agent appliquer gardien aide.0123456789ab. RIEN n'est fait tant qu'il n'a pas validé ; le résultat sera noté dans ton journal.\", \"ok\": true}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "courtier/appels.log": "<DATE-HEURE>\tgardien\tberger-admin\tagent-appliquer\taide.0123456789ab\taccepté\tvalidation n° 1 demandée\n",
+   "courtier/echanges.jsonl": [
+    "{\"quand\": \"<DATE-HEURE>\", \"de\": \"gardien\", \"a\": \"Proprio\", \"genre\": \"validation demandée\", \"texte\": \"n° 1 : dans <T> : bin/berger agent appliquer gardien aide.0123456789ab\"}\n"
+   ],
+   "courtier/notifications.log": [
+    "<DATE-HEURE>\tinfo\tBerger · validation n° 1\tgardien demande une validation ; consulter le n° 1 — berger valider 1 | berger refuser 1\n"
+   ],
+   "courtier/validations/1.json": [
+    "{\n \"n\": 1,\n \"agent\": \"gardien\",\n \"outil\": \"berger-admin\",\n \"verbe\": \"agent-appliquer\",\n \"args\": [\n  \"aide.0123456789ab\"\n ],\n \"apercu\": \"dans <T> : bin/berger agent appliquer gardien aide.0123456789ab\",\n \"valideur\": null,\n \"demande\": \"<DATE-HEURE>\"\n}"
+   ]
+  },
+  "appels": [
+   "[\"herdr\", \"notification\", \"show\", \"Berger\", \"--body\", \"Une information est disponible dans le panneau Berger.\", \"--sound\", \"request\"]"
+  ]
+ },
+ {
+  "scenario": "courtier : regenerer demandé (validation)",
+  "code": 0,
+  "stdout": "{\"en_attente\": 2, \"message\": \"Demande n° 2 envoyée à Proprio pour validation : dans <T> : bin/berger regenerer. RIEN n'est fait tant qu'il n'a pas validé ; le résultat sera noté dans ton journal.\", \"ok\": true}",
+  "stderr_fin": "",
+  "fichiers_ecrits": {
+   "courtier/appels.log": "<DATE-HEURE>\tgardien\tberger-admin\tregenerer\t\taccepté\tvalidation n° 2 demandée\n",
+   "courtier/echanges.jsonl": "{\"quand\": \"<DATE-HEURE>\", \"de\": \"gardien\", \"a\": \"Proprio\", \"genre\": \"validation demandée\", \"texte\": \"n° 2 : dans <T> : bin/berger regenerer\"}\n",
+   "courtier/notifications.log": "<DATE-HEURE>\tinfo\tBerger · validation n° 2\tgardien demande une validation ; consulter le n° 2 — berger valider 2 | berger refuser 2\n",
+   "courtier/validations/2.json": [
+    "{\n \"n\": 2,\n \"agent\": \"gardien\",\n \"outil\": \"berger-admin\",\n \"verbe\": \"regenerer\",\n \"args\": [],\n \"apercu\": \"dans <T> : bin/berger regenerer\",\n \"valideur\": null,\n \"demande\": \"<DATE-HEURE>\"\n}"
+   ]
+  },
+  "appels": [
+   "[\"herdr\", \"notification\", \"show\", \"Berger\", \"--body\", \"Une information est disponible dans le panneau Berger.\", \"--sound\", \"request\"]"
+  ]
+ }
+]

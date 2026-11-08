@@ -1,0 +1,6 @@
+#!/bin/sh
+# python3 de tout ce que lance le courtier (portes, commandes, bac à sable) : TOUJOURS le Python du système, jamais un
+# raccourci de mise (qui écrit dans ~/.local/share/mise à chaque appel et meurt en lecture seule — 06/11/2026).
+# Ce dossier est mis en tête du PATH par courtier/outils/_commandes.py (env_lancement). Absent : refus net, pas de repli.
+[ -x /usr/bin/python3 ] || { echo "berger : python du système introuvable (/usr/bin/python3) — aucun repli sur le PATH" >&2; exit 127; }
+exec /usr/bin/python3 "$@"

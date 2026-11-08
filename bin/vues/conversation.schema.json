@@ -1,0 +1,180 @@
+{
+ "$id": "conversation.schema.json",
+ "x-version": 1,
+ "description": "Données de la vue « Conversation » (interface web v2, lot 3) : le fil d'un agent lu en lecture seule dans la conversation de son moteur — messages du propriétaire (à droite) et de l'agent (à gauche), actions repliées (outil et cible courte, jamais la sortie), demandes de validation à leur heure ; 50 tours et 200 Kio au plus ; état du micro.",
+ "type": "object",
+ "properties": {
+  "agent": {
+   "x-libelle": "Agent",
+   "x-rendu": "agent",
+   "$ref": "communs.schema.json#/$defs/Agent"
+  },
+  "statuts": {
+   "x-libelle": "Statut",
+   "x-rendu": "statuts",
+   "type": "array",
+   "items": {
+    "$ref": "communs.schema.json#/$defs/Statut"
+   }
+  },
+  "ouverte": {
+   "x-libelle": "Page ouverte",
+   "x-rendu": "oui-non",
+   "type": "boolean"
+  },
+  "raison": {
+   "x-libelle": "Raison",
+   "x-rendu": "texte",
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "moteur": {
+   "x-libelle": "Moteur",
+   "x-rendu": "texte",
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "vivant": {
+   "x-libelle": "Agent vivant",
+   "x-rendu": "oui-non",
+   "type": "boolean"
+  },
+  "tours": {
+   "x-libelle": "Fil",
+   "x-rendu": "liste",
+   "type": "array",
+   "maxItems": 50,
+   "items": {
+    "type": "object",
+    "properties": {
+     "genre": {
+      "x-libelle": "Genre",
+      "x-rendu": "texte",
+      "type": "string",
+      "enum": [
+       "proprio",
+       "agent",
+       "actions",
+       "validation"
+      ]
+     },
+     "quand": {
+      "x-libelle": "Quand",
+      "x-rendu": "quand",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "texte": {
+      "x-libelle": "Message",
+      "x-rendu": "markdown",
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "actions": {
+      "x-libelle": "Actions",
+      "x-rendu": "liste",
+      "anyOf": [
+       {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "properties": {
+          "outil": {
+           "x-libelle": "Outil",
+           "x-rendu": "texte",
+           "type": "string"
+          },
+          "cible": {
+           "x-libelle": "Cible",
+           "x-rendu": "texte",
+           "type": "string",
+           "maxLength": 200
+          }
+         },
+         "required": [
+          "outil",
+          "cible"
+         ],
+         "additionalProperties": false
+        }
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "validation": {
+      "x-libelle": "Demande de validation",
+      "x-rendu": "validation",
+      "anyOf": [
+       {
+        "$ref": "communs.schema.json#/$defs/Validation"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "required": [
+     "genre",
+     "quand",
+     "texte",
+     "actions",
+     "validation"
+    ],
+    "additionalProperties": false
+   }
+  },
+  "tronque": {
+   "x-libelle": "Fil coupé",
+   "x-rendu": "oui-non",
+   "type": "boolean"
+  },
+  "micro": {
+   "x-libelle": "Micro",
+   "x-rendu": "liste",
+   "type": "object",
+   "properties": {
+    "actif": {
+     "x-libelle": "Actif",
+     "x-rendu": "oui-non",
+     "type": "boolean"
+    },
+    "raison": {
+     "x-libelle": "Raison",
+     "x-rendu": "texte",
+     "type": [
+      "string",
+      "null"
+     ]
+    }
+   },
+   "required": [
+    "actif",
+    "raison"
+   ],
+   "additionalProperties": false
+  }
+ },
+ "required": [
+  "agent",
+  "statuts",
+  "ouverte",
+  "raison",
+  "moteur",
+  "vivant",
+  "tours",
+  "tronque",
+  "micro"
+ ],
+ "additionalProperties": false
+}

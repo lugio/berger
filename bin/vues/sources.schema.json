@@ -1,0 +1,28 @@
+{
+ "$id": "sources.schema.json", "x-version": 1,
+ "description": "Données de la vue « Sources » : le dernier résultat de chaque panneau [panneaux.<nom>] relu par le courtier (jamais relancé ici), son état et ses premières lignes avec leur gravité.",
+ "type": "object",
+ "properties": {
+  "filtre": {"x-libelle": "Sources demandées", "x-rendu": "cache", "type": ["array", "null"], "items": {"type": "string"}},
+  "declarees": {"x-libelle": "Sources déclarées", "x-rendu": "nombre", "type": "integer"},
+  "inconnues": {"x-libelle": "Sources non déclarées", "x-rendu": "liste", "type": "array", "items": {"x-rendu": "texte", "type": "string"}},
+  "sources": {"x-libelle": "Sources", "x-rendu": "liste", "type": "array", "items": {"type": "object",
+   "properties": {"nom": {"x-libelle": "Nom", "x-rendu": "cache", "type": "string"},
+                  "titre": {"x-libelle": "Source", "x-rendu": "texte", "type": "string"},
+                  "outil": {"x-libelle": "Outil", "x-rendu": "texte", "type": "string"},
+                  "verbe": {"x-libelle": "Verbe", "x-rendu": "texte", "type": "string"},
+                  "etat": {"x-libelle": "État", "x-rendu": "texte", "enum": ["ok", "echec", "fige", "attente"]},
+                  "quand": {"x-libelle": "Collecté", "x-rendu": "quand", "type": "string"},
+                  "duree": {"x-libelle": "Durée (s)", "x-rendu": "texte", "type": ["number", "string"]},
+                  "erreur": {"x-libelle": "Erreur", "x-rendu": "texte", "type": ["string", "null"]},
+                  "cadence": {"x-libelle": "Cadence (s)", "x-rendu": "texte", "type": ["integer", "number", "string"]},
+                  "lignes": {"x-libelle": "Lignes", "x-rendu": "lignes", "type": "array", "items": {"type": "object",
+                   "properties": {"texte": {"x-libelle": "Ligne", "x-rendu": "texte", "type": "string"},
+                                  "terminal": {"x-libelle": "Ligne avec les couleurs de l'outil (rendu texte)", "x-rendu": "cache", "type": "string"},
+                                  "gravite": {"x-libelle": "Gravité", "x-rendu": "ton", "enum": ["rouge", "jaune", null]}},
+                   "required": ["texte", "terminal", "gravite"], "additionalProperties": false}},
+                  "en_plus": {"x-libelle": "Lignes en plus", "x-rendu": "nombre", "type": "integer"}},
+   "required": ["nom", "titre", "outil", "verbe", "etat", "quand", "duree", "erreur", "cadence", "lignes", "en_plus"], "additionalProperties": false}}
+ },
+ "required": ["filtre", "declarees", "inconnues", "sources"], "additionalProperties": false
+}

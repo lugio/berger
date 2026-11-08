@@ -1,0 +1,60 @@
+{
+ "$id": "document.schema.json",
+ "x-version": 1,
+ "description": "Données de la vue d'objet « Document à lire » (berger vue document <id>) : le document (texte Markdown, 200 Ko au plus), sans le marquer lu.",
+ "type": "object",
+ "properties": {
+  "id": {
+   "x-libelle": "Identifiant",
+   "x-rendu": "cache",
+   "type": "string"
+  },
+  "titre": {
+   "x-libelle": "Titre",
+   "x-rendu": "texte",
+   "type": "string"
+  },
+  "auteur": {
+   "x-libelle": "Auteur",
+   "x-rendu": "agent",
+   "anyOf": [
+    {
+     "$ref": "communs.schema.json#/$defs/Agent"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "date": {
+   "x-libelle": "Date",
+   "x-rendu": "quand",
+   "type": "string"
+  },
+  "lu": {
+   "x-libelle": "Lu",
+   "x-rendu": "oui-non",
+   "type": "boolean"
+  },
+  "texte": {
+   "x-libelle": "Texte",
+   "x-rendu": "markdown",
+   "type": "string"
+  },
+  "tronque": {
+   "x-libelle": "Coupé",
+   "x-rendu": "oui-non",
+   "type": "boolean"
+  }
+ },
+ "required": [
+  "id",
+  "titre",
+  "auteur",
+  "date",
+  "lu",
+  "texte",
+  "tronque"
+ ],
+ "additionalProperties": false
+}

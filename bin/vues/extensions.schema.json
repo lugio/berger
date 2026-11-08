@@ -1,0 +1,31 @@
+{
+ "$id": "extensions.schema.json", "x-version": 1,
+ "description": "Données de la vue « Extensions » (lecture seule, spec docs/plans/2026-11-07-extensions-spec.md § 6) : une carte par extension installée (extensions.toml), champs en liste blanche, valeurs validées ou masquées (forme de clé, marque privée), aucun chemin privé ; le coffre n'est jamais lu. Dernier usage « non mesuré » quand rien ne le mesure.",
+ "type": "object",
+ "properties": {
+  "fichier": {"x-libelle": "Fichier", "x-rendu": "texte", "type": "string"},
+  "lisible": {"x-libelle": "Lisible", "x-rendu": "oui-non", "type": "boolean"},
+  "signalements": {"x-libelle": "À signaler", "x-rendu": "liste", "type": "array", "items": {"type": "object",
+   "properties": {"quoi": {"x-libelle": "Quoi", "x-rendu": "texte", "type": "string"},
+                  "consequence": {"x-libelle": "Conséquence", "x-rendu": "texte", "type": "string"},
+                  "ton": {"x-libelle": "Gravité", "x-rendu": "ton", "type": "string", "enum": ["jaune", "rouge"]}},
+   "required": ["quoi", "consequence", "ton"], "additionalProperties": false}},
+  "extensions": {"x-libelle": "Extensions", "x-rendu": "liste", "type": "array", "items": {"type": "object",
+   "properties": {"genre": {"x-libelle": "Genre", "x-rendu": "texte", "type": "string", "enum": ["skill", "mcp", "vue", "outil"]},
+                  "nom": {"x-libelle": "Nom", "x-rendu": "texte", "type": "string"},
+                  "version": {"x-libelle": "Version", "x-rendu": "texte", "type": "string"},
+                  "empreinte": {"x-libelle": "Empreinte", "x-rendu": "texte", "type": "string"},
+                  "description": {"x-libelle": "Description", "x-rendu": "texte", "type": "string"},
+                  "agents": {"x-libelle": "Agents", "x-rendu": "liste", "type": "array", "items": {"type": "string"}},
+                  "droits": {"x-libelle": "Droits accordés", "x-rendu": "liste", "type": "array", "items": {"type": "object",
+                   "properties": {"cle": {"x-libelle": "Droit", "x-rendu": "texte", "type": "string"},
+                                  "valeur": {"x-libelle": "Valeur", "x-rendu": "texte", "type": "string"}},
+                   "required": ["cle", "valeur"], "additionalProperties": false}},
+                  "reseau": {"x-libelle": "Réseau accordé", "x-rendu": "oui-non", "type": "boolean"},
+                  "installee": {"x-libelle": "Installée le", "x-rendu": "texte", "type": "string"},
+                  "dernier_usage": {"x-libelle": "Dernier usage", "x-rendu": "texte", "type": "string"},
+                  "etat": {"x-libelle": "État", "x-rendu": "texte", "type": "string"}},
+   "required": ["genre", "nom", "version", "empreinte", "description", "agents", "droits", "reseau", "installee", "dernier_usage", "etat"], "additionalProperties": false}}
+ },
+ "required": ["fichier", "lisible", "signalements", "extensions"], "additionalProperties": false
+}

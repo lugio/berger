@@ -1,0 +1,32 @@
+{
+ "$id": "courtier.schema.json", "x-version": 2,
+ "description": "Données de la vue « Courtier » : service, droits attribués, dernier audit des secrets, écritures en attente, sauvegarde, appels du jour et sélection de 200 appels au plus, réservée en priorité aux refus du jour puis aux appels récents, dans l’ordre du journal. Aucune valeur secrète.",
+ "type": "object",
+ "properties": {
+  "actif": {"x-libelle": "En service", "x-rendu": "oui-non", "type": "boolean"},
+  "droits": {"x-libelle": "Droits attribués", "x-rendu": "nombre", "type": "integer"},
+  "audit": {"x-libelle": "Audit des secrets", "x-rendu": "liste", "anyOf": [{"type": "object",
+   "properties": {"texte": {"x-libelle": "Résultat", "x-rendu": "texte", "type": "string"},
+                  "ok": {"x-libelle": "Aucune fuite", "x-rendu": "oui-non", "type": "boolean"}},
+   "required": ["texte", "ok"], "additionalProperties": false}, {"type": "null"}]},
+  "validations": {"x-libelle": "Écritures à valider", "x-rendu": "liste", "type": "array", "items": {"x-rendu": "validation", "$ref": "communs.schema.json#/$defs/Validation"}},
+  "sauvegarde": {"x-libelle": "Sauvegarde", "x-rendu": "liste", "type": "object",
+   "properties": {"suivie": {"x-libelle": "Déclarée", "x-rendu": "oui-non", "type": "boolean"},
+                  "derniere": {"x-libelle": "Dernière", "x-rendu": "texte", "type": ["string", "null"]}},
+   "required": ["suivie", "derniere"], "additionalProperties": false},
+  "aujourdhui": {"x-libelle": "Aujourd'hui", "x-rendu": "liste", "type": "object",
+   "properties": {"appels": {"x-libelle": "Appels", "x-rendu": "nombre", "type": "integer"},
+                  "refus": {"x-libelle": "Refusés", "x-rendu": "nombre", "type": "integer"}},
+   "required": ["appels", "refus"], "additionalProperties": false},
+  "appels": {"x-libelle": "Derniers appels", "x-rendu": "liste", "type": "array", "maxItems": 200, "items": {"type": "object",
+   "properties": {"quand": {"x-libelle": "Quand", "x-rendu": "quand", "type": "string"},
+                  "agent": {"x-libelle": "Agent", "x-rendu": "texte", "type": "string"},
+                  "outil": {"x-libelle": "Outil", "x-rendu": "texte", "type": "string"},
+                  "verbe": {"x-libelle": "Verbe", "x-rendu": "texte", "type": "string"},
+                  "args": {"x-libelle": "Arguments", "x-rendu": "texte", "type": "string"},
+                  "ok": {"x-libelle": "Accepté", "x-rendu": "oui-non", "type": "boolean"},
+                  "detail": {"x-libelle": "Détail", "x-rendu": "texte", "type": "string"}},
+   "required": ["quand", "agent", "outil", "verbe", "args", "ok", "detail"], "additionalProperties": false}}
+ },
+ "required": ["actif", "droits", "audit", "validations", "sauvegarde", "aujourdhui", "appels"], "additionalProperties": false
+}
