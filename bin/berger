@@ -3343,7 +3343,8 @@ def verifier_depot(_=None, forge=None, commit=None):
         if interdits_chemins.match(f): problemes.append((f, "fichier de données / configuration locale")); continue
         try: t = contenus[f] if contenus is not None else (BERGER / f).read_text(errors="ignore")
         except (OSError, KeyError): continue                      # KeyError : une entrée du commit qui n'est pas un fichier (sous-module)
-        if any(v in t for v in secrets): problemes.append((f, "VALEUR DU COFFRE"))
+        brut, t = t, texte_data_uri(t)                                # marques : dans le contenu décodé des data URI ; coffre : brut ET décodé
+        if any(v in t or v in brut for v in secrets): problemes.append((f, "VALEUR DU COFFRE"))
         if exception: t = exception.sub(" ", t)
         for m, quoi in marques.items():
             # Une marque privée est refusée même collée à un point, un tiret ou un souligné (hôte, nom d'outil, de fichier) ;

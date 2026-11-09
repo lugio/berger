@@ -8,6 +8,12 @@ and versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 <!-- Entries go in changelog.d/<topic>.md (see CONTRIBUTING.md): this section stays empty. -->
 
+## [0.4.1] - 2026-11-08
+
+### Fixed
+
+- `verifier-depot` now reads a data URI by its decoded content, not its base64 text. A run of letters in the encoded logo of the static preview happened to spell an installation owner's first name, so the whole v0.4.0 was refused at install time (a false alarm: the name was in no readable text, and CI cannot see it since it does not know the installation's owner). An owner's name, a tool host or a vault value found in the decoded content is still refused, which is stricter than before for that case. Vault values are searched in both the raw and the decoded text, so a vault value made of base64 characters and written as is as the data of a data URI is still refused. Invalid base64 stays as it is, with no exemption.
+
 ## [0.4.0] - 2026-11-08
 
 ### Added

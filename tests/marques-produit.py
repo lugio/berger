@@ -87,4 +87,35 @@ with tempfile.TemporaryDirectory() as td:
     configurer()
     fichier.write_text("Berger : agents en fichiers texte.\n")
 
+    # Données embarquées (data URI base64, 08/11/2026, spec 2026-11-08-verifier-datauri) : la recherche porte sur le CONTENU
+    # décodé, pas sur l'encodage. Le nom du propriétaire est cherché même à l'intérieur d'un mot : une suite de lettres tirée au
+    # hasard dans le base64 d'une image le formait, et l'installation de v0.4.0 a été refusée à tort.
+    import base64 as _b64
+    nom = "Zorglub"                                                            # propriétaire fictif, d'un seul mot
+    valeur = "Valeur-Du-Coffre-0123456789"
+    coffre.write_text('{"outil": {"mot_de_passe": "' + valeur + '"}}')
+    (depot / "config.toml").write_text(f'proprietaire = "{nom}"\ncoffre = "{coffre}"\n')
+    image = depot / "apercu.html"
+    subprocess.run(["git", "-C", str(depot), "add", "-N", "apercu.html"], check=False)
+    def avec(texte):
+        image.write_text(texte); subprocess.run(["git", "-C", str(depot), "add", "apercu.html"], check=True); return verifier()
+    hasard = "AAAA" + nom + "A"                                                # le nom DANS l'encodage ; les octets décodés ne le portent pas
+    assert nom.encode() not in _b64.b64decode(hasard)
+    r = avec(f'<img src="data:image/png;base64,{hasard}">\n')
+    dire(r.returncode == 0 and "dépôt propre" in r.stdout, "data URI : le nom dans l'encodage seulement (hasard), dépôt accepté")
+    cache = _b64.b64encode(f"auteur : {nom}".encode()).decode()
+    r = avec(f'<img src="data:text/plain;base64,{cache}">\n')
+    dire(r.returncode == 1 and "nom du propriétaire" in r.stdout, "data URI : le nom dans le contenu DÉCODÉ, refusé")
+    r = avec(f"Auteur : {nom}.\n")
+    dire(r.returncode == 1 and "nom du propriétaire" in r.stdout, "le nom en clair hors data URI, refusé")
+    r = avec('<img src="data:application/json;base64,' + _b64.b64encode(valeur.encode()).decode() + '">\n')
+    dire(r.returncode == 1 and "VALEUR DU COFFRE" in r.stdout, "data URI : une valeur du coffre dans le contenu décodé, refusée")
+    r = avec(f'<img src="data:image/png;base64,{nom}!!">\n')                  # base64 invalide : gardé tel quel, sans exemption
+    dire(r.returncode == 1 and "nom du propriétaire" in r.stdout, "data URI au base64 invalide qui porte le nom, refusée")
+    jeton = "AbCdEfGh12345678IjKlMnOp"                                         # une valeur du coffre faite de caractères base64
+    coffre.write_text('{"outil": {"mot_de_passe": "' + jeton + '"}}')
+    r = avec(f'<img src="data:image/png;base64,{jeton}">\n')                  # écrite TELLE QUELLE comme données : le texte brut compte aussi
+    dire(r.returncode == 1 and "VALEUR DU COFFRE" in r.stdout, "data URI : une valeur du coffre écrite telle quelle comme données, refusée")
+    image.unlink(); subprocess.run(["git", "-C", str(depot), "rm", "-q", "--cached", "apercu.html"], check=False)
+
 sys.exit(1 if ko else 0)
